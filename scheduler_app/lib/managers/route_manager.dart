@@ -1,0 +1,62 @@
+import 'package:flutter/material.dart';
+import 'package:scheduler_app/APIs/onemap_api.dart';
+import 'package:scheduler_app/entities/route_entity.dart' as r;
+
+class RouteManager {
+  final Map<int, r.Route> _routeDict = {};
+
+  // request parameters filled up by UI
+  final Map<String, String> _requestParameters = {};
+
+  // Method to update the map using the setter
+  void updateRequestParameters(String key, String value) {
+    _requestParameters[key] = value;
+  }
+
+  void updateRouteDict(int key, r.Route value) {
+    _routeDict[key] = value;
+  }
+
+  void getRoutesFromOneMap() async {
+    final String accessToken;
+    final Map<String, dynamic> response;
+    try {
+      accessToken = await OneMapAPI.fetchToken();
+      response = await OneMapAPI.getRoutesPT(
+          accessToken: accessToken,
+          start: _requestParameters["start"] ?? "",
+          end: _requestParameters["end"] ?? "",
+          routeType: _requestParameters["routeType"] ?? "pt",
+          date: _requestParameters["date"] ?? "",
+          time: _requestParameters["time"] ?? "",
+          mode: _requestParameters["mode"] ?? "TRANSIT,BUS,RAIL",
+          maxWalkDistance: _requestParameters["maxWalkDistance"] ?? "1000",
+          numItineraries: _requestParameters["numItineraries"] ?? "1");
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+
+    // TODO: Loop through response, and create each Route object using the createRoute method.
+  }
+
+  r.Route? getRouteDetail(String routeId) {
+    if (_routeDict.containsKey(routeId)) {
+      return _routeDict[routeId];
+    }
+    throw 'Route not found!';
+  }
+
+// monitorPotentialConcern
+
+// get Waiting Time
+
+// recalculate arrival Time
+
+// get Estimated Waiting TIme
+
+// create Route Object and add to dictionary
+  void createRoute(Map<String, dynamic> itinerary, int index) {
+    r.Route newRoute = r.Route(itinerary);
+    updateRouteDict(index, newRoute);
+  }
+}
