@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:scheduler_app/APIs/onemap_api.dart';
 import 'package:scheduler_app/entities/route_entity.dart' as r;
+import 'package:scheduler_app/APIs/lta_api.dart';
 
 class RouteManager {
   final Map<int, r.Route> _routeDict = {};
@@ -39,6 +40,7 @@ class RouteManager {
     // TODO: Loop through response, and create each Route object using the createRoute method.
   }
 
+
   r.Route? getRouteDetail(String routeId) {
     if (_routeDict.containsKey(routeId)) {
       return _routeDict[routeId];
@@ -46,13 +48,42 @@ class RouteManager {
     throw 'Route not found!';
   }
 
-// monitorPotentialConcern
+// Monitor potential concerns
+  void monitorPotentialConcern() {
+    // Implement your logic to monitor potential concerns here
+  }
 
-// get Waiting Time
+  // Get waiting time
+  double getWaitingTime(String routeId) {
+    if (_routeDict.containsKey(routeId)) {
+      // Replace this with your logic to calculate waiting time
+      return 10.0; // Example waiting time
+    }
+    throw 'Route not found!';
+  }
 
-// recalculate arrival Time
+  // Recalculate arrival time
+  double recalculateArrivalTime(String routeId) {
+    if (_routeDict.containsKey(routeId)) {
+      // Replace this with your logic to recalculate arrival time
+      return 20.0; // Example recalculated arrival time
+    }
+    throw 'Route not found!';
+  }
 
-// get Estimated Waiting TIme
+// Get estimated waiting time
+  double getEstimatedWaitingTime(String busStopCode, String serviceNo) {
+    try {
+      final estimatedTime = await LtaApi.getEstimatedWaitingTime(
+        busStopCode: busStopCode,
+        serviceNo: serviceNo,
+      );
+      return estimatedTime.toDouble();
+    } catch (e) {
+      debugPrint(e.toString());
+      return 0.0;
+    }
+  }
 
 // create Route Object and add to dictionary
   void createRoute(Map<String, dynamic> itinerary, int index) {
