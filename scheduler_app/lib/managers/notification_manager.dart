@@ -1,9 +1,21 @@
-import 'package:flutter/material.dart';
-import 'package:scheduler_app/events.dart';
+import 'package:flutter/services.dart';
+import 'package:scheduler_app/entities/event_entity.dart';
+import 'package:get_it/get_it.dart';
 import 'package:scheduler_app/entities/route_entity.dart';
+import 'package:scheduler_app/entities/notification_entity.dart';
+import 'package:csv/csv.dart';
 
 class NotificationManager {
   final List<Notification> _notifications = [];
+
+  void instantiateNotificationFile(){
+    final _rawData = rootBundle.loadString("assets/NotificationList.csv");
+    List<List<dynamic>> _data = const CsvToListConverter().convert(_rawData);
+  }
+
+  void updateNotificationFile(){
+
+  }
 
   void sendUpdatedNotificationList(){
 
@@ -13,6 +25,7 @@ class NotificationManager {
       return _notifications;
   }
 
+  // ignore: unused_element
   void _updateNotifications(List<Notification> newNotifications) {
     for (Notification newNotification in newNotifications) {
       _addNotification(newNotification);
@@ -34,12 +47,3 @@ class NotificationManager {
   }
 }
 
-class Notification {
-  String type;
-  String message;  
-  Route route;
-
-  Notification(
-    {required this.type, 
-    required this.message});
-}
