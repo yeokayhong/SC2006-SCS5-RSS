@@ -23,7 +23,7 @@ enum AppTab {
   mapInput,
   routeDetails,
   selectedRoute,
-  // Add more tabs as needed
+  NotificationHistory,
 }
 
 class MyApp extends StatefulWidget {
