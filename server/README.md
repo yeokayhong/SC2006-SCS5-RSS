@@ -57,7 +57,20 @@ def new_api_route():
     # Write code to handle the request here
     return jsonify({"message": "This is a new API route"})
 ```
-
+### Run the server locally
+```
+python server.py
+```
+Then you can see the following information
+```
+ * Serving Flask app 'server'
+ * Debug mode: off
+WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://xxx.xxx.xx.xx:5000
+Press CTRL+C to quit
+```
 ## Calling Backend Methods
 
 You can call backend methods using the command line or the Dart programming language. Here's an example of using Dart to call the `/get_estimated_waiting_time` route:
