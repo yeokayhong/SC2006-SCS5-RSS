@@ -1,38 +1,42 @@
-import 'package:flutter/services.dart';
-import 'package:scheduler_app/base_classes/notification_enum.dart';
-import 'package:scheduler_app/entities/event_entity.dart';
+//import 'package:flutter/services.dart';
+//import 'package:scheduler_app/base_classes/notification_enum.dart';
 import 'package:get_it/get_it.dart';
-import 'package:scheduler_app/entities/route_entity.dart';
+//import 'package:scheduler_app/entities/route_entity.dart';
 import 'package:scheduler_app/entities/notification_entity.dart';
 import 'package:csv/csv.dart';
 import 'dart:io';
 import 'dart:convert' show utf8;
 
 class NotificationManager {
-  final List<Notification> _notifications = [];
+  List<Notification> _notifications = [];
 
   void instantiateNotificationFile() async{
     final input = File('assets/NotificationList.csv').openRead();
     final fields = await input.transform(utf8.decoder).transform(CsvToListConverter()).toList();
     
-    List<Notification> _newNotifications = fields.map((field) {
-      return Notification({
-        field[0], 
-        field[1], 
-        field[2],
-        field[3],
-        field[4],
-      });
+    List<Notification> newNotifications = fields.map((field) {
+      return Notification(
+        message: field[0], 
+        time: field[1], 
+      );
     }).toList();
-    _updateNotifications(_newNotifications);
+    _updateNotifications(newNotifications);
   }
 
   void updateNotificationFile(){
+     final List<List<dynamic>> csvData = _notifications
+        .map((notification) => [notification.time, notification.message])
+        .toList();
 
-  }
+    final String csvFilePath = 'NotificationList.csv';
+    final File file = File(csvFilePath);
 
-  void sendUpdatedNotificationList(){
-
+    try {
+      file.writeAsString(const ListToCsvConverter().convert(csvData));
+      print('CSV file updated successfully.');
+    } catch (e) {
+      print('Error updating CSV file: $e');
+    }
   }
 
   List<Notification> getNotificationHistory(){
@@ -49,6 +53,7 @@ class NotificationManager {
       if (newNotifications.contains(notification)) continue;
         _removeNotification(notification);
       }
+      updateNotificationFile();
     }
   
 
@@ -57,7 +62,11 @@ class NotificationManager {
   }
 
   void _addNotification(Notification toUpdate) {
-    _notifications.remove(toUpdate);
+    _notifications.add(toUpdate);
+  }
+
+  void sendUpdatedNotificationList(){
+
   }
 }
 
