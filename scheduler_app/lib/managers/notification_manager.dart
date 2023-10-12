@@ -9,7 +9,12 @@ import 'dart:convert' show utf8;
 
 class NotificationManager {
   List<Notification> _notifications = [];
+    //GetIt.instance.registerSingleton<NotificationManager>(NotificationManager());
 
+  NotificationManager._(){
+    instantiateNotificationFile();
+  }
+  
   void instantiateNotificationFile() async{
     final input = File('assets/NotificationList.csv').openRead();
     final fields = await input.transform(utf8.decoder).transform(CsvToListConverter()).toList();
