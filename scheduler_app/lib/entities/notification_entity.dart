@@ -11,8 +11,8 @@ class Notification {
   // Concern concern;
 
   Notification({
-    required this.message,
     required this.time,
+    required this.message,
     /*required this.type,
     required this.route,
     required this.concern*/
