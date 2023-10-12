@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:scheduler_app/base_classes/date_time_format.dart';
 import 'package:scheduler_app/managers/notification_manager.dart';
 import 'package:scheduler_app/entities/notification_entity.dart' as notification_entity;
 
@@ -31,7 +32,7 @@ class NotificationManager extends StatelessWidget {
                   final object = notificationList[index];
                   return ListTile(
                     title: Text(object.message),
-                    subtitle: Text(DateFormat('yyyy-MM-dd HH:mm:ss').format(object.time)),
+                    subtitle: Text(object.time.fullDate()),
                   );
                 },
               ),
