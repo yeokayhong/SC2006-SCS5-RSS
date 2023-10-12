@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'screens_barrel.dart';
+import 'package:scheduler_app/widgets/map.dart';
 
 class MapInputPage extends StatelessWidget {
   @override
@@ -8,9 +10,15 @@ class MapInputPage extends StatelessWidget {
       appBar: AppBar(title: Text('Map Page')),
       body: Column(
         children: [
-          Expanded(child: Placeholder()), // This is the placeholder map
-          TextField(decoration: InputDecoration(labelText: 'Origin')),
-          TextField(decoration: InputDecoration(labelText: 'Destination')),
+          // temporarily substitute values in for testing
+          Expanded(
+              child: MapWidget(
+                  source: LatLng(1.302570, 103.834686),
+                  dest: LatLng(1.302570, 103.834686))),
+          const TextField(decoration: InputDecoration(labelText: 'Origin')),
+          const TextField(
+            decoration: InputDecoration(labelText: 'Destination'),
+          ),
           ElevatedButton(
             onPressed: () {
               _showRouteOptions(context);

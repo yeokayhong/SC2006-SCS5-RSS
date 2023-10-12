@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'screens_barrel.dart';
-import '';
 
 class AuthenticationPage extends StatelessWidget {
   @override
