@@ -1,4 +1,4 @@
-import 'package:scheduler_app/concern_manager.dart';
+import 'package:scheduler_app/managers/concern_manager.dart';
 
 class ConcernEvent {
   final String type;

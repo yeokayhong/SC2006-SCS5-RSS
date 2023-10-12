@@ -1,7 +1,7 @@
 import 'package:event_bus/event_bus.dart';
 import 'package:get_it/get_it.dart';
-import 'package:scheduler_app/events.dart';
-import 'package:scheduler_app/lta_api.dart';
+import 'package:scheduler_app/entities/event_entity.dart';
+import 'package:scheduler_app/APIs/lta_api.dart';
 
 class ConcernManager {
   final List<Concern> _concerns = [];

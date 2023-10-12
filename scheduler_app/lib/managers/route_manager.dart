@@ -40,7 +40,6 @@ class RouteManager {
     // TODO: Loop through response, and create each Route object using the createRoute method.
   }
 
-
   r.Route? getRouteDetail(String routeId) {
     if (_routeDict.containsKey(routeId)) {
       return _routeDict[routeId];
@@ -72,7 +71,8 @@ class RouteManager {
   }
 
 // Get estimated waiting time
-  double getEstimatedWaitingTime(String busStopCode, String serviceNo) {
+  Future<double> getEstimatedWaitingTime(
+      String busStopCode, String serviceNo) async {
     try {
       final estimatedTime = await LtaApi.getEstimatedWaitingTime(
         busStopCode: busStopCode,
@@ -87,7 +87,7 @@ class RouteManager {
 
 // create Route Object and add to dictionary
   void createRoute(Map<String, dynamic> itinerary, int index) {
-    r.Route newRoute = r.Route(itinerary);
+    r.Route newRoute = r.Route();
     updateRouteDict(index, newRoute);
   }
 }

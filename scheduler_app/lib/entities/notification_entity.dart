@@ -4,16 +4,17 @@
 //import 'package:scheduler_app/base_classes/notification_enum.dart';
 
 class Notification {
-  final String message;  
+  final String message;
   final DateTime time;
   // NotificationEnum type;
   // Route route;
   // Concern concern;
 
-  Notification(
-    {required this.message,
+  Notification({
+    required this.message,
     required this.time,
     /*required this.type,
     required this.route,
-    required this.concern*/});
+    required this.concern*/
+  });
 }

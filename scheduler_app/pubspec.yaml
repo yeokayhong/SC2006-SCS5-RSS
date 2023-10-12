@@ -39,7 +39,8 @@ dependencies:
   http: ^1.1.0
   mockito: ^5.4.2
   csv: ^5.0.2
-
+  intl: ^0.18.1 
+  
 dev_dependencies:
   flutter_test:
     sdk: flutter
