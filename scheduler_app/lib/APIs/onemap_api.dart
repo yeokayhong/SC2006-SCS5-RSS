@@ -6,7 +6,7 @@ import 'package:scheduler_app/constants.dart';
 // class should be defined on server side for security purposes
 class OneMapAPI {
   // Get Authentication Access Token
-  Future<String> fetchToken() async {
+  static Future<String> fetchToken() async {
     final url = "https://www.onemap.gov.sg/api/auth/post/getToken";
     final payload = {
       "email": Constants.oneMapEmail,

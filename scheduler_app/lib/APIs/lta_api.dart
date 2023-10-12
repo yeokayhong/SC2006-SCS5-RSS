@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:scheduler_app/concern_manager.dart';
+import 'package:scheduler_app/managers/concern_manager.dart';
 
 class LtaApi {
   // Base URL for LTA API
@@ -18,12 +18,14 @@ class LtaApi {
   static List<Concern> queryCrowdedStations() {
     return [];
   }
+
   // Method to get estimated waiting time for a specific bus stop and service number
   static Future<double> getEstimatedWaitingTime({
     required String busStopCode,
     String serviceNo = "",
   }) async {
-    final Uri url = Uri.parse('$baseUrl/BusArrivalv2?BusStopCode=$busStopCode&ServiceNo=$serviceNo');
+    final Uri url = Uri.parse(
+        '$baseUrl/BusArrivalv2?BusStopCode=$busStopCode&ServiceNo=$serviceNo');
 
     final Map<String, String> headers = {
       'AccountKey': apiKey,
@@ -38,9 +40,11 @@ class LtaApi {
 
         if (services.isNotEmpty) {
           final Map<String, dynamic> firstBus = services[0];
-          final String estimatedArrival = firstBus['NextBus']['EstimatedArrival'];
+          final String estimatedArrival =
+              firstBus['NextBus']['EstimatedArrival'];
 
-          final DateTime estimatedArrivalTime = DateTime.parse(estimatedArrival);
+          final DateTime estimatedArrivalTime =
+              DateTime.parse(estimatedArrival);
           final DateTime now = DateTime.now();
           final Duration waitingTime = estimatedArrivalTime.difference(now);
 

@@ -25,7 +25,8 @@ class UserInterfaceManager {
 
   void displayLiveLocation(Location location) {
     // Display the live location of the user
-    print("Current Location: Latitude: ${location.latitude}, Longitude: ${location.longitude}");
+    print(
+        "Current Location: Latitude: ${location.latitude}, Longitude: ${location.longitude}");
   }
 
   Location getRouteRequest() {
@@ -49,7 +50,8 @@ void main() {
   uiManager.displayErrorMessage();
   uiManager.displayEnableLocationServiceMessage();
   uiManager.displayRouteInformation();
-  uiManager.displayLiveLocation(Location(34.0522, -118.2437));  // Sample location
+  uiManager
+      .displayLiveLocation(Location(34.0522, -118.2437)); // Sample location
   uiManager.getRouteRequest();
   uiManager.requestCurrentLocation();
   uiManager.requestRouteCalculation();

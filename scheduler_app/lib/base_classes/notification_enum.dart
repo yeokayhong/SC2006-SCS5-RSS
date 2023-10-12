@@ -1,5 +1,4 @@
-
-enum NotificationEnum{
+enum NotificationEnum {
   trainBreakdown,
   trainDelay,
   weatherIssue,
