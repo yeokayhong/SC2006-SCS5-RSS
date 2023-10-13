@@ -25,11 +25,12 @@ class NotificationManager {
 
     List<Notification> newNotifications = fields.map((field) {
       return Notification(
-        time: field[0],
+        time: DateTime.parse(field[0]),
         message: field[1],
       );
     }).toList();
-    _updateNotifications(newNotifications);
+    _notifications.addAll(newNotifications);
+    //_updateNotifications(newNotifications);
   }
 
   void updateNotificationFile() {

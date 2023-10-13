@@ -6,7 +6,9 @@ import 'package:scheduler_app/base_classes/set_up.dart';
 import 'package:scheduler_app/managers/notification_manager.dart';
 import 'package:get_it/get_it.dart';
 
+
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   instanceSetUp();
   runApp(MaterialApp(
     home: NotificationUI(),
