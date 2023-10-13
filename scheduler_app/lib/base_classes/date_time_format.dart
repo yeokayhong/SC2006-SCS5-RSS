@@ -5,4 +5,9 @@ extension dateTimeFormat on DateTime {
     return DateFormat.yMMMMd('en_US').format(
         DateTime.fromMicrosecondsSinceEpoch(this.microsecondsSinceEpoch));
   }
+
+  String customFormat() {
+    final format = DateFormat('dd/MM/yy, hhmma');
+    return format.format(this);
+  }
 }

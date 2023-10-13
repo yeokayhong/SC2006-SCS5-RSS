@@ -4,8 +4,8 @@ import 'package:scheduler_app/entities/notification_entity.dart'
 import 'package:intl/intl.dart';
 import 'package:scheduler_app/base_classes/set_up.dart';
 import 'package:scheduler_app/managers/notification_manager.dart';
-import 'package:get_it/get_it.dart';
-
+//import 'package:get_it/get_it.dart';
+import 'package:scheduler_app/base_classes/date_time_format.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -31,22 +31,69 @@ class NotificationUI extends StatelessWidget {
         titleTextStyle: const TextStyle(
             color: Colors.black, fontSize: 40.0),
       ),
-      body: Column(
-        children: [
-          Expanded(
-            child: ListView.builder(
+      body: ListView.builder(
               itemCount: notificationList.length,
               itemBuilder: (context, index) {
                 final object = notificationList[index];
-                return ListTile(
-                  title: Text(DateFormat('yyyy-MM-dd HH:mm:ss').format(object.time)),
-                  subtitle: Text(object.message),
+                return Stack(
+                  children: [
+                        Column(
+                          children: [
+                            ListTile(
+                              leading: const Icon(
+                              Icons.warning_amber_rounded,
+                              size: 30.0,
+                              color: Colors.red,
+                              ),
+                              title: Text(object.time.customFormat()),
+                              titleTextStyle: const TextStyle(
+                                fontSize: 20.0,
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              subtitle: Text(object.message),
+                              subtitleTextStyle: const TextStyle(
+                                fontSize: 16.0,
+                              ),
+                            ),
+                            const Divider(
+                              height: 5.0,
+                              color: Colors.black,
+                            ),
+                          ],
+                    ),
+                Positioned(
+                  bottom: 8.0, // Adjust the bottom position as needed
+                  right: 8.0, // Adjust the right position as needed
+                  child: TextButton(
+                    onPressed: () {
+                    // Handle the "Read More" button click
+                    },
+
+                    style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.all<Color>(Colors.red.shade800),
+                        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                          RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(18.0),
+                              side: BorderSide(color: Colors.red),
+                          )
+                      )
+                    ),
+
+                    child: const Text(
+                      'Read more',
+                      style: TextStyle(
+                      color: Colors.white,
+                        //backgroundColor: Colors.red,
+                      ),
+                    ),
+
+                  ),
+                )
+                  ]
                 );
               },
             ),
-          ),
-        ],
-      ),
       // floatingActionButton: FloatingActionButton(
       //   onPressed: () {},
       //   child: Text(''),
