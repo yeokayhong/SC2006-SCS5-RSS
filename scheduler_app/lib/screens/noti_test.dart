@@ -35,62 +35,67 @@ class NotificationUI extends StatelessWidget {
               itemCount: notificationList.length,
               itemBuilder: (context, index) {
                 final object = notificationList[index];
-                return Stack(
-                  children: [
-                        Column(
-                          children: [
-                            ListTile(
-                              leading: const Icon(
-                              Icons.warning_amber_rounded,
-                              size: 30.0,
-                              color: Colors.red,
+                return SizedBox(
+                  height:150.0,
+                  child: Stack(
+                      children: [
+                          Column(
+                            children: [
+                              Expanded(
+                                child: ListTile(
+                                  leading: const Icon(
+                                    Icons.warning_amber_rounded,
+                                    size: 60.0,
+                                    color: Colors.red,
+                                  ),
+                                  title: Text(object.time.customFormat()),
+                                  titleTextStyle: const TextStyle(
+                                    fontSize: 20.0,
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                  subtitle: Text(object.message),
+                                  subtitleTextStyle: const TextStyle(
+                                    fontSize: 16.0,
+                                  ),
+                                ),
                               ),
-                              title: Text(object.time.customFormat()),
-                              titleTextStyle: const TextStyle(
-                                fontSize: 20.0,
+                              Container(
+                                height: 1.2,
                                 color: Colors.black,
-                                fontWeight: FontWeight.bold,
                               ),
-                              subtitle: Text(object.message),
-                              subtitleTextStyle: const TextStyle(
-                                fontSize: 16.0,
-                              ),
-                            ),
-                            const Divider(
-                              height: 5.0,
-                              color: Colors.black,
-                            ),
-                          ],
-                    ),
-                Positioned(
-                  bottom: 8.0, // Adjust the bottom position as needed
-                  right: 8.0, // Adjust the right position as needed
-                  child: TextButton(
-                    onPressed: () {
-                    // Handle the "Read More" button click
-                    },
-
-                    style: ButtonStyle(
-                        backgroundColor: MaterialStateProperty.all<Color>(Colors.red.shade800),
-                        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                          RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(18.0),
-                              side: BorderSide(color: Colors.red),
-                          )
-                      )
-                    ),
-
-                    child: const Text(
-                      'Read more',
-                      style: TextStyle(
-                      color: Colors.white,
-                        //backgroundColor: Colors.red,
+                            ],
                       ),
-                    ),
+                  Positioned(
+                    bottom: 8.0, // Adjust the bottom position as needed
+                    right: 14.0, // Adjust the right position as needed
+                    child: TextButton(
+                      onPressed: () {
+                      // Handle the "Read More" button click
+                      },
 
+                      style: ButtonStyle(
+                          backgroundColor: MaterialStateProperty.all<Color>(Colors.red.shade800),
+                          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                            RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(18.0),
+                                side: BorderSide(color: Colors.red),
+                            )
+                        )
+                      ),
+
+                      child: const Text(
+                        'Read more',
+                        style: TextStyle(
+                        color: Colors.white,
+                          //backgroundColor: Colors.red,
+                        ),
+                      ),
+
+                    ),
+                  )
+                    ]
                   ),
-                )
-                  ]
                 );
               },
             ),
