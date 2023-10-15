@@ -3,7 +3,6 @@ import 'package:scheduler_app/entities/notification_entity.dart'
 as notification_entity;
 import 'package:scheduler_app/base_classes/set_up.dart';
 import 'package:scheduler_app/managers/notification_manager.dart';
-//import 'package:get_it/get_it.dart';
 import 'package:scheduler_app/base_classes/date_time_format.dart';
 
 class NotificationUI extends StatefulWidget {
@@ -17,14 +16,12 @@ class _NotificationUIState extends State<NotificationUI> {
   @override
   void initState() {
     super.initState();
-    // Initialize the notification list when the widget is created
-    notificationList = getIt<NotificationManager>().getNotificationHistory();
+    notificationList = getIt<NotificationManager>().getNotificationHistory().reversed.toList();
   }
 
   void updateNotificationList() {
-    // Call this function to update the notification list
     setState(() {
-      notificationList = getIt<NotificationManager>().getNotificationHistory();
+      notificationList = getIt<NotificationManager>().getNotificationHistory().reversed.toList();
     });
   }
 
@@ -40,15 +37,6 @@ class _NotificationUIState extends State<NotificationUI> {
         titleTextStyle: const TextStyle(
             color: Colors.black, fontSize: 40.0
         ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.delete),
-            onPressed: () {
-              getIt<NotificationManager>().clearNotifications(); // Clear notifications
-              updateNotificationList();
-            },
-          ),
-        ],
       ),
       body: ListView.builder(
         itemCount: notificationList.length,
@@ -60,7 +48,7 @@ class _NotificationUIState extends State<NotificationUI> {
 
           // Extract the displayed subtitle text
           final displayedSubtitle = isSubtitleLong
-              ? object.message.substring(0, maxSubtitleLength) + '...' // Truncate long subtitle
+              ? '${object.message.substring(0, maxSubtitleLength)}...'
               : object.message; // Display full subtitle
 
           return SizedBox(
@@ -113,43 +101,41 @@ class _NotificationUIState extends State<NotificationUI> {
                     ),
                   ),
                   Positioned(
-                    bottom: 8.0, // Adjust the bottom position as needed
-                    right: 14.0, // Adjust the right position as needed
+                    bottom: 8.0,
+                    right: 14.0,
                     child: TextButton(
                       onPressed: () {
-                        // Handle the "Read More" button click
                         showDialog(
                           context: context,
                           builder: (context) {
                             return AlertDialog(
-                              title: Text('Notification Details'),
+                              title: const Text('Notification Details'),
                               content: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   Text(
                                     'Time: ${object.time.customFormat()}',
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                       fontSize: 20.0,
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
-                                  SizedBox(height: 10.0),
+                                  const SizedBox(height: 10.0),
                                   Text(
                                     'Message: ${object.message}',
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                       fontSize: 16.0,
                                     ),
                                   ),
-                                  // Add more widgets to display additional information as needed
                                 ],
                               ),
                               actions: <Widget>[
                                 TextButton(
                                   onPressed: () {
-                                    Navigator.of(context).pop(); // Close the dialog
+                                    Navigator.of(context).pop();
                                   },
-                                  child: Text('Close'),
+                                  child: const Text('Close'),
                                 ),
                               ],
                             );
@@ -162,7 +148,7 @@ class _NotificationUIState extends State<NotificationUI> {
                           shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                               RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(18.0),
-                                side: BorderSide(color: Colors.red),
+                                side: const BorderSide(color: Colors.red),
                               )
                           )
                       ),
@@ -171,10 +157,8 @@ class _NotificationUIState extends State<NotificationUI> {
                         'Read more',
                         style: TextStyle(
                           color: Colors.white,
-                          //backgroundColor: Colors.red,
                         ),
                       ),
-
                     ),
                   )
                 ]
@@ -182,6 +166,42 @@ class _NotificationUIState extends State<NotificationUI> {
           );
         },
       ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            _showConfirmationDialog();
+          },
+          backgroundColor: Colors.red.shade800,
+          child: const Icon(Icons.delete),
+        ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+    );
+  }
+
+  void _showConfirmationDialog() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Confirm Deletion'),
+          content: const Text('Are you sure you want to delete the notification list?'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+              },
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                getIt<NotificationManager>().clearNotifications(); // Clear notifications
+                updateNotificationList();
+                Navigator.of(context).pop(); // Close the dialog
+              },
+              child: const Text('Confirm'),
+            ),
+          ],
+        );
+      },
     );
   }
 }

@@ -48,7 +48,13 @@ class NotificationManager {
     final File file = File(csvFilePath);
 
     try {
-      await file.writeAsString(const ListToCsvConverter().convert(csvData));
+      if (csvData.isEmpty) {
+        // Handle the case where the list is empty, e.g., create a default CSV structure
+        final defaultCsvData = [['Timestamp', 'Message']];
+        await file.writeAsString(const ListToCsvConverter().convert(defaultCsvData), mode: FileMode.write);
+      } else {
+        await file.writeAsString(const ListToCsvConverter().convert(csvData), mode: FileMode.write);
+      }
       print('CSV file updated successfully.');
     } catch (e) {
       print('Error updating CSV file: $e');
