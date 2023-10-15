@@ -12,9 +12,11 @@ class MapInputPage extends StatelessWidget {
         children: [
           // temporarily substitute values in for testing
           Expanded(
-              child: MapWidget(
-                  source: LatLng(1.302570, 103.834686),
-                  dest: LatLng(1.302570, 103.834686))),
+            child: MapWidget(
+              source: LatLng(1.320981, 103.84415),
+              dest: LatLng(1.31875833025, 103.846554958),
+            ),
+          ),
           const TextField(decoration: InputDecoration(labelText: 'Origin')),
           const TextField(
             decoration: InputDecoration(labelText: 'Destination'),
