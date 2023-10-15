@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
 import 'screens/screens_barrel.dart';
+import 'package:scheduler_app/base_classes/set_up.dart';
 
-void main() => runApp(MyApp());
+void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  instanceSetUp();
+  runApp(MyApp());
+}
 
 // class MyApp extends StatelessWidget {
 //   @override
@@ -24,7 +29,7 @@ enum AppTab {
   mapInput,
   routeDetails,
   selectedRoute,
-  NotificationHistory,
+  notificationHistory,
 }
 
 class MyApp extends StatefulWidget {
@@ -71,6 +76,10 @@ class _MyAppState extends State<MyApp> {
               icon: Icon(Icons.check_circle),
               label: 'Selected Route',
             ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.notifications_rounded),
+              label: 'Notifications History',
+            )
             // Add more items as needed
           ],
         ),
@@ -88,6 +97,8 @@ class _MyAppState extends State<MyApp> {
         return RouteDetailsPage(routeNumber: 1); // Placeholder
       case AppTab.selectedRoute:
         return SelectedRoutePage(routeNumber: 1); // Placeholder
+      case AppTab.notificationHistory:
+        return NotificationUI();
       default:
         return AuthenticationPage(); // Default page
     }

@@ -38,6 +38,10 @@ class NotificationManager {
         .map((notification) => [notification.time.toIso8601String(), notification.message])
         .toList();
 
+    final List<List<dynamic>> quotedCsvData = csvData.map((row) {
+      return [row[0], '"${row[1]}"'];
+    }).toList();
+
     final String csvFilePath = 'assets/NotificationList.csv';
     final File file = File(csvFilePath);
 
