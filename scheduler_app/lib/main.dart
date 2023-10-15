@@ -78,7 +78,7 @@ class _MyAppState extends State<MyApp> {
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.notifications_rounded),
-              label: 'Notifications History',
+              label: 'Notifications',
             )
             // Add more items as needed
           ],

@@ -5,15 +5,16 @@ import 'package:flutter/services.dart';
 import 'package:scheduler_app/entities/notification_entity.dart';
 import 'package:csv/csv.dart';
 import 'dart:io';
+import 'package:path_provider/path_provider.dart' as path_provider;
 import 'dart:convert' show utf8;
 
 class NotificationManager {
   List<Notification> _notifications = [];
+  static final NotificationManager _instance = NotificationManager._();
 
   NotificationManager._() {
     instantiateNotificationFile();
   }
-  static final NotificationManager _instance = NotificationManager._();
 
   factory NotificationManager.getInstance() {
     return _instance;
@@ -33,26 +34,30 @@ class NotificationManager {
     //_updateNotifications(newNotifications);
   }
 
-  void updateNotificationFile() {
+  Future<void> updateNotificationFile() async {
     final List<List<dynamic>> csvData = _notifications
-        .map((notification) => [notification.time.toIso8601String(), notification.message])
+        .map((notification) => [
+      notification.time.toIso8601String(),
+      '"${notification.message}"',
+    ])
         .toList();
 
-    final List<List<dynamic>> quotedCsvData = csvData.map((row) {
-      return [row[0], '"${row[1]}"'];
-    }).toList();
-
-    final String csvFilePath = 'assets/NotificationList.csv';
+    final appDocumentsDirectory = await path_provider.getApplicationDocumentsDirectory();
+    final csvFilePath = '${appDocumentsDirectory.path}/NotificationList.csv';
     final File file = File(csvFilePath);
 
     try {
-      file.writeAsString(const ListToCsvConverter().convert(csvData));
+      await file.writeAsString(const ListToCsvConverter().convert(csvData));
       print('CSV file updated successfully.');
     } catch (e) {
       print('Error updating CSV file: $e');
     }
   }
 
+  void clearNotifications(){
+    _notifications.clear();
+    updateNotificationFile();
+  }
   List<Notification> getNotificationHistory() {
     return _notifications;
   }
