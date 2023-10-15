@@ -71,23 +71,22 @@ class RouteManager {
   }
 
 // Get estimated waiting time
-  Future<double> getEstimatedWaitingTime(
-      String busStopCode, String serviceNo) async {
-    try {
-      final estimatedTime = await LtaApi.getEstimatedWaitingTime(
-        busStopCode: busStopCode,
-        serviceNo: serviceNo,
-      );
-      return estimatedTime.toDouble();
-    } catch (e) {
-      debugPrint(e.toString());
-      return 0.0;
-    }
-  }
+  // Future<double> getEstimatedWaitingTime(String busStopCode, String serviceNo) async {
+  //   try {
+  //     final estimatedTime = await LtaApi.getEstimatedWaitingTime(
+  //       busStopCode: busStopCode,
+  //       serviceNo: serviceNo,
+  //     );
+  //     return estimatedTime.toDouble();
+  //   } catch (e) {
+  //     debugPrint(e.toString());
+  //     return 0.0;
+  //   }
+  // }
 
 // create Route Object and add to dictionary
   void createRoute(Map<String, dynamic> itinerary, int index) {
-    r.Route newRoute = r.Route();
+    r.Route newRoute = r.Route(itinerary);
     updateRouteDict(index, newRoute);
   }
 }
