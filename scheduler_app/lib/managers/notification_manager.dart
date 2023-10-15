@@ -22,7 +22,7 @@ class NotificationManager {
 
   void instantiateNotificationFile() async {
     final input = await rootBundle.loadString("assets/NotificationList.csv");
-    final fields =  const CsvToListConverter().convert(input);
+    final fields = const CsvToListConverter().convert(input);
 
     List<Notification> newNotifications = fields.map((field) {
       return Notification(
@@ -37,12 +37,13 @@ class NotificationManager {
   Future<void> updateNotificationFile() async {
     final List<List<dynamic>> csvData = _notifications
         .map((notification) => [
-      notification.time.toIso8601String(),
-      '"${notification.message}"',
-    ])
+              notification.time.toIso8601String(),
+              '"${notification.message}"',
+            ])
         .toList();
 
-    final appDocumentsDirectory = await path_provider.getApplicationDocumentsDirectory();
+    final appDocumentsDirectory =
+        await path_provider.getApplicationDocumentsDirectory();
     final csvFilePath = '${appDocumentsDirectory.path}/NotificationList.csv';
     final File file = File(csvFilePath);
 
@@ -54,10 +55,11 @@ class NotificationManager {
     }
   }
 
-  void clearNotifications(){
+  void clearNotifications() {
     _notifications.clear();
     updateNotificationFile();
   }
+
   List<Notification> getNotificationHistory() {
     return _notifications;
   }

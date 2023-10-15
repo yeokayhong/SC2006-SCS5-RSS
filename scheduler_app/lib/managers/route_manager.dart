@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:scheduler_app/APIs/onemap_api.dart';
 import 'package:scheduler_app/entities/route_entity.dart' as r;
 
+// RouteManager contains a class of methods for retrieving information on the retrieved Route Objects
 class RouteManager {
   final Map<int, r.Route> _routeDict = {};
 

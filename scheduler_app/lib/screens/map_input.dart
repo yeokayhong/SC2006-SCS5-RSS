@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'screens_barrel.dart';
 import 'package:scheduler_app/widgets/map.dart';
+import 'package:scheduler_app/entities/route_entity.dart' as r;
 
 class MapInputPage extends StatelessWidget {
   @override
@@ -15,6 +16,7 @@ class MapInputPage extends StatelessWidget {
             child: MapWidget(
               source: LatLng(1.320981, 103.84415),
               dest: LatLng(1.31875833025, 103.846554958),
+              route: r.Route(),
             ),
           ),
           const TextField(decoration: InputDecoration(labelText: 'Origin')),
