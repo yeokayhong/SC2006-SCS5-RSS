@@ -25,6 +25,16 @@ class _NotificationUIState extends State<NotificationUI> {
     });
   }
 
+  Future<void> _refreshNotifications() async {
+    // You can call an API or update your data source here
+    // For example, you can call getIt<NotificationManager>().getNotificationHistory()
+
+    // Simulate a delay to show the refresh indicator
+    await Future.delayed(const Duration(seconds: 1));
+
+    updateNotificationList();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -38,133 +48,136 @@ class _NotificationUIState extends State<NotificationUI> {
             color: Colors.black, fontSize: 40.0
         ),
       ),
-      body: ListView.builder(
-        itemCount: notificationList.length,
-        itemBuilder: (context, index) {
-          final object = notificationList[index];
-          const maxSubtitleLength = 100;
+      body: RefreshIndicator(
+        onRefresh: _refreshNotifications,
+        child: ListView.builder(
+          itemCount: notificationList.length,
+          itemBuilder: (context, index) {
+            final object = notificationList[index];
+            const maxSubtitleLength = 100;
 
-          final isSubtitleLong = object.message.length > maxSubtitleLength;
+            final isSubtitleLong = object.message.length > maxSubtitleLength;
 
-          // Extract the displayed subtitle text
-          final displayedSubtitle = isSubtitleLong
-              ? '${object.message.substring(0, maxSubtitleLength)}...'
-              : object.message; // Display full subtitle
+            // Extract the displayed subtitle text
+            final displayedSubtitle = isSubtitleLong
+                ? '${object.message.substring(0, maxSubtitleLength)}...'
+                : object.message; // Display full subtitle
 
-          return SizedBox(
-            height:150.0,
-            child: Stack(
-                children: [
-                  Column(
-                    children: [
-                      Expanded(
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Expanded(
-                              flex: 1,
-                              child: SizedBox(
-                                width: 40.0,
-                              ),
-                            ),
-                            Expanded(
-                              flex: 3,
-                              child: ListTile(
-                                title: Text(object.time.customFormat()),
-                                titleTextStyle: const TextStyle(
-                                  fontSize: 20.0,
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                                subtitle: Text(displayedSubtitle),
-                                subtitleTextStyle: const TextStyle(
-                                  fontSize: 16.0,
+            return SizedBox(
+              height:150.0,
+              child: Stack(
+                  children: [
+                    Column(
+                      children: [
+                        Expanded(
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Expanded(
+                                flex: 1,
+                                child: SizedBox(
+                                  width: 40.0,
                                 ),
                               ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Container(
-                        height: 1.2,
-                        color: Colors.black,
-                      ),
-                    ],
-                  ),
-                  const Positioned(
-                    left: 20.0,
-                    top :40.0,
-                    child: Icon(
-                      Icons.warning_amber_rounded,
-                      size: 60.0,
-                      color: Colors.red,
-                    ),
-                  ),
-                  Positioned(
-                    bottom: 8.0,
-                    right: 14.0,
-                    child: TextButton(
-                      onPressed: () {
-                        showDialog(
-                          context: context,
-                          builder: (context) {
-                            return AlertDialog(
-                              title: const Text('Notification Details'),
-                              content: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Text(
-                                    'Time: ${object.time.customFormat()}',
-                                    style: const TextStyle(
-                                      fontSize: 20.0,
-                                      fontWeight: FontWeight.bold,
-                                    ),
+                              Expanded(
+                                flex: 3,
+                                child: ListTile(
+                                  title: Text(object.time.customFormat()),
+                                  titleTextStyle: const TextStyle(
+                                    fontSize: 20.0,
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.bold,
                                   ),
-                                  const SizedBox(height: 10.0),
-                                  Text(
-                                    'Message: ${object.message}',
-                                    style: const TextStyle(
-                                      fontSize: 16.0,
+                                  subtitle: Text(displayedSubtitle),
+                                  subtitleTextStyle: const TextStyle(
+                                    fontSize: 16.0,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Container(
+                          height: 1.2,
+                          color: Colors.black,
+                        ),
+                      ],
+                    ),
+                    const Positioned(
+                      left: 20.0,
+                      top :40.0,
+                      child: Icon(
+                        Icons.warning_amber_rounded,
+                        size: 60.0,
+                        color: Colors.red,
+                      ),
+                    ),
+                    Positioned(
+                      bottom: 8.0,
+                      right: 14.0,
+                      child: TextButton(
+                        onPressed: () {
+                          showDialog(
+                            context: context,
+                            builder: (context) {
+                              return AlertDialog(
+                                title: const Text('Notification Details'),
+                                content: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Text(
+                                      'Time: ${object.time.customFormat()}',
+                                      style: const TextStyle(
+                                        fontSize: 20.0,
+                                        fontWeight: FontWeight.bold,
+                                      ),
                                     ),
+                                    const SizedBox(height: 10.0),
+                                    Text(
+                                      'Message: ${object.message}',
+                                      style: const TextStyle(
+                                        fontSize: 16.0,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                actions: <Widget>[
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                    child: const Text('Close'),
                                   ),
                                 ],
-                              ),
-                              actions: <Widget>[
-                                TextButton(
-                                  onPressed: () {
-                                    Navigator.of(context).pop();
-                                  },
-                                  child: const Text('Close'),
-                                ),
-                              ],
-                            );
-                          },
-                        );
-                      },
+                              );
+                            },
+                          );
+                        },
 
-                      style: ButtonStyle(
-                          backgroundColor: MaterialStateProperty.all<Color>(Colors.red.shade800),
-                          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                              RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(18.0),
-                                side: const BorderSide(color: Colors.red),
-                              )
-                          )
-                      ),
+                        style: ButtonStyle(
+                            backgroundColor: MaterialStateProperty.all<Color>(Colors.red.shade800),
+                            shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(18.0),
+                                  side: const BorderSide(color: Colors.red),
+                                )
+                            )
+                        ),
 
-                      child: const Text(
-                        'Read more',
-                        style: TextStyle(
-                          color: Colors.white,
+                        child: const Text(
+                          'Read more',
+                          style: TextStyle(
+                            color: Colors.white,
+                          ),
                         ),
                       ),
-                    ),
-                  )
-                ]
-            ),
-          );
-        },
+                    )
+                  ]
+              ),
+            );
+          },
+        ),
       ),
         floatingActionButton: FloatingActionButton(
           onPressed: () {
