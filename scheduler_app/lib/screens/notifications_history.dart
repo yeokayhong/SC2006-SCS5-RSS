@@ -38,7 +38,17 @@ class _NotificationUIState extends State<NotificationUI> {
         elevation: 0.0,
         backgroundColor: Colors.grey[200],
         titleTextStyle: const TextStyle(
-            color: Colors.black, fontSize: 40.0),
+            color: Colors.black, fontSize: 40.0
+        ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.delete),
+            onPressed: () {
+              getIt<NotificationManager>().clearNotifications(); // Clear notifications
+              updateNotificationList();
+            },
+          ),
+        ],
       ),
       body: ListView.builder(
         itemCount: notificationList.length,
