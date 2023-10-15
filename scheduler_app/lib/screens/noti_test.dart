@@ -42,22 +42,31 @@ class NotificationUI extends StatelessWidget {
                           Column(
                             children: [
                               Expanded(
-                                child: ListTile(
-                                  leading: const Icon(
-                                    Icons.warning_amber_rounded,
-                                    size: 60.0,
-                                    color: Colors.red,
-                                  ),
-                                  title: Text(object.time.customFormat()),
-                                  titleTextStyle: const TextStyle(
-                                    fontSize: 20.0,
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                  subtitle: Text(object.message),
-                                  subtitleTextStyle: const TextStyle(
-                                    fontSize: 16.0,
-                                  ),
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const Expanded(
+                                      flex: 1,
+                                      child: SizedBox(
+                                        width: 40.0,
+                                      ),
+                                    ),
+                                    Expanded(
+                                      flex: 3,
+                                      child: ListTile(
+                                        title: Text(object.time.customFormat()),
+                                        titleTextStyle: const TextStyle(
+                                          fontSize: 20.0,
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                        subtitle: Text(object.message),
+                                        subtitleTextStyle: const TextStyle(
+                                          fontSize: 16.0,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
                               Container(
@@ -66,6 +75,15 @@ class NotificationUI extends StatelessWidget {
                               ),
                             ],
                       ),
+                  const Positioned(
+                    left: 20.0,
+                    top :40.0,
+                    child: Icon(
+                        Icons.warning_amber_rounded,
+                        size: 60.0,
+                        color: Colors.red,
+                    ),
+                  ),
                   Positioned(
                     bottom: 8.0, // Adjust the bottom position as needed
                     right: 14.0, // Adjust the right position as needed
