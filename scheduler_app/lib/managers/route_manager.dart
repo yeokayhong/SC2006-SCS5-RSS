@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:scheduler_app/APIs/onemap_api.dart';
 import 'package:scheduler_app/entities/route_entity.dart' as r;
-import 'package:scheduler_app/APIs/lta_api.dart';
 
 class RouteManager {
   final Map<int, r.Route> _routeDict = {};
@@ -86,7 +85,7 @@ class RouteManager {
 
 // create Route Object and add to dictionary
   void createRoute(Map<String, dynamic> itinerary, int index) {
-    r.Route newRoute = r.Route(itinerary);
+    r.Route newRoute = r.Route();
     updateRouteDict(index, newRoute);
   }
 }
