@@ -1,3 +1,4 @@
+import 'package:scheduler_app/entities/address.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'dart:convert';
@@ -22,7 +23,7 @@ class _AddressSearchWidgetState extends State<AddressSearchWidget> {
   TextEditingController _destination_controller = TextEditingController();
   FocusNode _origin_focus = FocusNode();
   FocusNode _destination_focus = FocusNode();
-  List<String> _addresses = [];
+  List<Address> _addresses = [];
   String _token = "";
   Timer? debounce;
 
@@ -50,7 +51,13 @@ class _AddressSearchWidgetState extends State<AddressSearchWidget> {
 
       final Map<String, dynamic> decoded_json = jsonDecode(response.body);
       final List<dynamic> data = decoded_json['results'];
-      List<String> query_results = data.map((item) => item["ADDRESS"].toString()).toList();
+      List<Address> query_results = data.map((item) => Address(
+        full_address: item['ADDRESS'],
+        building_name: item['BUILDING'],
+        postal_code: item['POSTAL'],
+        latitude: double.parse(item['LATITUDE']),
+        longitude: double.parse(item['LONGITUDE']))
+      ).toList();
 
       setState(() {
         _addresses = query_results;
@@ -132,17 +139,18 @@ class _AddressSearchWidgetState extends State<AddressSearchWidget> {
                 shrinkWrap: true,
                 itemCount: _addresses.length,
                 itemBuilder: (context, index) => ListTile(
-                  title: Text(_addresses[index]),
+                  title: Text(_addresses[index].building_name),
+                  subtitle: Text("0.0km | ${_addresses[index].street_address()} | ${_addresses[index].postal_code}"),
                   onTap: () {
                     // update the active text field with the selected address
                     if (_origin_focus.hasFocus) {
-                      _origin_controller.text = _addresses[index];
+                      _origin_controller.text = _addresses[index].street_address();
                       widget.onOriginChanged(_origin_controller.text);
                       _debounced_search_address(_destination_controller.text);
                       _origin_focus.unfocus();
                       _destination_focus.requestFocus();
                     } else if (_destination_focus.hasFocus) {
-                      _destination_controller.text = _addresses[index];
+                      _destination_controller.text = _addresses[index].street_address();
                       widget.onDestinationChanged(_destination_controller.text);
                       _destination_focus.unfocus();
                       setState(() {});
