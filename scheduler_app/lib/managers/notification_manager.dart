@@ -1,16 +1,16 @@
-//import 'package:scheduler_app/base_classes/notification_enum.dart';
-//import 'package:scheduler_app/entities/route_entity.dart';
-//import 'package:get_it/get_it.dart';
 import 'package:flutter/services.dart';
 import 'package:scheduler_app/entities/notification_entity.dart';
 import 'package:csv/csv.dart';
 import 'dart:io';
 import 'package:path_provider/path_provider.dart' as path_provider;
-import 'dart:convert' show utf8;
+import 'package:get_it/get_it.dart';
+import 'package:event_bus/event_bus.dart';
+import 'package:scheduler_app/entities/event_entity.dart';
 
 class NotificationManager {
   List<Notification> _notifications = [];
   static final NotificationManager _instance = NotificationManager._();
+  EventBus get eventBus => GetIt.instance<EventBus>();
 
   NotificationManager._() {
     instantiateNotificationFile();
@@ -36,7 +36,7 @@ class NotificationManager {
 
   Future<void> updateNotificationFile() async {
     final appDocumentsDirectory =
-        await path_provider.getApplicationDocumentsDirectory();
+    await path_provider.getApplicationDocumentsDirectory();
     final csvFilePath = '${appDocumentsDirectory.path}/NotificationList.csv';
     final File file = File(csvFilePath);
     if (_notifications.isEmpty) {
@@ -48,10 +48,11 @@ class NotificationManager {
           mode: FileMode.write);
     } else {
       final List<List<dynamic>> csvData = _notifications
-          .map((notification) => [
-                notification.time.toIso8601String(),
-                '"${notification.message}"',
-              ])
+          .map((notification) =>
+      [
+        notification.time.toIso8601String(),
+        '"${notification.message}"',
+      ])
           .toList();
       try {
         await file.writeAsString(const ListToCsvConverter().convert(csvData),
@@ -63,9 +64,9 @@ class NotificationManager {
     }
   }
 
-  void clearNotifications() {
+  Future<void> clearNotifications() async {
     _notifications.clear();
-    updateNotificationFile();
+    await updateNotificationFile();
   }
 
   List<Notification> getNotificationHistory() {
@@ -73,25 +74,35 @@ class NotificationManager {
   }
 
   // ignore: unused_element
-  void _updateNotifications(List<Notification> newNotifications) {
+  Future<void> updateNotifications(List<Notification> newNotifications) async {
     for (Notification newNotification in newNotifications) {
       _addNotification(newNotification);
     }
-
-    for (Notification notification in _notifications) {
-      if (newNotifications.contains(notification)) continue;
-      _removeNotification(notification);
-    }
-    updateNotificationFile();
-  }
-
-  void _removeNotification(Notification toRemove) {
-    _notifications.remove(toRemove);
+    await updateNotificationFile();
   }
 
   void _addNotification(Notification toUpdate) {
     _notifications.add(toUpdate);
   }
 
-  void sendUpdatedNotificationList() {}
+  void checkForUpdates(){
+    List<Notification> tempNotification = [];
+    List<ConcernEvent> accumulatedEvents = [];
+    eventBus.on<ConcernEvent>().listen((event) {
+      if (event.type == "added") {
+        accumulatedEvents.add(event);
+      }
+    });
+    for (ConcernEvent event in accumulatedEvents){
+      tempNotification.add(receiveNotifications(event));
+    }
+    updateNotifications(tempNotification);
+  }
+
+  Notification receiveNotifications(ConcernEvent event){
+      return Notification(
+        message: event.concern.message,
+        time: DateTime.now(),
+      );
+  }
 }

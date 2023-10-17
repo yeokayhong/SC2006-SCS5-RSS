@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:scheduler_app/entities/event_entity.dart';
 import 'package:scheduler_app/entities/notification_entity.dart'
 as notification_entity;
 import 'package:scheduler_app/base_classes/set_up.dart';
@@ -21,17 +22,14 @@ class _NotificationUIState extends State<NotificationUI> {
 
   void updateNotificationList() {
     setState(() {
+      getIt<NotificationManager>().checkForUpdates();
       notificationList = getIt<NotificationManager>().getNotificationHistory().reversed.toList();
     });
   }
 
   Future<void> _refreshNotifications() async {
     // You can call an API or update your data source here
-    // For example, you can call getIt<NotificationManager>().getNotificationHistory()
-
-    // Simulate a delay to show the refresh indicator
     await Future.delayed(const Duration(seconds: 1));
-
     updateNotificationList();
   }
 
