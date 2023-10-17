@@ -36,26 +36,26 @@ class NotificationManager {
 
   Future<void> updateNotificationFile() async {
     final appDocumentsDirectory =
-    await path_provider.getApplicationDocumentsDirectory();
+        await path_provider.getApplicationDocumentsDirectory();
     final csvFilePath = '${appDocumentsDirectory.path}/NotificationList.csv';
     final File file = File(csvFilePath);
     if (_notifications.isEmpty) {
-      final defaultCsvData = [['Timestamp', 'Message']];
+      final defaultCsvData = [
+        ['Timestamp', 'Message']
+      ];
       await file.writeAsString(
           const ListToCsvConverter().convert(defaultCsvData),
           mode: FileMode.write);
-    }
-    else {
+    } else {
       final List<List<dynamic>> csvData = _notifications
-          .map((notification) =>
-      [
-        notification.time.toIso8601String(),
-        '"${notification.message}"',
-      ])
+          .map((notification) => [
+                notification.time.toIso8601String(),
+                '"${notification.message}"',
+              ])
           .toList();
       try {
-        await file.writeAsString(
-            const ListToCsvConverter().convert(csvData), mode: FileMode.write);
+        await file.writeAsString(const ListToCsvConverter().convert(csvData),
+            mode: FileMode.write);
         print('CSV file updated successfully.');
       } catch (e) {
         print('Error updating CSV file: $e');

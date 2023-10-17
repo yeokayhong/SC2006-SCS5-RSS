@@ -19,7 +19,7 @@ class SelectedRoutePage extends StatelessWidget {
               style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
           // You can fetch the path details for the route using the routeNumber
           SizedBox(height: 20),
-          Text('Estimated time remaining: 30 mins'),
+          Text('Estimated time remaining: min(s)'),
           // This can be dynamic based on the route selected
         ],
       ),
