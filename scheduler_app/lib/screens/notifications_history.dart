@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:scheduler_app/entities/event_entity.dart';
+import 'package:scheduler_app/base_classes/set_up.dart';
+import 'package:scheduler_app/base_classes/date_time_format.dart';
+
+import 'package:scheduler_app/managers/notification_manager.dart';
 import 'package:scheduler_app/entities/notification_entity.dart'
 as notification_entity;
-import 'package:scheduler_app/base_classes/set_up.dart';
-import 'package:scheduler_app/managers/notification_manager.dart';
-import 'package:scheduler_app/base_classes/date_time_format.dart';
+
+import 'package:scheduler_app/entities/event_entity.dart';
+import 'package:event_bus/event_bus.dart';
+import 'package:get_it/get_it.dart';
 
 class NotificationUI extends StatefulWidget {
   @override
@@ -13,6 +17,7 @@ class NotificationUI extends StatefulWidget {
 
 class _NotificationUIState extends State<NotificationUI> {
   List<notification_entity.Notification> notificationList = [];
+  EventBus get eventBus => GetIt.instance<EventBus>();
 
   @override
   void initState() {
@@ -22,7 +27,11 @@ class _NotificationUIState extends State<NotificationUI> {
 
   void updateNotificationList() {
     setState(() {
-      getIt<NotificationManager>().checkForUpdates();
+      eventBus.on<ConcernEvent>().listen((event) {
+        if (event.type == "added") {
+          getIt<NotificationManager>().createNotifications(event);
+        }
+      });
       notificationList = getIt<NotificationManager>().getNotificationHistory().reversed.toList();
     });
   }
