@@ -12,8 +12,6 @@ import 'package:scheduler_app/entities/event_entity.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 class NotificationManager {
-  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-  FlutterLocalNotificationsPlugin();
   List<Notification> _notifications = [];
   static final NotificationManager _instance = NotificationManager._();
   EventBus get eventBus => GetIt.instance<EventBus>();
@@ -83,41 +81,33 @@ class NotificationManager {
     await updateNotificationFile();
   }
 
-
   void createNotifications(ConcernEvent event){
       _addNotification(Notification(
         message: event.concern.message,
         time: DateTime.now(),
       ));
+      updateNotificationFile();
   }
 
-  // Future<void> displayScheduledNotification(String title, String body, DateTime scheduledTime) async {
-  //   final AndroidNotificationDetails androidPlatformChannelSpecifics =
-  //   AndroidNotificationDetails(
-  //     'your channel id',
-  //     'your channel name',
-  //     channelDescription: 'your channel description',
-  //     importance: Importance.max,
-  //     priority: Priority.high,
-  //   );
-  //   final NotificationDetails platformChannelSpecifics =
-  //   NotificationDetails(android: androidPlatformChannelSpecifics);
+  static Future initializeNotifications(FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin) async{
+    var androidInitialize = new AndroidInitializationSettings('mipmap/ic_launcher');
+    var initializationSettings = new InitializationSettings(android: androidInitialize);
+    await flutterLocalNotificationsPlugin.initialize(initializationSettings);
+  }
 
-  //   await flutterLocalNotificationsPlugin.zonedSchedule(
-  //     0, // Notification ID (use a unique ID for each notification)
-  //     title, // Notification title
-  //     body, // Notification content
-  //     TZDateTime.from(scheduledTime, tz.local), // Convert scheduledTime to a time-zone specific DateTime
-  //     platformChannelSpecifics,
-  //     androidAllowWhileIdle: true,
-  //     uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime, // Use absoluteTime for precise scheduling
-  //     payload: 'item x', // Optional payload
-  //   );
-  // }
+  void displayRealTimeNotification({var id = 0, required String title, required String body,
+    var payload, required FlutterLocalNotificationsPlugin fln
+  }) async {
+    AndroidNotificationDetails androidPlatformChannelSpecifics =
+    new AndroidNotificationDetails(
+      'you can name it whatever1',
+      'channelName',
 
-  // eventBus.on<NotificationEvent>().listen((event) {
-  // // Handle the event and display a real-time pop-up notification
-  // displayRealTimeNotification("New Notification", event.message);
-  // });
-
+      playSound: true,
+      importance: Importance.max,
+      priority: Priority.high,
+    );
+    var not = NotificationDetails(android: androidPlatformChannelSpecifics);
+    await fln.show(0, title, body, not);
+  }
 }

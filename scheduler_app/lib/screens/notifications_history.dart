@@ -9,6 +9,7 @@ as notification_entity;
 import 'package:scheduler_app/entities/event_entity.dart';
 import 'package:event_bus/event_bus.dart';
 import 'package:get_it/get_it.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 class NotificationUI extends StatefulWidget {
   @override
@@ -18,20 +19,19 @@ class NotificationUI extends StatefulWidget {
 class _NotificationUIState extends State<NotificationUI> {
   List<notification_entity.Notification> notificationList = [];
   EventBus get eventBus => GetIt.instance<EventBus>();
+  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+  FlutterLocalNotificationsPlugin();
 
   @override
   void initState() {
     super.initState();
+    _setupEventListeners();
+    NotificationManager.initializeNotifications(flutterLocalNotificationsPlugin);
     notificationList = getIt<NotificationManager>().getNotificationHistory().reversed.toList();
   }
 
   void updateNotificationList() {
     setState(() {
-      eventBus.on<ConcernEvent>().listen((event) {
-        if (event.type == "added") {
-          getIt<NotificationManager>().createNotifications(event);
-        }
-      });
       notificationList = getIt<NotificationManager>().getNotificationHistory().reversed.toList();
     });
   }
@@ -223,5 +223,14 @@ class _NotificationUIState extends State<NotificationUI> {
         );
       },
     );
+  }
+
+  void _setupEventListeners() {
+    eventBus.on<ConcernEvent>().listen((event) {
+      // Handle the event and display a real-time pop-up notification
+      getIt<NotificationManager>().displayRealTimeNotification(title: 'title', body: event.concern.message, fln: flutterLocalNotificationsPlugin);
+      getIt<NotificationManager>().createNotifications(event);
+      _refreshNotifications();
+    });
   }
 }
