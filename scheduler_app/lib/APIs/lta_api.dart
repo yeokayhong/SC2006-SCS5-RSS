@@ -7,7 +7,7 @@ class LtaApi {
   static const baseUrl = "http://datamall2.mytransport.sg/ltaodataservice";
 
   // Your API Key for LTA API
-  static const apiKey = "ny0Dap+1QuuKciIleI3KIg==";
+  static const apiKey = "";
 
   // ...
 
