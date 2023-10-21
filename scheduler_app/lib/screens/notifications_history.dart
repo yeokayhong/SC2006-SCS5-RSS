@@ -11,6 +11,8 @@ import 'package:event_bus/event_bus.dart';
 import 'package:get_it/get_it.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
+import '../managers/concern_manager.dart';
+
 class NotificationUI extends StatefulWidget {
   @override
   State<NotificationUI> createState() => _NotificationUIState();
@@ -18,9 +20,10 @@ class NotificationUI extends StatefulWidget {
 
 class _NotificationUIState extends State<NotificationUI> {
   List<notification_entity.Notification> notificationList = [];
-  EventBus get eventBus => GetIt.instance<EventBus>();
+  //EventBus get eventBus => GetIt.instance<EventBus>();
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
   FlutterLocalNotificationsPlugin();
+  final eventBus = EventBus();
 
   @override
   void initState() {
@@ -28,18 +31,6 @@ class _NotificationUIState extends State<NotificationUI> {
     _setupEventListeners();
     NotificationManager.initializeNotifications(flutterLocalNotificationsPlugin);
     notificationList = getIt<NotificationManager>().getNotificationHistory().reversed.toList();
-  }
-
-  void updateNotificationList() {
-    setState(() {
-      notificationList = getIt<NotificationManager>().getNotificationHistory().reversed.toList();
-    });
-  }
-
-  Future<void> _refreshNotifications() async {
-    // You can call an API or update your data source here
-    await Future.delayed(const Duration(seconds: 1));
-    updateNotificationList();
   }
 
   @override
@@ -188,7 +179,8 @@ class _NotificationUIState extends State<NotificationUI> {
       ),
         floatingActionButton: FloatingActionButton(
           onPressed: () {
-            _showConfirmationDialog();
+            //_showConfirmationDialog();
+            eventBus.fire(ConcernEvent("added", Concern(type: "type",service: "service",affectedStops: ['Apple', 'Banana', 'Cherry', 'Date'], time: DateTime.now(),message: 'test')));
           },
           backgroundColor: Colors.red.shade800,
           child: const Icon(Icons.delete),
@@ -227,10 +219,22 @@ class _NotificationUIState extends State<NotificationUI> {
 
   void _setupEventListeners() {
     eventBus.on<ConcernEvent>().listen((event) {
-      // Handle the event and display a real-time pop-up notification
       getIt<NotificationManager>().displayRealTimeNotification(title: 'title', body: event.concern.message, fln: flutterLocalNotificationsPlugin);
       getIt<NotificationManager>().createNotifications(event);
-      _refreshNotifications();
+      updateNotificationList();
     });
   }
+
+  void updateNotificationList() {
+    setState(() {
+      notificationList = getIt<NotificationManager>().getNotificationHistory().reversed.toList();
+    });
+  }
+
+  Future<void> _refreshNotifications() async {
+    // You can call an API or update your data source here
+    await Future.delayed(const Duration(seconds: 1));
+    updateNotificationList();
+  }
+
 }

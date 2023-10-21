@@ -90,13 +90,13 @@ class NotificationManager {
   }
 
   static Future initializeNotifications(FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin) async{
-    var androidInitialize = new AndroidInitializationSettings('mipmap/ic_launcher');
-    var initializationSettings = new InitializationSettings(android: androidInitialize);
+    var androidInitialize = AndroidInitializationSettings('mipmap/ic_launcher');
+    var initializationSettings = InitializationSettings(android: androidInitialize);
     await flutterLocalNotificationsPlugin.initialize(initializationSettings);
   }
 
   void displayRealTimeNotification({var id = 0, required String title, required String body,
-    var payload, required FlutterLocalNotificationsPlugin fln
+    required FlutterLocalNotificationsPlugin fln
   }) async {
     AndroidNotificationDetails androidPlatformChannelSpecifics =
     new AndroidNotificationDetails(
