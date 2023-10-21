@@ -33,7 +33,8 @@ Depending on your project requirements, you may need to install additional depen
 {
     "lta_api_key": "YOUR_LTA_API_KEY",
     "oneMapEmail": "YOUR_ONEMAP_EMAIL",
-    "oneMapPassword": "YOUR_ONEMAP_PASSWORD"
+    "oneMapPassword": "YOUR_ONEMAP_PASSWORD",
+    "accessToken":"OPTIONAL",
 }
 ```
 

@@ -1,43 +1,37 @@
+import 'package:event_bus/event_bus.dart';
 import 'package:flutter/material.dart';
-import 'package:scheduler_app/APIs/onemap_api.dart';
+import 'package:get_it/get_it.dart';
+import 'package:intl/intl.dart';
+import 'package:scheduler_app/APIs/routes_api.dart';
 import 'package:scheduler_app/entities/route_entity.dart' as r;
 
 // RouteManager contains a class of methods for retrieving information on the retrieved Route Objects
 class RouteManager {
   final Map<int, r.Route> _routeDict = {};
+  EventBus get eventBus => GetIt.instance<EventBus>();
 
-  // request parameters filled up by UI
-  final Map<String, String> _requestParameters = {};
-
-  // Method to update the map using the setter
-  void updateRequestParameters(String key, String value) {
-    _requestParameters[key] = value;
+  RouteManager() {
+    eventBus.on<RouteEvent>().listen((event) {
+      fetchData(event.origin, event.dest, event.routeType);
+      debugPrint(
+          "Received: ${event.origin}, ${event.dest}, ${event.routeType}");
+    });
   }
 
-  void updateRouteDict(int key, r.Route value) {
-    _routeDict[key] = value;
-  }
-
-  void getRoutesFromOneMap() async {
-    final String accessToken;
-    final Map<String, dynamic> response;
-    try {
-      accessToken = await OneMapAPI.fetchToken();
-      response = await OneMapAPI.getRoutesPT(
-          accessToken: accessToken,
-          start: _requestParameters["start"] ?? "",
-          end: _requestParameters["end"] ?? "",
-          routeType: _requestParameters["routeType"] ?? "pt",
-          date: _requestParameters["date"] ?? "",
-          time: _requestParameters["time"] ?? "",
-          mode: _requestParameters["mode"] ?? "TRANSIT,BUS,RAIL",
-          maxWalkDistance: _requestParameters["maxWalkDistance"] ?? "1000",
-          numItineraries: _requestParameters["numItineraries"] ?? "1");
-    } catch (e) {
-      debugPrint(e.toString());
-    }
-
-    // TODO: Loop through response, and create each Route object using the createRoute method.
+  // for debugging purposes
+  Future<void> fetchData(String start, String end, String routeType) async {
+    // get Current Date and Time
+    DateTime now = DateTime.now();
+    String formattedDate = DateFormat('MM-dd-yyyy').format(now);
+    String formattedTime = DateFormat('HH:mm:ss').format(now);
+    debugPrint("Date: ${formattedDate}Time: $formattedTime");
+    Map<String, dynamic> json = await RoutesAPI.getRoutesPT(
+        start: start,
+        end: end,
+        routeType: routeType,
+        date: formattedDate,
+        time: formattedTime);
+    debugPrint("Data Retrieved: $json");
   }
 
   r.Route? getRouteDetail(String routeId) {
@@ -70,23 +64,17 @@ class RouteManager {
     throw 'Route not found!';
   }
 
-// Get estimated waiting time
-  // Future<double> getEstimatedWaitingTime(String busStopCode, String serviceNo) async {
-  //   try {
-  //     final estimatedTime = await LtaApi.getEstimatedWaitingTime(
-  //       busStopCode: busStopCode,
-  //       serviceNo: serviceNo,
-  //     );
-  //     return estimatedTime.toDouble();
-  //   } catch (e) {
-  //     debugPrint(e.toString());
-  //     return 0.0;
-  //   }
-  // }
-
 // create Route Object and add to dictionary
   void createRoute(Map<String, dynamic> itinerary, int index) {
     r.Route newRoute = r.Route();
-    updateRouteDict(index, newRoute);
+    // updateRouteDict(index, newRoute);
   }
+}
+
+class RouteEvent {
+  final String origin;
+  final String dest;
+  final String routeType;
+
+  RouteEvent(this.origin, this.dest, this.routeType);
 }

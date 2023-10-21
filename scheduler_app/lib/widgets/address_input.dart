@@ -42,7 +42,8 @@ class _AddressSearchWidgetState extends State<AddressSearchWidget> {
   void _searchAddress(String query) async {
     try {
       final response = await http.get(
-        Uri.parse('https://developers.onemap.sg/commonapi/search?searchVal=$query&returnGeom=Y&getAddrDetails=Y&pageNum=1'),
+        Uri.parse(
+            'https://developers.onemap.sg/commonapi/search?searchVal=$query&returnGeom=Y&getAddrDetails=Y&pageNum=1'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
           'Authorization': 'Bearer $_token',
@@ -51,13 +52,14 @@ class _AddressSearchWidgetState extends State<AddressSearchWidget> {
 
       final Map<String, dynamic> decoded_json = jsonDecode(response.body);
       final List<dynamic> data = decoded_json['results'];
-      List<Address> query_results = data.map((item) => Address(
-        full_address: item['ADDRESS'],
-        building_name: item['BUILDING'],
-        postal_code: item['POSTAL'],
-        latitude: double.parse(item['LATITUDE']),
-        longitude: double.parse(item['LONGITUDE']))
-      ).toList();
+      List<Address> query_results = data
+          .map((item) => Address(
+              full_address: item['ADDRESS'],
+              building_name: item['BUILDING'],
+              postal_code: item['POSTAL'],
+              latitude: double.parse(item['LATITUDE']),
+              longitude: double.parse(item['LONGITUDE'])))
+          .toList();
 
       setState(() {
         _addresses = query_results;
@@ -87,7 +89,9 @@ class _AddressSearchWidgetState extends State<AddressSearchWidget> {
 
     Map<String, dynamic> data = jsonDecode(response.body);
 
-    setState(() {_token = data["accessToken"];});
+    setState(() {
+      _token = data["accessToken"];
+    });
   }
 
   @override
@@ -115,42 +119,41 @@ class _AddressSearchWidgetState extends State<AddressSearchWidget> {
           focusNode: _origin_focus,
           onTap: () => _debounced_search_address(_origin_controller.text),
           onChanged: (value) => _debounced_search_address(value),
-          decoration: InputDecoration(
-            labelText: 'Origin'
-          ),
+          decoration: InputDecoration(labelText: 'Origin'),
         ),
         TextField(
           controller: _destination_controller,
           focusNode: _destination_focus,
           onTap: () => _debounced_search_address(_destination_controller.text),
           onChanged: (value) => _debounced_search_address(value),
-          decoration: InputDecoration(
-            labelText: 'Destination'
-          ),
+          decoration: InputDecoration(labelText: 'Destination'),
         ),
         Offstage(
           offstage: !(_origin_focus.hasFocus || _destination_focus.hasFocus),
-          child: 
-            SingleChildScrollView(
+          child: SingleChildScrollView(
             child: BottomSheet(
               onClosing: () {},
               builder: (context) => ListView.builder(
-                keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+                keyboardDismissBehavior:
+                    ScrollViewKeyboardDismissBehavior.onDrag,
                 shrinkWrap: true,
                 itemCount: _addresses.length,
                 itemBuilder: (context, index) => ListTile(
                   title: Text(_addresses[index].building_name),
-                  subtitle: Text("0.0km | ${_addresses[index].street_address()} | ${_addresses[index].postal_code}"),
+                  subtitle: Text(
+                      "0.0km | ${_addresses[index].street_address()} | ${_addresses[index].postal_code}"),
                   onTap: () {
                     // update the active text field with the selected address
                     if (_origin_focus.hasFocus) {
-                      _origin_controller.text = _addresses[index].street_address();
+                      _origin_controller.text =
+                          _addresses[index].street_address();
                       widget.onOriginChanged(_origin_controller.text);
                       _debounced_search_address(_destination_controller.text);
                       _origin_focus.unfocus();
                       _destination_focus.requestFocus();
                     } else if (_destination_focus.hasFocus) {
-                      _destination_controller.text = _addresses[index].street_address();
+                      _destination_controller.text =
+                          _addresses[index].street_address();
                       widget.onDestinationChanged(_destination_controller.text);
                       _destination_focus.unfocus();
                       setState(() {});
@@ -161,7 +164,6 @@ class _AddressSearchWidgetState extends State<AddressSearchWidget> {
             ),
           ),
         )
-        
       ],
     );
   }

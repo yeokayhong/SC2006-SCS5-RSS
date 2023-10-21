@@ -54,7 +54,7 @@ def get_routes_pt():
         access_token, start, end, routeType, date, time, mode, maxWalkDistance, numItineraries
     )
 
-    return jsonify(routes)
+    return routes
 
 # Assuming that the code for adding potential concern is defined
 @app.route('/add_potential_concern', methods=['POST'])

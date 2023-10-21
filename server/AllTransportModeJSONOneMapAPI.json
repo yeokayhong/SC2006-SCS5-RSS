@@ -1,0 +1,883 @@
+{
+    "debugOutput": {
+        "pathCalculationTime": 53,
+        "pathTimes": [
+            26,
+            22,
+            5
+        ],
+        "precalculationTime": 71,
+        "renderingTime": 1,
+        "timedOut": false,
+        "totalTime": 125
+    },
+    "elevationMetadata": {
+        "ellipsoidToGeoidDifference": 7.3773084368695,
+        "geoidElevation": false
+    },
+    "plan": {
+        "date": 1697844900000,
+        "from": {
+            "lat": 1.320981,
+            "lon": 103.84415,
+            "name": "Origin",
+            "orig": "",
+            "vertexType": "NORMAL"
+        },
+        "itineraries": [
+            {
+                "duration": 1027,
+                "elevationGained": 0,
+                "elevationLost": 0,
+                "endTime": 1697846172000,
+                "fare": "0.99",
+                "legs": [
+                    {
+                        "agencyTimeZoneOffset": 28800000,
+                        "arrivalDelay": 0,
+                        "departureDelay": 0,
+                        "distance": 449.171,
+                        "duration": 400,
+                        "endTime": 1697845545000,
+                        "from": {
+                            "departure": 1697845145000,
+                            "lat": 1.320981,
+                            "lon": 103.84415,
+                            "name": "Origin",
+                            "orig": "",
+                            "vertexType": "NORMAL"
+                        },
+                        "interlineWithPreviousLeg": false,
+                        "intermediateStops": [],
+                        "legGeometry": {
+                            "length": 46,
+                            "points": "s~`GmayxRa@a@VSDE@CFEHIPOBC@CA?@A\\Y@CnAmAHIBCDEDEDCDCJGFCJCFAHALAh@El@GXCXCF?TCAGC[?EB?JCPA@A@A?AEa@UaAAMB?"
+                        },
+                        "mode": "WALK",
+                        "numIntermediateStops": 1,
+                        "pathway": false,
+                        "realTime": false,
+                        "rentedBike": false,
+                        "route": "",
+                        "startTime": 1697845145000,
+                        "steps": [
+                            {
+                                "absoluteDirection": "NORTHEAST",
+                                "area": false,
+                                "bogusName": false,
+                                "distance": 449.171,
+                                "elevation": [],
+                                "lat": 1.3209015602086,
+                                "lon": 103.84423137491,
+                                "relativeDirection": "DEPART",
+                                "stayOn": false,
+                                "streetName": "path"
+                            }
+                        ],
+                        "to": {
+                            "arrival": 1697845545000,
+                            "departure": 1697845546000,
+                            "lat": 1.31875833025,
+                            "lon": 103.846554958,
+                            "name": "REVIVAL CTR CH",
+                            "stopCode": "50111",
+                            "stopId": "FERRY:50111",
+                            "stopIndex": 36,
+                            "stopSequence": 38,
+                            "vertexType": "TRANSIT"
+                        },
+                        "transitLeg": false
+                    },
+                    {
+                        "agencyId": "SBST",
+                        "agencyName": "SBS Transit",
+                        "agencyTimeZoneOffset": 28800000,
+                        "agencyUrl": "http://www.sbstransit.com.sg/",
+                        "arrivalDelay": 0,
+                        "departureDelay": 0,
+                        "distance": 2172.9761154541,
+                        "duration": 538,
+                        "endTime": 1697846084000,
+                        "from": {
+                            "arrival": 1697845545000,
+                            "departure": 1697845546000,
+                            "lat": 1.31875833025,
+                            "lon": 103.846554958,
+                            "name": "REVIVAL CTR CH",
+                            "stopCode": "50111",
+                            "stopId": "FERRY:50111",
+                            "stopIndex": 36,
+                            "stopSequence": 38,
+                            "vertexType": "TRANSIT"
+                        },
+                        "interlineWithPreviousLeg": false,
+                        "intermediateStops": [
+                            {
+                                "arrival": 1697845589000,
+                                "departure": 1697845619000,
+                                "lat": 1.31930304159,
+                                "lon": 103.849339232,
+                                "name": "NATL SKIN CTR",
+                                "stopCode": "50121",
+                                "stopId": "FERRY:50121",
+                                "stopIndex": 37,
+                                "stopSequence": 39,
+                                "vertexType": "TRANSIT"
+                            },
+                            {
+                                "arrival": 1697845691000,
+                                "departure": 1697845721000,
+                                "lat": 1.3209576472,
+                                "lon": 103.852834896,
+                                "name": "OPP BLK 104",
+                                "stopCode": "50229",
+                                "stopId": "FERRY:50229",
+                                "stopIndex": 38,
+                                "stopSequence": 40,
+                                "vertexType": "TRANSIT"
+                            },
+                            {
+                                "arrival": 1697845807000,
+                                "departure": 1697845837000,
+                                "lat": 1.32337986006,
+                                "lon": 103.856261453,
+                                "name": "BLK 82",
+                                "stopCode": "50991",
+                                "stopId": "FERRY:50991",
+                                "stopIndex": 39,
+                                "stopSequence": 41,
+                                "vertexType": "TRANSIT"
+                            },
+                            {
+                                "arrival": 1697845909000,
+                                "departure": 1697845939000,
+                                "lat": 1.32544666698,
+                                "lon": 103.859381111,
+                                "name": "BLK 29",
+                                "stopCode": "52129",
+                                "stopId": "FERRY:52129",
+                                "stopIndex": 40,
+                                "stopSequence": 42,
+                                "vertexType": "TRANSIT"
+                            },
+                            {
+                                "arrival": 1697845982000,
+                                "departure": 1697846012000,
+                                "lat": 1.32697666701,
+                                "lon": 103.858171111,
+                                "name": "BET BLKS 33/34",
+                                "stopCode": "52109",
+                                "stopId": "FERRY:52109",
+                                "stopIndex": 41,
+                                "stopSequence": 43,
+                                "vertexType": "TRANSIT"
+                            }
+                        ],
+                        "legGeometry": {
+                            "length": 80,
+                            "points": "ep`GcpyxRKaACQWuBMaASkBGc@Iy@OuAOuAKmAKgAAs@Ae@?M?O@y@BqCEq@O{@Qm@KSGKcCNM?{BL??kBJQ@qCN{@NKiFE}BAg@?I?C@OVk@H_@?e@CKEWOYQQoB}AwAgA{BgBsB{AiAw@GKAODQj@s@j@s@@_A{AyA??m@k@SGS?[Nq@|@o@x@qAhBi@t@??_AnAOTaARJl@[hDE`@OjB@JHJpClAd@\\^Mh@w@jAv@"
+                        },
+                        "mode": "BUS",
+                        "numIntermediateStops": 6,
+                        "pathway": false,
+                        "realTime": false,
+                        "rentedBike": false,
+                        "route": "124",
+                        "routeId": "124",
+                        "routeLongName": "SBST BUS 124",
+                        "routeShortName": "124",
+                        "routeType": 3,
+                        "serviceDate": "20231021",
+                        "startTime": 1697845546000,
+                        "steps": [],
+                        "to": {
+                            "arrival": 1697846084000,
+                            "departure": 1697846085000,
+                            "lat": 1.32603759751,
+                            "lon": 103.855372113,
+                            "name": "ST. MICHAEL'S TER",
+                            "stopCode": "52499",
+                            "stopId": "FERRY:52499",
+                            "stopIndex": 42,
+                            "stopSequence": 44,
+                            "vertexType": "TRANSIT"
+                        },
+                        "transitLeg": true,
+                        "tripId": "124-2-1004"
+                    },
+                    {
+                        "agencyTimeZoneOffset": 28800000,
+                        "arrivalDelay": 0,
+                        "departureDelay": 0,
+                        "distance": 104.455,
+                        "duration": 87,
+                        "endTime": 1697846172000,
+                        "from": {
+                            "arrival": 1697846084000,
+                            "departure": 1697846085000,
+                            "lat": 1.32603759751,
+                            "lon": 103.855372113,
+                            "name": "ST. MICHAEL'S TER",
+                            "stopCode": "52499",
+                            "stopId": "FERRY:52499",
+                            "stopIndex": 42,
+                            "stopSequence": 44,
+                            "vertexType": "TRANSIT"
+                        },
+                        "interlineWithPreviousLeg": false,
+                        "intermediateStops": [],
+                        "legGeometry": {
+                            "length": 9,
+                            "points": "u~aGag{xRBEYQk@a@GE[IOKMIMI"
+                        },
+                        "mode": "WALK",
+                        "numIntermediateStops": 1,
+                        "pathway": false,
+                        "realTime": false,
+                        "rentedBike": false,
+                        "route": "",
+                        "startTime": 1697846085000,
+                        "steps": [
+                            {
+                                "absoluteDirection": "NORTHEAST",
+                                "area": false,
+                                "bogusName": true,
+                                "distance": 104.455,
+                                "elevation": [],
+                                "lat": 1.3260375973322,
+                                "lon": 103.85537211286,
+                                "relativeDirection": "DEPART",
+                                "stayOn": false,
+                                "streetName": "path"
+                            }
+                        ],
+                        "to": {
+                            "arrival": 1697846172000,
+                            "lat": 1.326762,
+                            "lon": 103.8559,
+                            "name": "Destination",
+                            "orig": "",
+                            "vertexType": "NORMAL"
+                        },
+                        "transitLeg": false
+                    }
+                ],
+                "startTime": 1697845145000,
+                "tooSloped": false,
+                "transfers": 0,
+                "transitTime": 538,
+                "waitingTime": 2,
+                "walkDistance": 553.93201502772,
+                "walkLimitExceeded": false,
+                "walkTime": 487
+            },
+            {
+                "duration": 1075,
+                "elevationGained": 0,
+                "elevationLost": 0,
+                "endTime": 1697846532000,
+                "fare": "1.09",
+                "legs": [
+                    {
+                        "agencyTimeZoneOffset": 28800000,
+                        "arrivalDelay": 0,
+                        "departureDelay": 0,
+                        "distance": 69.596,
+                        "duration": 62,
+                        "endTime": 1697845519000,
+                        "from": {
+                            "departure": 1697845457000,
+                            "lat": 1.320981,
+                            "lon": 103.84415,
+                            "name": "Origin",
+                            "orig": "",
+                            "vertexType": "NORMAL"
+                        },
+                        "interlineWithPreviousLeg": false,
+                        "intermediateStops": [],
+                        "legGeometry": {
+                            "length": 4,
+                            "points": "s~`GmayxRp@p@DE`@`@"
+                        },
+                        "mode": "WALK",
+                        "numIntermediateStops": 1,
+                        "pathway": false,
+                        "realTime": false,
+                        "rentedBike": false,
+                        "route": "",
+                        "startTime": 1697845457000,
+                        "steps": [
+                            {
+                                "absoluteDirection": "SOUTHWEST",
+                                "area": false,
+                                "bogusName": false,
+                                "distance": 69.596,
+                                "elevation": [],
+                                "lat": 1.3209015602086,
+                                "lon": 103.84423137491,
+                                "relativeDirection": "DEPART",
+                                "stayOn": false,
+                                "streetName": "path"
+                            }
+                        ],
+                        "to": {
+                            "arrival": 1697845519000,
+                            "departure": 1697845520000,
+                            "lat": 1.320458355099,
+                            "lon": 103.8438426451,
+                            "name": "path",
+                            "vertexType": "NORMAL"
+                        },
+                        "transitLeg": false
+                    },
+                    {
+                        "agencyTimeZoneOffset": 28800000,
+                        "arrivalDelay": 0,
+                        "departureDelay": 0,
+                        "distance": 191.58661818624,
+                        "duration": 10,
+                        "endTime": 1697845530000,
+                        "from": {
+                            "arrival": 1697845519000,
+                            "departure": 1697845520000,
+                            "lat": 1.3204583552,
+                            "lon": 103.843842645,
+                            "name": "NOVENA MRT STATION",
+                            "vertexType": "NORMAL"
+                        },
+                        "interlineWithPreviousLeg": false,
+                        "intermediateStops": [],
+                        "legGeometry": {
+                            "length": 2,
+                            "points": "y{`G__yxR_C~H"
+                        },
+                        "mode": "WALK",
+                        "numIntermediateStops": 1,
+                        "pathway": false,
+                        "realTime": false,
+                        "rentedBike": false,
+                        "route": "",
+                        "startTime": 1697845520000,
+                        "steps": [
+                            {
+                                "absoluteDirection": "WEST",
+                                "area": false,
+                                "bogusName": false,
+                                "distance": 191.58661818624,
+                                "elevation": [],
+                                "lat": 1.3204583552,
+                                "lon": 103.843842645,
+                                "relativeDirection": "RIGHT",
+                                "stayOn": false,
+                                "streetName": "Transfer"
+                            }
+                        ],
+                        "to": {
+                            "arrival": 1697845530000,
+                            "departure": 1697845531000,
+                            "lat": 1.32109968376,
+                            "lon": 103.842243049,
+                            "name": "BEF NOVENA STN EXIT B",
+                            "vertexType": "NORMAL"
+                        },
+                        "transitLeg": false
+                    },
+                    {
+                        "agencyTimeZoneOffset": 28800000,
+                        "arrivalDelay": 0,
+                        "departureDelay": 0,
+                        "distance": 121.489,
+                        "duration": 124,
+                        "endTime": 1697845655000,
+                        "from": {
+                            "arrival": 1697845530000,
+                            "departure": 1697845531000,
+                            "lat": 1.3210996839237,
+                            "lon": 103.84224304889,
+                            "name": "path",
+                            "vertexType": "NORMAL"
+                        },
+                        "interlineWithPreviousLeg": false,
+                        "intermediateStops": [],
+                        "legGeometry": {
+                            "length": 18,
+                            "points": "y_aG_uxxR?@KDCBYRIHSHKEEB@@EBd@r@?ADAB?BBHECG"
+                        },
+                        "mode": "WALK",
+                        "numIntermediateStops": 1,
+                        "pathway": false,
+                        "realTime": false,
+                        "rentedBike": false,
+                        "route": "",
+                        "startTime": 1697845531000,
+                        "steps": [
+                            {
+                                "absoluteDirection": "SOUTHWEST",
+                                "area": false,
+                                "bogusName": true,
+                                "distance": 121.489,
+                                "elevation": [],
+                                "lat": 1.3210996839237,
+                                "lon": 103.84224304889,
+                                "relativeDirection": "LEFT",
+                                "stayOn": false,
+                                "streetName": "path"
+                            }
+                        ],
+                        "to": {
+                            "arrival": 1697845655000,
+                            "departure": 1697845656000,
+                            "lat": 1.32127307293,
+                            "lon": 103.841771724,
+                            "name": "OPP NOVENA CH",
+                            "stopCode": "50031",
+                            "stopId": "FERRY:50031",
+                            "stopIndex": 37,
+                            "stopSequence": 38,
+                            "vertexType": "TRANSIT"
+                        },
+                        "transitLeg": false
+                    },
+                    {
+                        "agencyId": "SBST",
+                        "agencyName": "SBS Transit",
+                        "agencyTimeZoneOffset": 28800000,
+                        "agencyUrl": "http://www.sbstransit.com.sg/",
+                        "arrivalDelay": 0,
+                        "departureDelay": 0,
+                        "distance": 3166.6220861628,
+                        "duration": 788,
+                        "endTime": 1697846444000,
+                        "from": {
+                            "arrival": 1697845655000,
+                            "departure": 1697845656000,
+                            "lat": 1.32127307293,
+                            "lon": 103.841771724,
+                            "name": "OPP NOVENA CH",
+                            "stopCode": "50031",
+                            "stopId": "FERRY:50031",
+                            "stopIndex": 37,
+                            "stopSequence": 38,
+                            "vertexType": "TRANSIT"
+                        },
+                        "interlineWithPreviousLeg": false,
+                        "intermediateStops": [
+                            {
+                                "arrival": 1697845699000,
+                                "departure": 1697845729000,
+                                "lat": 1.32362333325,
+                                "lon": 103.841615457,
+                                "name": "NOVENA LODGE",
+                                "stopCode": "50041",
+                                "stopId": "FERRY:50041",
+                                "stopIndex": 38,
+                                "stopSequence": 39,
+                                "vertexType": "TRANSIT"
+                            },
+                            {
+                                "arrival": 1697845801000,
+                                "departure": 1697845831000,
+                                "lat": 1.32665700619,
+                                "lon": 103.843660097,
+                                "name": "BEF JLN DUSUN",
+                                "stopCode": "50161",
+                                "stopId": "FERRY:50161",
+                                "stopIndex": 39,
+                                "stopSequence": 40,
+                                "vertexType": "TRANSIT"
+                            },
+                            {
+                                "arrival": 1697845874000,
+                                "departure": 1697845904000,
+                                "lat": 1.32663388888,
+                                "lon": 103.84641,
+                                "name": "ZHONGSHAN MALL",
+                                "stopCode": "50171",
+                                "stopId": "FERRY:50171",
+                                "stopIndex": 40,
+                                "stopSequence": 41,
+                                "vertexType": "TRANSIT"
+                            },
+                            {
+                                "arrival": 1697845948000,
+                                "departure": 1697845978000,
+                                "lat": 1.32604500003,
+                                "lon": 103.849023889,
+                                "name": "BEF BALESTIER PLAZA",
+                                "stopCode": "50191",
+                                "stopId": "FERRY:50191",
+                                "stopIndex": 41,
+                                "stopSequence": 42,
+                                "vertexType": "TRANSIT"
+                            },
+                            {
+                                "arrival": 1697846006000,
+                                "departure": 1697846036000,
+                                "lat": 1.32490472201,
+                                "lon": 103.850965556,
+                                "name": "SHAW PLAZA",
+                                "stopCode": "50201",
+                                "stopId": "FERRY:50201",
+                                "stopIndex": 42,
+                                "stopSequence": 43,
+                                "vertexType": "TRANSIT"
+                            },
+                            {
+                                "arrival": 1697846080000,
+                                "departure": 1697846110000,
+                                "lat": 1.32306968689,
+                                "lon": 103.852567051,
+                                "name": "OPP BALESTIER PT",
+                                "stopCode": "50211",
+                                "stopId": "FERRY:50211",
+                                "stopIndex": 43,
+                                "stopSequence": 44,
+                                "vertexType": "TRANSIT"
+                            },
+                            {
+                                "arrival": 1697846167000,
+                                "departure": 1697846197000,
+                                "lat": 1.32337986006,
+                                "lon": 103.856261453,
+                                "name": "BLK 82",
+                                "stopCode": "50991",
+                                "stopId": "FERRY:50991",
+                                "stopIndex": 44,
+                                "stopSequence": 45,
+                                "vertexType": "TRANSIT"
+                            },
+                            {
+                                "arrival": 1697846269000,
+                                "departure": 1697846299000,
+                                "lat": 1.32544666698,
+                                "lon": 103.859381111,
+                                "name": "BLK 29",
+                                "stopCode": "52129",
+                                "stopId": "FERRY:52129",
+                                "stopIndex": 45,
+                                "stopSequence": 46,
+                                "vertexType": "TRANSIT"
+                            },
+                            {
+                                "arrival": 1697846342000,
+                                "departure": 1697846372000,
+                                "lat": 1.32697666701,
+                                "lon": 103.858171111,
+                                "name": "BET BLKS 33/34",
+                                "stopCode": "52109",
+                                "stopId": "FERRY:52109",
+                                "stopIndex": 46,
+                                "stopSequence": 47,
+                                "vertexType": "TRANSIT"
+                            }
+                        ],
+                        "legGeometry": {
+                            "length": 140,
+                            "points": "kaaG_sxxR@?JEHC@ADC`@U??HEPKf@_@h@c@|BcBr@g@JIp@e@v@s@`@Qv@_@tA]HAr@Q??fAUDAsWfNWJc@LuA^Y@K?k@?uAI_@CEAu@GMA_@CC?iBOcAKKAeBKeAC_ABm@De@Je@JI@AMGcBK_CEqACk@??Eu@?SEuAFaABWH_B?aACiCEaC?Y?q@@q@x@aC~@}B??Tk@n@cBL_@JWNa@Tc@`@e@d@i@V[??fAoAl@m@TQ|@q@POVU^YnAaA??DEbAi@KiFE}BAg@?I?C@OVk@H_@?e@CKEWOYQQoB}AwAgA{BgBsB{AiAw@GKAODQj@s@j@s@@_A{AyA??m@k@SGS?[Nq@|@o@x@qAhBi@t@??_AnAOTaARJl@[hDE`@OjB@JHJpClAd@\\^Mh@w@jAv@"
+                        },
+                        "mode": "BUS",
+                        "numIntermediateStops": 10,
+                        "pathway": false,
+                        "realTime": false,
+                        "rentedBike": false,
+                        "route": "131",
+                        "routeId": "131",
+                        "routeLongName": "SBST BUS 131",
+                        "routeShortName": "131",
+                        "routeType": 3,
+                        "serviceDate": "20231021",
+                        "startTime": 1697845656000,
+                        "steps": [],
+                        "to": {
+                            "arrival": 1697846444000,
+                            "departure": 1697846445000,
+                            "lat": 1.32603759751,
+                            "lon": 103.855372113,
+                            "name": "ST. MICHAEL'S TER",
+                            "stopCode": "52499",
+                            "stopId": "FERRY:52499",
+                            "stopIndex": 47,
+                            "stopSequence": 48,
+                            "vertexType": "TRANSIT"
+                        },
+                        "transitLeg": true,
+                        "tripId": "131-2-1003"
+                    },
+                    {
+                        "agencyTimeZoneOffset": 28800000,
+                        "arrivalDelay": 0,
+                        "departureDelay": 0,
+                        "distance": 104.455,
+                        "duration": 87,
+                        "endTime": 1697846532000,
+                        "from": {
+                            "arrival": 1697846444000,
+                            "departure": 1697846445000,
+                            "lat": 1.32603759751,
+                            "lon": 103.855372113,
+                            "name": "ST. MICHAEL'S TER",
+                            "stopCode": "52499",
+                            "stopId": "FERRY:52499",
+                            "stopIndex": 47,
+                            "stopSequence": 48,
+                            "vertexType": "TRANSIT"
+                        },
+                        "interlineWithPreviousLeg": false,
+                        "intermediateStops": [],
+                        "legGeometry": {
+                            "length": 9,
+                            "points": "u~aGag{xRBEYQk@a@GE[IOKMIMI"
+                        },
+                        "mode": "WALK",
+                        "numIntermediateStops": 1,
+                        "pathway": false,
+                        "realTime": false,
+                        "rentedBike": false,
+                        "route": "",
+                        "startTime": 1697846445000,
+                        "steps": [
+                            {
+                                "absoluteDirection": "NORTHEAST",
+                                "area": false,
+                                "bogusName": true,
+                                "distance": 104.455,
+                                "elevation": [],
+                                "lat": 1.3260375973322,
+                                "lon": 103.85537211286,
+                                "relativeDirection": "DEPART",
+                                "stayOn": false,
+                                "streetName": "path"
+                            }
+                        ],
+                        "to": {
+                            "arrival": 1697846532000,
+                            "lat": 1.326762,
+                            "lon": 103.8559,
+                            "name": "Destination",
+                            "orig": "",
+                            "vertexType": "NORMAL"
+                        },
+                        "transitLeg": false
+                    }
+                ],
+                "startTime": 1697845457000,
+                "tooSloped": false,
+                "transfers": 0,
+                "transitTime": 788,
+                "waitingTime": 4,
+                "walkDistance": 295.82533833666,
+                "walkLimitExceeded": false,
+                "walkTime": 283
+            },
+            {
+                "duration": 1513,
+                "elevationGained": 0,
+                "elevationLost": 0,
+                "endTime": 1697846499000,
+                "fare": "0.49",
+                "legs": [
+                    {
+                        "agencyTimeZoneOffset": 28800000,
+                        "arrivalDelay": 0,
+                        "departureDelay": 0,
+                        "distance": 69.596,
+                        "duration": 62,
+                        "endTime": 1697845048000,
+                        "from": {
+                            "departure": 1697844986000,
+                            "lat": 1.320981,
+                            "lon": 103.84415,
+                            "name": "Origin",
+                            "orig": "",
+                            "vertexType": "NORMAL"
+                        },
+                        "interlineWithPreviousLeg": false,
+                        "intermediateStops": [],
+                        "legGeometry": {
+                            "length": 4,
+                            "points": "s~`GmayxRp@p@DE`@`@"
+                        },
+                        "mode": "WALK",
+                        "numIntermediateStops": 1,
+                        "pathway": false,
+                        "realTime": false,
+                        "rentedBike": false,
+                        "route": "",
+                        "startTime": 1697844986000,
+                        "steps": [
+                            {
+                                "absoluteDirection": "SOUTHWEST",
+                                "area": false,
+                                "bogusName": false,
+                                "distance": 69.596,
+                                "elevation": [],
+                                "lat": 1.3209015602086,
+                                "lon": 103.84423137491,
+                                "relativeDirection": "DEPART",
+                                "stayOn": false,
+                                "streetName": "path"
+                            }
+                        ],
+                        "to": {
+                            "arrival": 1697845048000,
+                            "departure": 1697845049000,
+                            "lat": 1.3204583552,
+                            "lon": 103.843842645,
+                            "name": "NOVENA MRT STATION",
+                            "stopCode": "NS20",
+                            "stopId": "FERRY:NS20",
+                            "stopIndex": 8,
+                            "stopSequence": 9,
+                            "vertexType": "TRANSIT"
+                        },
+                        "transitLeg": false
+                    },
+                    {
+                        "agencyId": "SMRT",
+                        "agencyName": "SMRT Corporation",
+                        "agencyTimeZoneOffset": 28800000,
+                        "agencyUrl": "http://www.smrt.com.sg/",
+                        "arrivalDelay": 0,
+                        "departureDelay": 0,
+                        "distance": 1398.3141065108,
+                        "duration": 117,
+                        "endTime": 1697845166000,
+                        "from": {
+                            "arrival": 1697845048000,
+                            "departure": 1697845049000,
+                            "lat": 1.3204583552,
+                            "lon": 103.843842645,
+                            "name": "NOVENA MRT STATION",
+                            "stopCode": "NS20",
+                            "stopId": "FERRY:NS20",
+                            "stopIndex": 8,
+                            "stopSequence": 9,
+                            "vertexType": "TRANSIT"
+                        },
+                        "interlineWithPreviousLeg": false,
+                        "intermediateStops": [],
+                        "legGeometry": {
+                            "length": 65,
+                            "points": "c|`Gu~xxRCCgFoEk@e@WSMK[U]U]SMI]SOIOG]Q_@QOGOGa@OOG_@Ma@Ma@KOEc@KOEc@Ia@Ic@Ga@GWC]EuEa@u@Gc@GOCi@I[Gc@Ga@Ka@Is@QiD}@a@Ka@Ic@IUE]EQCQAQAQAQAQAQ?Q?Q@Q?Q@Q@Q@Q@Q@QBc@DmEl@"
+                        },
+                        "mode": "SUBWAY",
+                        "numIntermediateStops": 1,
+                        "pathway": false,
+                        "realTime": false,
+                        "rentedBike": false,
+                        "route": "NS",
+                        "routeId": "NS",
+                        "routeLongName": "NORTH SOUTH LINE",
+                        "routeShortName": "NS",
+                        "routeType": 1,
+                        "serviceDate": "20231021",
+                        "startTime": 1697845049000,
+                        "steps": [],
+                        "to": {
+                            "arrival": 1697845166000,
+                            "departure": 1697845167000,
+                            "lat": 1.33246287522,
+                            "lon": 103.84758934,
+                            "name": "TOA PAYOH MRT STATION",
+                            "stopCode": "NS19",
+                            "stopId": "FERRY:NS19",
+                            "stopIndex": 9,
+                            "stopSequence": 10,
+                            "vertexType": "TRANSIT"
+                        },
+                        "transitLeg": true,
+                        "tripId": "NS-1-1033"
+                    },
+                    {
+                        "agencyTimeZoneOffset": 28800000,
+                        "arrivalDelay": 0,
+                        "departureDelay": 0,
+                        "distance": 1546.488,
+                        "duration": 1332,
+                        "endTime": 1697846499000,
+                        "from": {
+                            "arrival": 1697845166000,
+                            "departure": 1697845167000,
+                            "lat": 1.33246287522,
+                            "lon": 103.84758934,
+                            "name": "TOA PAYOH MRT STATION",
+                            "stopCode": "NS19",
+                            "stopId": "FERRY:NS19",
+                            "stopIndex": 9,
+                            "stopSequence": 10,
+                            "vertexType": "TRANSIT"
+                        },
+                        "interlineWithPreviousLeg": false,
+                        "intermediateStops": [],
+                        "legGeometry": {
+                            "length": 147,
+                            "points": "{fcGkvyxRXb@`C]LCXC??n@IXE?A?AHGDCBCBEFEFGJQBC@EHMDGFI@EFG@ADC?CCKGe@E[?AAMCMCMGg@AEp@IJCBALGDCDE@G?E?KL?F@H?F?H@D@F@BADCB@L??KzAFAt@`ADTCL[DWB@AC@GFGHMXLFOXq@Vo@JS@GLWN_@LYN]FOBG?ADKP_@HSBGHSFM??DKHQJWRg@LYFMDMFM@EBE@EJSL]LWFQJSL]DKJUPa@JUFOHQDOJSBIBCDKHMDKDGNMNWAAAAQMCCMICBAAYWQOGGJOKK[UQOGG?G?ET[QOCCFI??l@y@OKMIMI"
+                        },
+                        "mode": "WALK",
+                        "numIntermediateStops": 1,
+                        "pathway": false,
+                        "realTime": false,
+                        "rentedBike": false,
+                        "route": "",
+                        "startTime": 1697845167000,
+                        "steps": [
+                            {
+                                "absoluteDirection": "SOUTHWEST",
+                                "area": false,
+                                "bogusName": true,
+                                "distance": 1546.488,
+                                "elevation": [],
+                                "lat": 1.3324628757592,
+                                "lon": 103.84758933964,
+                                "relativeDirection": "DEPART",
+                                "stayOn": false,
+                                "streetName": "path"
+                            }
+                        ],
+                        "to": {
+                            "arrival": 1697846499000,
+                            "lat": 1.326762,
+                            "lon": 103.8559,
+                            "name": "Destination",
+                            "orig": "",
+                            "vertexType": "NORMAL"
+                        },
+                        "transitLeg": false
+                    }
+                ],
+                "startTime": 1697844986000,
+                "tooSloped": false,
+                "transfers": 0,
+                "transitTime": 117,
+                "waitingTime": 2,
+                "walkDistance": 1616.89377441,
+                "walkLimitExceeded": false,
+                "walkTime": 1394
+            }
+        ],
+        "to": {
+            "lat": 1.326762,
+            "lon": 103.8559,
+            "name": "Destination",
+            "orig": "",
+            "vertexType": "NORMAL"
+        }
+    },
+    "requestParameters": {
+        "arriveBy": "false",
+        "date": "10-21-2023",
+        "fromPlace": "1.320981,103.844150",
+        "maxTransfers": "3",
+        "maxWalkDistance": "1000",
+        "mode": "TRANSIT,WALK",
+        "numItineraries": "3",
+        "otherThanPreferredRoutesPenalty": "0",
+        "preferredRoutes": "1__CC,1__DT,1__EW,1__NE,1__NS,1__PE,1__PW,1__SE,1__SS,1__SW,1__CG,1__BP",
+        "showIntermediateStops": "true",
+        "time": "7:35am",
+        "toPlace": "1.326762,103.8559",
+        "transferPenalty": "7200",
+        "waitAtBeginningFactor": "0.5",
+        "walkReluctance": "2"
+    }
+}

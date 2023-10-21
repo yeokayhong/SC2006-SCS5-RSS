@@ -39,7 +39,7 @@ class NotificationManager {
 
   Future<void> updateNotificationFile() async {
     final appDocumentsDirectory =
-    await path_provider.getApplicationDocumentsDirectory();
+        await path_provider.getApplicationDocumentsDirectory();
     final csvFilePath = '${appDocumentsDirectory.path}/NotificationList.csv';
     final File file = File(csvFilePath);
     if (_notifications.isEmpty) {
@@ -51,11 +51,10 @@ class NotificationManager {
           mode: FileMode.write);
     } else {
       final List<List<dynamic>> csvData = _notifications
-          .map((notification) =>
-      [
-        notification.time.toIso8601String(),
-        '"${notification.message}"',
-      ])
+          .map((notification) => [
+                notification.time.toIso8601String(),
+                '"${notification.message}"',
+              ])
           .toList();
       try {
         await file.writeAsString(const ListToCsvConverter().convert(csvData),
@@ -81,28 +80,31 @@ class NotificationManager {
     await updateNotificationFile();
   }
 
-  void createNotifications(ConcernEvent event){
-      _addNotification(Notification(
-        message: event.concern.message,
-        time: DateTime.now(),
-      ));
-      updateNotificationFile();
+  void createNotifications(ConcernEvent event) {
+    _addNotification(Notification(
+      message: event.concern.message,
+      time: DateTime.now(),
+    ));
+    updateNotificationFile();
   }
 
-  static Future initializeNotifications(FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin) async{
+  static Future initializeNotifications(
+      FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin) async {
     var androidInitialize = AndroidInitializationSettings('mipmap/ic_launcher');
-    var initializationSettings = InitializationSettings(android: androidInitialize);
+    var initializationSettings =
+        InitializationSettings(android: androidInitialize);
     await flutterLocalNotificationsPlugin.initialize(initializationSettings);
   }
 
-  void displayRealTimeNotification({var id = 0, required String title, required String body,
-    required FlutterLocalNotificationsPlugin fln
-  }) async {
+  void displayRealTimeNotification(
+      {var id = 0,
+      required String title,
+      required String body,
+      required FlutterLocalNotificationsPlugin fln}) async {
     AndroidNotificationDetails androidPlatformChannelSpecifics =
-    new AndroidNotificationDetails(
+        new AndroidNotificationDetails(
       'you can name it whatever1',
       'channelName',
-
       playSound: true,
       importance: Importance.max,
       priority: Priority.high,

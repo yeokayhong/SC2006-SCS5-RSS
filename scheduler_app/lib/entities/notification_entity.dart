@@ -1,4 +1,3 @@
-
 class Notification {
   final String message;
   final DateTime time;

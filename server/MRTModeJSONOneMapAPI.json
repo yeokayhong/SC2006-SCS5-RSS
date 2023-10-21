@@ -1,0 +1,309 @@
+{
+    "debugOutput": {
+        "pathCalculationTime": 156,
+        "pathTimes": [
+            11,
+            16,
+            16,
+            16,
+            16,
+            17,
+            16,
+            16,
+            16,
+            16
+        ],
+        "precalculationTime": 90,
+        "renderingTime": 4,
+        "timedOut": false,
+        "totalTime": 250
+    },
+    "elevationMetadata": {
+        "ellipsoidToGeoidDifference": 7.3773084368695,
+        "geoidElevation": false
+    },
+    "plan": {
+        "date": 1697844900000,
+        "from": {
+            "lat": 1.320981,
+            "lon": 103.84415,
+            "name": "Origin",
+            "orig": "",
+            "vertexType": "NORMAL"
+        },
+        "itineraries": [
+            {
+                "duration": 1513,
+                "elevationGained": 0,
+                "elevationLost": 0,
+                "endTime": 1697846499000,
+                "fare": "0.49",
+                "legs": [
+                    {
+                        "agencyTimeZoneOffset": 28800000,
+                        "arrivalDelay": 0,
+                        "departureDelay": 0,
+                        "distance": 69.596,
+                        "duration": 62,
+                        "endTime": 1697845048000,
+                        "from": {
+                            "departure": 1697844986000,
+                            "lat": 1.320981,
+                            "lon": 103.84415,
+                            "name": "Origin",
+                            "orig": "",
+                            "vertexType": "NORMAL"
+                        },
+                        "interlineWithPreviousLeg": false,
+                        "intermediateStops": [],
+                        "legGeometry": {
+                            "length": 4,
+                            "points": "s~`GmayxRp@p@DE`@`@"
+                        },
+                        "mode": "WALK",
+                        "numIntermediateStops": 1,
+                        "pathway": false,
+                        "realTime": false,
+                        "rentedBike": false,
+                        "route": "",
+                        "startTime": 1697844986000,
+                        "steps": [
+                            {
+                                "absoluteDirection": "SOUTHWEST",
+                                "area": false,
+                                "bogusName": false,
+                                "distance": 69.596,
+                                "elevation": [],
+                                "lat": 1.3209015602086,
+                                "lon": 103.84423137491,
+                                "relativeDirection": "DEPART",
+                                "stayOn": false,
+                                "streetName": "path"
+                            }
+                        ],
+                        "to": {
+                            "arrival": 1697845048000,
+                            "departure": 1697845049000,
+                            "lat": 1.3204583552,
+                            "lon": 103.843842645,
+                            "name": "NOVENA MRT STATION",
+                            "stopCode": "NS20",
+                            "stopId": "FERRY:NS20",
+                            "stopIndex": 8,
+                            "stopSequence": 9,
+                            "vertexType": "TRANSIT"
+                        },
+                        "transitLeg": false
+                    },
+                    {
+                        "agencyId": "SMRT",
+                        "agencyName": "SMRT Corporation",
+                        "agencyTimeZoneOffset": 28800000,
+                        "agencyUrl": "http://www.smrt.com.sg/",
+                        "arrivalDelay": 0,
+                        "departureDelay": 0,
+                        "distance": 1398.3141065108,
+                        "duration": 117,
+                        "endTime": 1697845166000,
+                        "from": {
+                            "arrival": 1697845048000,
+                            "departure": 1697845049000,
+                            "lat": 1.3204583552,
+                            "lon": 103.843842645,
+                            "name": "NOVENA MRT STATION",
+                            "stopCode": "NS20",
+                            "stopId": "FERRY:NS20",
+                            "stopIndex": 8,
+                            "stopSequence": 9,
+                            "vertexType": "TRANSIT"
+                        },
+                        "interlineWithPreviousLeg": false,
+                        "intermediateStops": [],
+                        "legGeometry": {
+                            "length": 65,
+                            "points": "c|`Gu~xxRCCgFoEk@e@WSMK[U]U]SMI]SOIOG]Q_@QOGOGa@OOG_@Ma@Ma@KOEc@KOEc@Ia@Ic@Ga@GWC]EuEa@u@Gc@GOCi@I[Gc@Ga@Ka@Is@QiD}@a@Ka@Ic@IUE]EQCQAQAQAQAQAQ?Q?Q@Q?Q@Q@Q@Q@Q@QBc@DmEl@"
+                        },
+                        "mode": "SUBWAY",
+                        "numIntermediateStops": 1,
+                        "pathway": false,
+                        "realTime": false,
+                        "rentedBike": false,
+                        "route": "NS",
+                        "routeId": "NS",
+                        "routeLongName": "NORTH SOUTH LINE",
+                        "routeShortName": "NS",
+                        "routeType": 1,
+                        "serviceDate": "20231021",
+                        "startTime": 1697845049000,
+                        "steps": [],
+                        "to": {
+                            "arrival": 1697845166000,
+                            "departure": 1697845167000,
+                            "lat": 1.33246287522,
+                            "lon": 103.84758934,
+                            "name": "TOA PAYOH MRT STATION",
+                            "stopCode": "NS19",
+                            "stopId": "FERRY:NS19",
+                            "stopIndex": 9,
+                            "stopSequence": 10,
+                            "vertexType": "TRANSIT"
+                        },
+                        "transitLeg": true,
+                        "tripId": "NS-1-1033"
+                    },
+                    {
+                        "agencyTimeZoneOffset": 28800000,
+                        "arrivalDelay": 0,
+                        "departureDelay": 0,
+                        "distance": 1546.488,
+                        "duration": 1332,
+                        "endTime": 1697846499000,
+                        "from": {
+                            "arrival": 1697845166000,
+                            "departure": 1697845167000,
+                            "lat": 1.33246287522,
+                            "lon": 103.84758934,
+                            "name": "TOA PAYOH MRT STATION",
+                            "stopCode": "NS19",
+                            "stopId": "FERRY:NS19",
+                            "stopIndex": 9,
+                            "stopSequence": 10,
+                            "vertexType": "TRANSIT"
+                        },
+                        "interlineWithPreviousLeg": false,
+                        "intermediateStops": [],
+                        "legGeometry": {
+                            "length": 147,
+                            "points": "{fcGkvyxRXb@`C]LCXC??n@IXE?A?AHGDCBCBEFEFGJQBC@EHMDGFI@EFG@ADC?CCKGe@E[?AAMCMCMGg@AEp@IJCBALGDCDE@G?E?KL?F@H?F?H@D@F@BADCB@L??KzAFAt@`ADTCL[DWB@AC@GFGHMXLFOXq@Vo@JS@GLWN_@LYN]FOBG?ADKP_@HSBGHSFM??DKHQJWRg@LYFMDMFM@EBE@EJSL]LWFQJSL]DKJUPa@JUFOHQDOJSBIBCDKHMDKDGNMNWAAAAQMCCMICBAAYWQOGGJOKK[UQOGG?G?ET[QOCCFI??l@y@OKMIMI"
+                        },
+                        "mode": "WALK",
+                        "numIntermediateStops": 1,
+                        "pathway": false,
+                        "realTime": false,
+                        "rentedBike": false,
+                        "route": "",
+                        "startTime": 1697845167000,
+                        "steps": [
+                            {
+                                "absoluteDirection": "SOUTHWEST",
+                                "area": false,
+                                "bogusName": true,
+                                "distance": 1546.488,
+                                "elevation": [],
+                                "lat": 1.3324628757592,
+                                "lon": 103.84758933964,
+                                "relativeDirection": "DEPART",
+                                "stayOn": false,
+                                "streetName": "path"
+                            }
+                        ],
+                        "to": {
+                            "arrival": 1697846499000,
+                            "lat": 1.326762,
+                            "lon": 103.8559,
+                            "name": "Destination",
+                            "orig": "",
+                            "vertexType": "NORMAL"
+                        },
+                        "transitLeg": false
+                    }
+                ],
+                "startTime": 1697844986000,
+                "tooSloped": false,
+                "transfers": 0,
+                "transitTime": 117,
+                "waitingTime": 2,
+                "walkDistance": 1616.89377441,
+                "walkLimitExceeded": false,
+                "walkTime": 1394
+            },
+            {
+                "duration": 1730,
+                "elevationGained": 0,
+                "elevationLost": 0,
+                "endTime": 1697846630000,
+                "fare": "0.00",
+                "legs": [
+                    {
+                        "agencyTimeZoneOffset": 28800000,
+                        "arrivalDelay": 0,
+                        "departureDelay": 0,
+                        "distance": 1971.462,
+                        "duration": 1730,
+                        "endTime": 1697846630000,
+                        "from": {
+                            "departure": 1697844900000,
+                            "lat": 1.320981,
+                            "lon": 103.84415,
+                            "name": "Origin",
+                            "orig": "",
+                            "vertexType": "NORMAL"
+                        },
+                        "interlineWithPreviousLeg": false,
+                        "intermediateStops": [],
+                        "legGeometry": {
+                            "length": 180,
+                            "points": "s~`GmayxRa@a@VSDE_@[CBIHQHG@E?E?ICIEgAcAIMqA}@QICCMGWMMEUKOEOEcAYAC?IRu@J]BMNe@Nm@DCAEWIC?MA??UGiAg@?ADG@A@EYKGE?WPa@DKd@kADKLY@CACBQHCr@gB@KGSGKEE]OICIEOMKGYM[MGCGCK?GKNO?EC?_@a@GGa@a@A@IMIIAAq@s@EGKISS@ARWLQXYECHGLKBIh@g@LM\\WRQPMNMNKZUAC][AA@CEKQOCCGEYWIGECCCMKGGMIECECIIGGCCEEKGa@_@MIq@i@OMKGGGKIGEOKEM?CGGQMAAAAC???OM??YWC?OOGGCAMKCACC@AFI@AECCEACCAA?CCa@[UOIGUQCCKK[UQOGG?G?ET[QOCCEAIIMIFIl@y@MI"
+                        },
+                        "mode": "WALK",
+                        "numIntermediateStops": 1,
+                        "pathway": false,
+                        "realTime": false,
+                        "rentedBike": false,
+                        "route": "",
+                        "startTime": 1697844900000,
+                        "steps": [
+                            {
+                                "absoluteDirection": "NORTHEAST",
+                                "area": false,
+                                "bogusName": false,
+                                "distance": 1971.462,
+                                "elevation": [],
+                                "lat": 1.3209015602086,
+                                "lon": 103.84423137491,
+                                "relativeDirection": "DEPART",
+                                "stayOn": false,
+                                "streetName": "path"
+                            }
+                        ],
+                        "to": {
+                            "arrival": 1697846630000,
+                            "lat": 1.326762,
+                            "lon": 103.8559,
+                            "name": "Destination",
+                            "orig": "",
+                            "vertexType": "NORMAL"
+                        },
+                        "transitLeg": false
+                    }
+                ],
+                "startTime": 1697844900000,
+                "tooSloped": false,
+                "transfers": 0,
+                "transitTime": 0,
+                "waitingTime": 0,
+                "walkDistance": 1972.5018495905,
+                "walkLimitExceeded": false,
+                "walkTime": 1730
+            }
+        ],
+        "to": {
+            "lat": 1.326762,
+            "lon": 103.8559,
+            "name": "Destination",
+            "orig": "",
+            "vertexType": "NORMAL"
+        }
+    },
+    "requestParameters": {
+        "date": "10-21-2023",
+        "fromPlace": "1.320981,103.844150",
+        "maxTransfers": "5",
+        "maxWalkDistance": "2000",
+        "mode": "SUBWAY,WALK",
+        "numItineraries": "10",
+        "showIntermediateStops": "true",
+        "time": "7:35am",
+        "toPlace": "1.326762,103.8559"
+    }
+}
