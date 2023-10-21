@@ -58,7 +58,8 @@ class NotificationManager {
           .toList();
       try {
         await file.writeAsString(const ListToCsvConverter().convert(csvData),
-            mode: FileMode.write);
+            mode: FileMode.write,
+            flush: true);
         print('CSV file updated successfully.');
       } catch (e) {
         print('Error updating CSV file: $e');
@@ -80,12 +81,11 @@ class NotificationManager {
     await updateNotificationFile();
   }
 
-  void createNotifications(ConcernEvent event) {
-    _addNotification(Notification(
+  Future<void> createNotifications(ConcernEvent event) async {
+    await _addNotification(Notification(
       message: event.concern.message,
       time: DateTime.now(),
     ));
-    updateNotificationFile();
   }
 
   static Future initializeNotifications(
@@ -96,8 +96,8 @@ class NotificationManager {
     await flutterLocalNotificationsPlugin.initialize(initializationSettings);
   }
 
-  void displayRealTimeNotification(
-      {var id = 0,
+  Future <void> displayRealTimeNotification(
+      {required id,
       required String title,
       required String body,
       required FlutterLocalNotificationsPlugin fln}) async {

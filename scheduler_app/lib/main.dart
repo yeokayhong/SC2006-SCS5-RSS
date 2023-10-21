@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'screens/screens_barrel.dart';
 import 'package:scheduler_app/base_classes/set_up.dart';
 
-void main() {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  instanceSetUp();
+  await instanceSetUp();
   runApp(MyApp());
 }
 
