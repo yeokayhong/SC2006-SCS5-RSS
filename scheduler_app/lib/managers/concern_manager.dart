@@ -1,51 +1,54 @@
-import 'package:event_bus/event_bus.dart';
+import 'package:scheduler_app/managers/notification_manager.dart';
+import 'package:http/http.dart' as http;
 import 'package:get_it/get_it.dart';
-import 'package:scheduler_app/entities/event_entity.dart';
-import 'package:scheduler_app/APIs/lta_api.dart';
 
 class ConcernManager {
-  final List<Concern> _concerns = [];
-  EventBus get eventBus => GetIt.instance<EventBus>();
-
-  void queryConcerns() {
-    List<Concern> disruptions = LtaApi.queryTrainServiceDisruption();
-    List<Concern> crowded = LtaApi.queryCrowdedStations();
-
-    _updateConcerns(disruptions);
-    _updateConcerns(crowded);
+  ConcernManager() {
+    final NoficiationManger _notificationManager = GetIt.instance<NotificationManager>();
+    final html.EventSource concernEvents = http.EventSource(Uri.parse("/concerns/events"));
+    concernEvents.addEventListener("added", (html.Event event) {
+      _handleAddedConcern(event)
+    });
+    concernEvents.addEventListener("updated", (html.Event event) {
+      _handleUpdatedConcern(event)
+    });
   }
 
-  List<Concern> get concerns {
-    return _concerns;
+  void _handleAddedConcern(html.Event event) {
+    if (!isActiveRouteAffected()) return
+    _notificationManager.displayRealTimeNotification("Train delay along...", "Please click to display alternatives");
   }
 
-  void _updateConcerns(List<Concern> newConcerns) {
-    for (Concern newConcern in newConcerns) {
-      _addConcern(newConcern);
-    }
-
-    for (Concern concern in _concerns) {
-      if (newConcerns.contains(concern)) continue;
-      if (concern.type == newConcerns[0].type) {
-        _removeConcern(concern);
-      }
-    }
+  void _handleUpdatedConcern(html.Event event) {
+    if (!isActiveRouteAffected()) return
+    _notificationManager.displayRealTimeNotification("Updates to train delay along...", "Please click to display alternatives");
   }
 
-  void _removeConcern(Concern toRemove) {
-    if (_concerns.remove(toRemove)) {
-      eventBus.fire(ConcernEvent("removed", toRemove));
+  List<Concern> getConcerns() {
+    http.Response response = await http.get(Uri.parse("/concerns"));
+    if (response.statusCode != 200) {
+      throw Exception("Failed to get concerns");
     }
+    List<Concern> concerns = [];
+    for (var concern in response.body) {
+      concerns.add(Concern(
+        type: concern["type"],
+        service: concern["service"],
+        affectedStops: concern["affectedStops"],
+        time: concern["time"],
+        message: concern["message"],
+      ));
+    }
+
+    return concerns;
   }
 
-  void _addConcern(Concern toUpdate) {
-    if (_concerns.remove(toUpdate)) {
-      _concerns.add(toUpdate);
-      eventBus.fire(ConcernEvent("updated", toUpdate));
-    } else {
-      _concerns.add(toUpdate);
-      eventBus.fire(ConcernEvent("added", toUpdate));
-    }
+  bool isActiveRouteAffected() {
+    return false;
+  }
+
+  void dispose() {
+    this.concernEvents.close();
   }
 }
 
