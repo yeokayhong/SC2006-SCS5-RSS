@@ -47,28 +47,8 @@ class RouteManager {
     throw 'Route not found!';
   }
 
-// Monitor potential concerns
-  void monitorPotentialConcern() {
-    // Implement your logic to monitor potential concerns here
-  }
-
-  // Get waiting time
-  double getWaitingTime(String routeId) {
-    if (_routeDict.containsKey(routeId)) {
-      // Replace this with your logic to calculate waiting time
-      return 10.0; // Example waiting time
-    }
-    throw 'Route not found!';
-  }
-
-  // Recalculate arrival time
-  double recalculateArrivalTime(String routeId) {
-    if (_routeDict.containsKey(routeId)) {
-      // Replace this with your logic to recalculate arrival time
-      return 20.0; // Example recalculated arrival time
-    }
-    throw 'Route not found!';
-  }
+// search affected Routes
+  void searchAffectedRoutes(String stringToCompare) {}
 
 // create Route Object and add to dictionary, json should be of json['itineraries]
   void createRoutes(List<dynamic> json) {
