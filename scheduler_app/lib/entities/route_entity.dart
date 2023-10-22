@@ -19,8 +19,8 @@ class Route {
   }
 
   Route({required Map<String, dynamic> json, required this.mapIndex}) {
-    createDuration(json['duration'].toString(), json['transitTime'].toString(),
-        json['waitingTime'].toString(), json['walkTime'].toString());
+    createDuration(json['duration'], json['transitTime'], json['waitingTime'],
+        json['walkTime']);
 
     // get endTime in h:mm a format
     formatEndTime(json['endTime'].toString());
@@ -39,8 +39,8 @@ class Route {
         "Routeobject $mapIndex: Duration: ${duration.totalDuration},TransitTime: ${duration.transitTime}, WaitingTime: ${duration.waitingTime}, WalkingTime: ${duration.walkingTime} ,endTime: $endTime,fare: $fare,walk: $walkDistance");
   }
 
-  void createDuration(String totalDurationInSeconds, String transitTime,
-      String waitingTime, String walkingTime) {
+  void createDuration(int totalDurationInSeconds, int transitTime,
+      int waitingTime, int walkingTime) {
     duration = D.Duration(
         totalDuration: totalDurationInSeconds,
         transitTime: transitTime,
@@ -54,6 +54,7 @@ class Route {
     DateTime result = DateTime.fromMillisecondsSinceEpoch(
         int.parse(endTimeInUnix),
         isUtc: true);
+    // temporary fix, but not sure why local time is not reflecting probably.
     result = result.add(const Duration(hours: 8));
     debugPrint(result.toString());
     // convert time eg. display in 9:30 pm
