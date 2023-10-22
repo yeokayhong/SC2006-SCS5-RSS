@@ -101,15 +101,25 @@ class NotificationManager {
       required String title,
       required String body,
       required FlutterLocalNotificationsPlugin fln}) async {
-    AndroidNotificationDetails androidPlatformChannelSpecifics =
-        new AndroidNotificationDetails(
-      'you can name it whatever1',
-      'channelName',
-      playSound: true,
-      importance: Importance.max,
-      priority: Priority.high,
-    );
-    var not = NotificationDetails(android: androidPlatformChannelSpecifics);
-    await fln.show(0, title, body, not);
+    try {
+      const AndroidNotificationDetails androidPlatformChannelSpecifics =
+      AndroidNotificationDetails(
+        'you can name it whatever1',
+        'channelName',
+        playSound: true,
+        importance: Importance.max,
+        priority: Priority.high,
+      );
+      const NotificationDetails not = NotificationDetails(
+          android: androidPlatformChannelSpecifics);
+      await fln.show(0, title, body, not);
+      print('Successful');
+    } catch (e) {
+      // Handle any errors or exceptions here
+      print("Notification display error: $e");
+
+      // You can also throw the error further if needed
+      // throw e;
+    }
   }
 }
