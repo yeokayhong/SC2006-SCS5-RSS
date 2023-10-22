@@ -2,13 +2,11 @@ import 'package:event_bus/event_bus.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:scheduler_app/APIs/routes_api.dart';
+import 'package:scheduler_app/entities/route_event.dart';
 import 'package:scheduler_app/widgets/address_input.dart';
-import '../managers/route_manager.dart';
 import 'screens_barrel.dart';
 import 'package:scheduler_app/widgets/map.dart';
 import 'package:scheduler_app/entities/route_entity.dart' as r;
-import 'package:intl/intl.dart';
 
 class MapInputPage extends StatelessWidget {
   // implement the function callbacks for address search
@@ -33,7 +31,7 @@ class MapInputPage extends StatelessWidget {
             child: MapWidget(
               source: LatLng(1.320981, 103.84415),
               dest: LatLng(1.31875833025, 103.846554958),
-              route: r.Route(),
+              route: r.Route.placeholder(),
             ),
           ),
           Flexible(

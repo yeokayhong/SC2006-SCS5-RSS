@@ -5,21 +5,26 @@ import 'package:intl/intl.dart';
 import 'package:scheduler_app/APIs/routes_api.dart';
 import 'package:scheduler_app/entities/route_entity.dart' as r;
 
+import '../entities/route_event.dart';
+
 // RouteManager contains a class of methods for retrieving information on the retrieved Route Objects
 class RouteManager {
   final Map<int, r.Route> _routeDict = {};
   EventBus get eventBus => GetIt.instance<EventBus>();
 
   RouteManager() {
-    eventBus.on<RouteEvent>().listen((event) {
-      fetchData(event.origin, event.dest, event.routeType);
+    eventBus.on<RouteEvent>().listen((event) async {
+      Map<String, dynamic> json =
+          await fetchData(event.origin, event.dest, event.routeType);
       debugPrint(
           "Received: ${event.origin}, ${event.dest}, ${event.routeType}");
+      createRoutes(json['plan']['itineraries']);
     });
   }
 
   // for debugging purposes
-  Future<void> fetchData(String start, String end, String routeType) async {
+  Future<Map<String, dynamic>> fetchData(
+      String start, String end, String routeType) async {
     // get Current Date and Time
     DateTime now = DateTime.now();
     String formattedDate = DateFormat('MM-dd-yyyy').format(now);
@@ -32,6 +37,7 @@ class RouteManager {
         date: formattedDate,
         time: formattedTime);
     debugPrint("Data Retrieved: $json");
+    return json;
   }
 
   r.Route? getRouteDetail(String routeId) {
@@ -64,17 +70,14 @@ class RouteManager {
     throw 'Route not found!';
   }
 
-// create Route Object and add to dictionary
-  void createRoute(Map<String, dynamic> itinerary, int index) {
-    r.Route newRoute = r.Route();
-    // updateRouteDict(index, newRoute);
+// create Route Object and add to dictionary, json should be of json['itineraries]
+  void createRoutes(List<dynamic> json) {
+    int counter = 1;
+    for (var route in json) {
+      r.Route newRoute = r.Route(json: route, mapIndex: counter);
+      _routeDict[counter] = newRoute;
+      counter++;
+    }
+    debugPrint("Routes: $_routeDict");
   }
-}
-
-class RouteEvent {
-  final String origin;
-  final String dest;
-  final String routeType;
-
-  RouteEvent(this.origin, this.dest, this.routeType);
 }

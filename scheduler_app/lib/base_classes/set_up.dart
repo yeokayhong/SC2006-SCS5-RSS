@@ -7,14 +7,15 @@ import 'package:scheduler_app/managers/route_manager.dart';
 
 GetIt getIt = GetIt.instance;
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-FlutterLocalNotificationsPlugin();
+    FlutterLocalNotificationsPlugin();
 
 Future<void> instanceSetUp() async {
   getIt.registerSingleton<EventBus>(EventBus());
   getIt.registerSingleton<NotificationManager>(
       NotificationManager.getInstance());
   getIt.registerSingleton<RouteManager>(RouteManager());
-  await NotificationManager.initializeNotifications(flutterLocalNotificationsPlugin);
+  await NotificationManager.initializeNotifications(
+      flutterLocalNotificationsPlugin);
   getIt.registerSingleton<FlutterLocalNotificationsPlugin>(
       flutterLocalNotificationsPlugin);
 }

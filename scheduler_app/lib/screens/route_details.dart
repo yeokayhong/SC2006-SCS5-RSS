@@ -23,7 +23,7 @@ class RouteDetailsPage extends StatelessWidget {
               source: LatLng(1.320981,
                   103.84415), // You can adjust these coordinates accordingly
               dest: LatLng(1.31875833025, 103.846554958),
-              route: r.Route(),
+              route: r.Route.placeholder(),
             ),
           ),
           // 40% of the screen for travel plan details
