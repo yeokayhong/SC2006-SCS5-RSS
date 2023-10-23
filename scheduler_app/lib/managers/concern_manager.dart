@@ -1,28 +1,33 @@
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:scheduler_app/managers/notification_manager.dart';
 import 'package:http/http.dart' as http;
 import 'package:get_it/get_it.dart';
 
 class ConcernManager {
+      final NotificationManager _notificationManager = GetIt.instance<NotificationManager>();
   ConcernManager() {
-    final NoficiationManger _notificationManager = GetIt.instance<NotificationManager>();
     final html.EventSource concernEvents = http.EventSource(Uri.parse("/concerns/events"));
     concernEvents.addEventListener("added", (html.Event event) {
       _handleAddedConcern(event)
     });
     concernEvents.addEventListener("updated", (html.Event event) {
-      _handleUpdatedConcern(event)
+      _handleUpdatedConcern(event);
     });
   }
 
   void _handleAddedConcern(html.Event event) {
-    if (!isActiveRouteAffected()) return
-    _notificationManager.displayRealTimeNotification("Train delay along...", "Please click to display alternatives");
+    if (!isActiveRouteAffected()) {
+      _notificationManager.displayRealTimeNotification(id: 0, title: "Train delay along...", body: "Please click to display alternatives", fln: GetIt.instance<FlutterLocalNotificationsPlugin>());
+      _notificationManager.createNotifications(event);
+    }
   }
 
   void _handleUpdatedConcern(html.Event event) {
-    if (!isActiveRouteAffected()) return
-    _notificationManager.displayRealTimeNotification("Updates to train delay along...", "Please click to display alternatives");
-  }
+    if (!isActiveRouteAffected()) {
+      _notificationManager.displayRealTimeNotification(id: 0, title: " updates to train delay along...", body: "Please click to display alternatives", fln: GetIt.instance<FlutterLocalNotificationsPlugin>());
+      _notificationManager.createNotifications(event);
+      }
+    }
 
   List<Concern> getConcerns() {
     http.Response response = await http.get(Uri.parse("/concerns"));

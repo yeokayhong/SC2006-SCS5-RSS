@@ -7,9 +7,9 @@ import 'package:get_it/get_it.dart';
 import 'package:event_bus/event_bus.dart';
 
 import 'package:scheduler_app/entities/notification_entity.dart';
-import 'package:scheduler_app/entities/event_entity.dart';
 
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:scheduler_app/managers/concern_manager.dart';
 
 class NotificationManager {
   List<Notification> _notifications = [];
@@ -81,16 +81,16 @@ class NotificationManager {
     await updateNotificationFile();
   }
 
-  Future<void> createNotifications(ConcernEvent event) async {
+  Future<void> createNotifications(Concern event) async {
     await _addNotification(Notification(
-      message: event.concern.message,
+      message: event.message,
       time: DateTime.now(),
     ));
   }
 
   static Future initializeNotifications(
       FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin) async {
-    var androidInitialize = AndroidInitializationSettings('mipmap/ic_launcher');
+    const AndroidInitializationSettings androidInitialize = AndroidInitializationSettings('mipmap/ic_launcher');
     var initializationSettings =
         InitializationSettings(android: androidInitialize);
     await flutterLocalNotificationsPlugin.initialize(initializationSettings);

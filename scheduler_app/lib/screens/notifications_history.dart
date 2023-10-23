@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:scheduler_app/base_classes/date_time_format.dart';
+//import 'package:scheduler_app/base_classes/set_up.dart';
 
 import 'package:scheduler_app/managers/notification_manager.dart';
 import 'package:scheduler_app/entities/notification_entity.dart'
     as notification_entity;
 
-import 'package:scheduler_app/entities/event_entity.dart';
 import 'package:event_bus/event_bus.dart';
 import 'package:get_it/get_it.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+//import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
-import '../managers/concern_manager.dart';
+//import '../managers/concern_manager.dart';
 
 class NotificationUI extends StatefulWidget {
   @override
@@ -25,7 +25,7 @@ class _NotificationUIState extends State<NotificationUI> {
   @override
   void initState() {
     super.initState();
-    _setupEventListeners();
+    //_setupEventListeners();
     notificationList = getIt<NotificationManager>()
         .getNotificationHistory()
         .reversed
@@ -172,15 +172,7 @@ class _NotificationUIState extends State<NotificationUI> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          //_showConfirmationDialog();
-          eventBus.fire(ConcernEvent(
-              "added",
-              Concern(
-                  type: "type",
-                  service: "service",
-                  affectedStops: ['Apple', 'Banana', 'Cherry', 'Date'],
-                  time: DateTime.now(),
-                  message: 'test')));
+          _showConfirmationDialog();
         },
         backgroundColor: Colors.red.shade800,
         child: const Icon(Icons.delete),
@@ -219,17 +211,17 @@ class _NotificationUIState extends State<NotificationUI> {
     );
   }
 
-  void _setupEventListeners() {
-    eventBus.on<ConcernEvent>().listen((event) async {
-      await getIt<NotificationManager>().displayRealTimeNotification(
-        id: 0,
-        title: 'title',
-        body: event.concern.message,
-        fln: getIt<FlutterLocalNotificationsPlugin>());
-      await getIt<NotificationManager>().createNotifications(event);
-      updateNotificationList();
-    });
-  }
+  // void _setupEventListeners() {
+  //   eventBus.on<ConcernEvent>().listen((event) async {
+  //     await getIt<NotificationManager>().displayRealTimeNotification(
+  //       id: 0,
+  //       title: 'title',
+  //       body: event.concern.message,
+  //       fln: getIt<FlutterLocalNotificationsPlugin>());
+  //     await getIt<NotificationManager>().createNotifications(event);
+  //     updateNotificationList();
+  //   });
+  // }
 
   void updateNotificationList() {
     setState(() {
