@@ -27,9 +27,20 @@ class OneMapAPI:
         url = f"https://www.onemap.gov.sg/api/public/routingsvc/route?start={start}&end={end}&routeType={routeType}&date={date}&time={time}&mode={mode}&maxWalkDistance={maxWalkDistance}&numItineraries={numItineraries}"
         headers = {'Authorization': accessToken}
 
-        response = requests.get(url, headers=headers)
 
+        # Not tested this error yet
+        result = {"error": ""}
+        
+        response = requests.get(url, headers=headers)
+        
         if response.status_code == 200:
-            return response.json()
+            json_data = response.json()
+            if json_data.get('plan', {}).get('itineraries'):
+                result.update(json_data)
+            else:
+                result["error"] = "No Routes Found"
         else:
-            raise Exception('Failed to fetch routes')
+            result["error"] = f"Failed to fetch routes: {response.status_code}"
+        print(f"Response: {result}")
+            
+        return result

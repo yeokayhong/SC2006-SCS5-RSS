@@ -2,7 +2,6 @@ from flask import Flask, request, jsonify
 import json
 from lta_api import LtaApi
 from oneMap_api import OneMapAPI
-from RouteManager import RouteManager
 from ConcernManager import ConcernManager  # Assuming that the ConcernManager class is already defined
 
 app = Flask(__name__)
@@ -15,8 +14,7 @@ with open('config.json', 'r') as config_file:
 lta_api = LtaApi(config['lta_api_key'])
 one_map_api = OneMapAPI(config['oneMapEmail'], config['oneMapPassword'])
 
-# Create instances of RouteManager and ConcernManager
-route_manager = RouteManager()
+# Create instances of ConcernManager
 concern_manager = ConcernManager()
 
 # Example: Obtain estimated bus waiting time using bus stop code and service number instead of a route object
