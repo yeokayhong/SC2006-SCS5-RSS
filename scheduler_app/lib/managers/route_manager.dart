@@ -6,6 +6,7 @@ import 'package:scheduler_app/APIs/routes_api.dart';
 import 'package:scheduler_app/entities/route_entity.dart' as r;
 
 import '../entities/route_event.dart';
+import 'concern_manager.dart';
 
 // RouteManager contains a class of methods for retrieving information on the retrieved Route Objects
 class RouteManager {
@@ -47,10 +48,22 @@ class RouteManager {
     throw 'Route not found!';
   }
 
-// search affected Routes
-  void searchAffectedRoutes(String stringToCompare) {}
+  // search affected Routes and update them
+  void searchAffectedRoutes(Concern concern) {}
 
-// create Route Object and add to dictionary, json should be of json['itineraries]
+  // search affected Routes with entire concernList
+  void searchAffectedRoutesWithConcernList(List<Concern> concernList) {}
+
+  // get Bus Waiting Time
+  void getBusWaitingTime() {}
+
+  // get MRT Waiting Time
+  void getMRTWaitingTime() {}
+
+  // update Route Arrival Time inclusive of live Waiting Time
+  void updateLiveArrivalTime() {}
+
+  // create Route Object and add to dictionary, json should be of json['itineraries]
   void createRoutes(List<dynamic> json) {
     int counter = 1;
     for (var route in json) {
