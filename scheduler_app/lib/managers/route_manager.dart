@@ -31,7 +31,7 @@ class RouteManager {
     String formattedDate = DateFormat('MM-dd-yyyy').format(now);
     String formattedTime = DateFormat('HH:mm:ss').format(now);
     debugPrint("Date: ${formattedDate}Time: $formattedTime");
-    Map<String, dynamic> json = await RoutesAPI.getRoutesPT(
+    Map<String, dynamic> json = await RoutesAPI.getRoutes(
         start: start,
         end: end,
         routeType: routeType,

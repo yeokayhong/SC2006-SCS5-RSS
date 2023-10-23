@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify
 import json
 from lta_api import LtaApi
-from oneMap_api import OneMapAPI
+from routes_api import ServerRoutesAPI
 from ConcernManager import ConcernManager  # Assuming that the ConcernManager class is already defined
 
 app = Flask(__name__)
@@ -12,7 +12,7 @@ with open('config.json', 'r') as config_file:
 
 # Create instances of LtaApi and OneMapAPI
 lta_api = LtaApi(config['lta_api_key'])
-one_map_api = OneMapAPI(config['oneMapEmail'], config['oneMapPassword'])
+one_map_api = ServerRoutesAPI(config['oneMapEmail'], config['oneMapPassword'])
 
 # Create instances of ConcernManager
 concern_manager = ConcernManager()

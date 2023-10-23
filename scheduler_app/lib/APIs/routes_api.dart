@@ -5,7 +5,7 @@ import 'package:scheduler_app/constants.dart';
 // service class for requesting Routes
 class RoutesAPI {
   // get Routes for Public Transport (MRT, Bus)
-  static Future<Map<String, dynamic>> getRoutesPT(
+  static Future<Map<String, dynamic>> getRoutes(
       {required String start,
       required String end,
       required String routeType,
