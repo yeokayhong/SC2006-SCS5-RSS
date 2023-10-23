@@ -17,15 +17,13 @@ class ConcernManager {
 
   void _handleAddedConcern(html.Event event) {
     if (!isActiveRouteAffected()) {
-      _notificationManager.displayRealTimeNotification(id: 0, title: "Train delay along...", body: "Please click to display alternatives", fln: GetIt.instance<FlutterLocalNotificationsPlugin>());
-      _notificationManager.createNotifications(event);
+      _notificationManager.createNotification(event);
     }
   }
 
   void _handleUpdatedConcern(html.Event event) {
     if (!isActiveRouteAffected()) {
-      _notificationManager.displayRealTimeNotification(id: 0, title: " updates to train delay along...", body: "Please click to display alternatives", fln: GetIt.instance<FlutterLocalNotificationsPlugin>());
-      _notificationManager.createNotifications(event);
+      _notificationManager.createNotification(event);
       }
     }
 

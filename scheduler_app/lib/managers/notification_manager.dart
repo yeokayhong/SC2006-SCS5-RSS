@@ -5,6 +5,7 @@ import 'package:path_provider/path_provider.dart' as path_provider;
 
 import 'package:get_it/get_it.dart';
 import 'package:event_bus/event_bus.dart';
+import 'package:scheduler_app/base_classes/set_up.dart';
 
 import 'package:scheduler_app/entities/notification_entity.dart';
 
@@ -17,14 +18,14 @@ class NotificationManager {
   EventBus get eventBus => GetIt.instance<EventBus>();
 
   NotificationManager._() {
-    instantiateNotificationFile();
+    _instantiateNotificationFile();
   }
 
   factory NotificationManager.getInstance() {
     return _instance;
   }
 
-  void instantiateNotificationFile() async {
+  void _instantiateNotificationFile() async {
     final input = await rootBundle.loadString("assets/NotificationList.csv");
     final fields = const CsvToListConverter().convert(input);
 
@@ -81,7 +82,7 @@ class NotificationManager {
     await updateNotificationFile();
   }
 
-  Future<void> createNotifications(Concern event) async {
+  Future<void> _createNotificationObject(Concern event) async {
     await _addNotification(Notification(
       message: event.message,
       time: DateTime.now(),
@@ -92,11 +93,11 @@ class NotificationManager {
       FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin) async {
     const AndroidInitializationSettings androidInitialize = AndroidInitializationSettings('mipmap/ic_launcher');
     var initializationSettings =
-        InitializationSettings(android: androidInitialize);
+        const InitializationSettings(android: androidInitialize);
     await flutterLocalNotificationsPlugin.initialize(initializationSettings);
   }
 
-  Future <void> displayRealTimeNotification(
+  Future<void> _displayRealTimeNotification(
       {required id,
       required String title,
       required String body,
@@ -117,9 +118,11 @@ class NotificationManager {
     } catch (e) {
       // Handle any errors or exceptions here
       print("Notification display error: $e");
-
-      // You can also throw the error further if needed
-      // throw e;
     }
+  }
+
+  Future<void> createNotification(Concern event) async {
+    await _createNotificationObject(event);
+    await _displayRealTimeNotification(id: 0, title: "", body: event.message, fln: getIt<FlutterLocalNotificationsPlugin>());
   }
 }
