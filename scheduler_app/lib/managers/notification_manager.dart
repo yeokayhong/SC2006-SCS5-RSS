@@ -26,16 +26,24 @@ class NotificationManager {
   }
 
   void _instantiateNotificationFile() async {
-    final input = await rootBundle.loadString("assets/NotificationList.csv");
-    final fields = const CsvToListConverter().convert(input);
+    final appDocumentsDirectory =
+        await path_provider.getApplicationDocumentsDirectory();
+    final csvFilePath = '${appDocumentsDirectory.path}/NotificationList.csv';
+    final File file = File(csvFilePath);
+    try {
+      final String fileContents = await file.readAsString();
+      final fields = const CsvToListConverter().convert(fileContents);
 
-    List<Notification> newNotifications = fields.map((field) {
-      return Notification(
-        time: DateTime.parse(field[0]),
-        message: field[1],
-      );
-    }).toList();
-    _notifications.addAll(newNotifications);
+      List<Notification> newNotifications = fields.map((field) {
+        return Notification(
+          time: DateTime.parse(field[0]),
+          message: field[1],
+        );
+      }).toList();
+      _notifications.addAll(newNotifications);
+    } catch (e) {
+      print('Error reading CSV file: $e');
+    }
   }
 
   Future<void> updateNotificationFile() async {
@@ -57,10 +65,11 @@ class NotificationManager {
                 '"${notification.message}"',
               ])
           .toList();
+          print(csvData);
+          print(const ListToCsvConverter().convert(csvData));
       try {
         await file.writeAsString(const ListToCsvConverter().convert(csvData),
-            mode: FileMode.write,
-            flush: true);
+            mode: FileMode.write);
         print('CSV file updated successfully.');
       } catch (e) {
         print('Error updating CSV file: $e');
@@ -82,9 +91,9 @@ class NotificationManager {
     await updateNotificationFile();
   }
 
-  Future<void> _createNotificationObject(Concern event) async {
+  Future<void> _createNotificationObject(String message) async {
     await _addNotification(Notification(
-      message: event.message,
+      message: message,
       time: DateTime.now(),
     ));
   }
@@ -98,10 +107,10 @@ class NotificationManager {
   }
 
   Future<void> _displayRealTimeNotification(
-      {required id,
-      required String title,
-      required String body,
-      required FlutterLocalNotificationsPlugin fln}) async {
+      id,
+      String title,
+      String body,
+      FlutterLocalNotificationsPlugin fln) async {
     try {
       const AndroidNotificationDetails androidPlatformChannelSpecifics =
       AndroidNotificationDetails(
@@ -121,8 +130,11 @@ class NotificationManager {
     }
   }
 
-  Future<void> createNotification(Concern event) async {
-    await _createNotificationObject(event);
-    await _displayRealTimeNotification(id: 0, title: "", body: event.message, fln: getIt<FlutterLocalNotificationsPlugin>());
+  Future<void> createNotification({id=0, title="", body, fln}) async {
+    if (fln == null) {
+      fln = getIt<FlutterLocalNotificationsPlugin>();
+    }
+    await _createNotificationObject(body);
+    await _displayRealTimeNotification(id, title, body, fln);
   }
 }

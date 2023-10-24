@@ -8,7 +8,7 @@ import 'package:scheduler_app/entities/notification_entity.dart'
 
 import 'package:event_bus/event_bus.dart';
 import 'package:get_it/get_it.dart';
-//import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 //import '../managers/concern_manager.dart';
 
@@ -172,7 +172,8 @@ class _NotificationUIState extends State<NotificationUI> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          _showConfirmationDialog();
+          NotificationManager manager = getIt<NotificationManager>();
+          manager.createNotification(title: "Title", body: "Message");
         },
         backgroundColor: Colors.red.shade800,
         child: const Icon(Icons.delete),
