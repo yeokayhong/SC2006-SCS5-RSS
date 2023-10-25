@@ -1,23 +1,25 @@
 from flask import Flask, request, jsonify
-import json
-from lta_api import LtaApi
+from ConcernManager import ConcernManager
 from routes_api import ServerRoutesAPI
-from ConcernManager import ConcernManager  # Assuming that the ConcernManager class is already defined
+from dotenv import load_dotenv
+from lta_api import LtaApi
+import json
+import os
 
+load_dotenv()
 app = Flask(__name__)
 
-# Load configuration file
-with open('config.json', 'r') as config_file:
-    config = json.load(config_file)
-
 # Create instances of LtaApi and OneMapAPI
-lta_api = LtaApi(config['lta_api_key'])
-one_map_api = ServerRoutesAPI(config['oneMapEmail'], config['oneMapPassword'])
+lta_api = LtaApi(os.getenv("LTA_API_KEY"))
+one_map_api = ServerRoutesAPI(
+    os.getenv("ONEMAP_EMAIL"), os.getenv("ONEMAP_PASSWORD"))
 
 # Create instances of ConcernManager
 concern_manager = ConcernManager()
 
 # Example: Obtain estimated bus waiting time using bus stop code and service number instead of a route object
+
+
 @app.route('/get_estimated_waiting_time', methods=['GET'])
 def get_estimated_waiting_time():
     # Get bus stop code and service number from the request parameters
@@ -26,12 +28,15 @@ def get_estimated_waiting_time():
 
     try:
         # Call the method of the LtaApi instance to get the estimated waiting time
-        estimated_waiting_time = lta_api.get_estimated_waiting_time(bus_stop_code, service_no)
+        estimated_waiting_time = lta_api.get_estimated_waiting_time(
+            bus_stop_code, service_no)
         return jsonify({"estimated_waiting_time": estimated_waiting_time})
     except Exception as e:
         return jsonify({"error": str(e)})
 
 # (To be completed) Call methods from the OneMap API
+
+
 @app.route('/get_routes_pt', methods=['GET'])
 def get_routes_pt():
     # Get parameters from the request
@@ -55,6 +60,8 @@ def get_routes_pt():
     return routes
 
 # Assuming that the code for adding potential concern is defined
+
+
 @app.route('/add_potential_concern', methods=['POST'])
 def add_potential_concern():
     # Get the content of potential concern from the request
@@ -69,6 +76,7 @@ def add_potential_concern():
     return jsonify({"message": "Potential concern added successfully"})
 
 # Add other app routes here and call methods from RouteManager and ConcernManager
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)

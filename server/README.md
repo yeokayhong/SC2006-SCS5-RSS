@@ -1,4 +1,3 @@
-
 # Initial backend for flutter app
 
 ## Server Overview
@@ -13,32 +12,30 @@ Ensure that Python is installed on your computer. It is recommended to use Pytho
 
 ### Enviornment requirements
 
-Run the following command in your command line to install Flask:
+Run the following command in your command line to install project dependencies:
 
 ```bash
-pip install Flask
+pip install -r requirements.txt
 ```
 
 ### Install Dependencies
 
 Depending on your project requirements, you may need to install additional dependencies. Use the `pip` command to install them.
 
-## Configure Secret Key
+## Configure Secrets
 
-1. Create a configuration file named `config.json` in the project's root directory.
+1. Create a file named `.env` in the project's root directory to store environmental variables.
 
-2. In the `config.json` file, add your API keys and other configuration information. For example:
+2. Populate your `.env` file with the necessary variables:
 
-```json
-{
-    "lta_api_key": "YOUR_LTA_API_KEY",
-    "oneMapEmail": "YOUR_ONEMAP_EMAIL",
-    "oneMapPassword": "YOUR_ONEMAP_PASSWORD",
-    "accessToken":"OPTIONAL",
-}
+```yaml
+LTA_API_KEY=YOUR_LTA_API_KEY
+ONEMAP_EMAIL=YOUR_ONEMAP_EMAIL
+ONEMAP_PASSWORD=YOUR_ONEMAP_PASSWORD
+ACCESS_TOKEN=OPTIONAL
 ```
 
-3. Save and close the `config.json` file.
+3. Save and close the `.env` file.
 
 ## Creating New Method Objects and API Routes
 
@@ -58,11 +55,15 @@ def new_api_route():
     # Write code to handle the request here
     return jsonify({"message": "This is a new API route"})
 ```
+
 ### Run the server locally
+
 ```
 python server.py
 ```
+
 Then you can see the following information
+
 ```
  * Serving Flask app 'server'
  * Debug mode: off
@@ -72,6 +73,7 @@ WARNING: This is a development server. Do not use it in a production deployment.
  * Running on http://xxx.xxx.xx.xx:5000
 Press CTRL+C to quit
 ```
+
 ## Calling Backend Methods
 
 You can call backend methods using the command line or the Dart programming language. Here's an example of using Dart to call the `/get_estimated_waiting_time` route:
@@ -96,7 +98,9 @@ void main() async {
   }
 }
 ```
-Or you can use this link to test directly 
+
+Or you can use this link to test directly
+
 ```
 http://localhost:5000/get_estimated_waiting_time?bus_stop_code=83139&service_no=15
 ```
