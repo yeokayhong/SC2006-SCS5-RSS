@@ -59,21 +59,14 @@ def get_routes_pt():
 
     return routes
 
-# Assuming that the code for adding potential concern is defined
 
-
-@app.route('/add_potential_concern', methods=['POST'])
-def add_potential_concern():
-    # Get the content of potential concern from the request
-    content = request.json.get('content')
-
-    # Create a Notification object
-    notification = Notification(content)
-
-    # Call the add_potential_concern method of the ConcernManager instance
-    concern_manager.add_potential_concern(notification)
-
-    return jsonify({"message": "Potential concern added successfully"})
+@app.route('/concerns', methods=['GET'])
+def get_concerns():
+    concerns = concern_manager.get_concerns()
+    response = jsonify(
+        {"concerns": [concern.__dict__ for concern in concerns]})
+    print(response)
+    return response
 
 # Add other app routes here and call methods from RouteManager and ConcernManager
 

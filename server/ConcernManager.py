@@ -1,74 +1,60 @@
-class Notification:
-    def __init__(self, content):
-        """
-        Initializes a new Notification object.
-
-        Args:
-            content (str): The content of the notification.
-        """
-        self.content = content
+from Concern import Concern
+from lta_api import LtaApi
+import threading
+import time
 
 
 class ConcernManager:
     def __init__(self):
-        """
-        Initializes a new ConcernManager object.
+        self.concerns = []
+        self.seconds_between_queries = 300
 
-        This class manages potential concerns and notification records.
-        """
-        self.potential_concerns = []  # List to store potential concerns
-        self.notification_log = []    # List to store notification records
+        self.timer_thread = threading.Thread(target=self.monitor_concerns)
+        self.timer_thread.daemon = True
+        self.timer_thread.start()
 
-    def add_potential_concern(self, potential_concern):
-        """
-        Adds a potential concern to the manager.
+    def get_concerns(self):
+        return self.concerns
 
-        Args:
-            potential_concern (Notification): A Notification object representing a potential concern.
+    def query_train_service_alerts(self):
+        print("Querying Train Service Alerts...")
+        api = LtaApi()
+        response = api.get("/TrainServiceAlerts")
+        data = response.json()
 
-        This method is responsible for adding a potential concern to the manager's list.
-        """
-        pass  # Implement the logic for adding a potential concern here
+        if (data.get("Status", 1) != 2):
+            return []
+
+        concerns = []
+        for affected_segment, message in zip(data.get("AffectedSegments", []), data.get("Message", [])):
+            service = affected_segment["Line"]
+            affected_stops = affected_segment["Stations"]
+            time = message["CreatedDate"]
+            message = message["Content"]
+
+            concern = Concern("TrainDisruption", service,
+                              affected_stops, time, message)
+            concerns.append(concern)
+
+        self.update_concerns(concerns)
 
     def monitor_concerns(self):
-        """
-        Monitors and handles concerns.
+        while True:
+            self.query_train_service_alerts()
+            time.sleep(self.seconds_between_queries)
 
-        This method monitors potential concerns and takes appropriate actions based on the monitored concerns.
-        """
-        pass  # Implement the logic for monitoring concerns here
-
-    def check_potential_concern_list(self):
-        """
-        Checks the list of potential concerns.
-
-        This method checks the list of potential concerns for any actions that need to be taken.
-        """
-        pass  # Implement the logic for checking potential concerns here
-
-    def view_potential_concerns(self):
-        """
-        Views potential concerns.
-
-        This method allows viewing the list of potential concerns.
-        """
-        pass  # Implement the logic for viewing potential concerns here
-
-    def update_route_request(self):
-        """
-        Updates route requests.
-
-        This method is responsible for updating route requests based on concerns and notifications.
-        """
-        pass  # Implement the logic for updating route requests here
-
-    def create_notification_request(self, content):
-        """
-        Creates a notification request.
-
-        Args:
-            content (str): The content of the notification.
-
-        This method creates a notification request with the specified content.
-        """
-        pass  # Implement the logic for creating notification requests here
+    def update_concerns(self, concerns: list[Concern]):
+        for existing_concern in self.concerns:
+            if existing_concern not in concerns:
+                # Fire remove event
+                self.concerns.remove(existing_concern)
+            matching_concern = next(
+                [concern for concern in concerns if concern == existing_concern])
+            if matching_concern.time != existing_concern.time:
+                # Fire update event
+                self.concerns.remove(existing_concern)
+                self.concerns.append(matching_concern)
+                concerns.remove(matching_concern)
+        for concern in concerns:
+            # Fire add event
+            self.concerns.append(concern)
