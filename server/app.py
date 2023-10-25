@@ -34,6 +34,76 @@ def get_estimated_waiting_time():
     except Exception as e:
         return jsonify({"error": str(e)})
 
+@app.route('/query_train_service_discription', methods=['GET'])
+def get_train_service_alerts():
+    try:
+        alerts = lta_api.get_train_service_alerts()
+        
+        disrupted_services = [alert for alert in alerts if alert['Status'] == '2']
+        
+        if not disrupted_services:
+            return jsonify({"message": "All train services are operating normally."})
+        
+        return jsonify({"disrupted_services": disrupted_services})
+    except Exception as e:
+        return jsonify({"error": str(e)})
+# for test only
+@app.route('/get_platform_crowd_density_realtime', methods=['GET'])
+def get_platform_crowd_density_realtime():
+    train_line = request.args.get('train_line')
+    if not train_line:
+        return jsonify({"error": "TrainLine parameter is required"})
+
+    try:
+        density_data = lta_api.get_platform_crowd_density_realtime(train_line)
+        return jsonify(density_data)
+    except Exception as e:
+        return jsonify({"error": str(e)})
+# for test only
+@app.route('/get_platform_crowd_density_forecast', methods=['GET'])
+def get_platform_crowd_density_forecast():
+    train_line = request.args.get('train_line')
+    if not train_line:
+        return jsonify({"error": "TrainLine parameter is required"})
+
+    try:
+        forecast_data = lta_api.get_platform_crowd_density_forecast(train_line)
+        return jsonify(forecast_data)
+    except Exception as e:
+        return jsonify({"error": str(e)})
+
+'''
+sample input curl "http://localhost:5000/query_crowded_Stations?train_line=EWL&station=EW1&time=2023-10-25T21:16:00%2B08:00"
+where 2023-10-25T21:16:00 is a valid time can be identity by get_platform_crowd_density_realtime function
+'''
+@app.route('/query_crowded_Stations', methods=['GET'])
+def get_crowd_density():
+    train_line = request.args.get('train_line')
+    station = request.args.get('station')
+    time = request.args.get('time')
+
+    # Check if all parameters are provided
+    if not all([train_line, station, time]):
+        return jsonify({"error": "TrainLine, Station and Time parameters are required"})
+    #density_data = lta_api.get_platform_crowd_density_forecast(train_line)
+    density_data = lta_api.get_platform_crowd_density_realtime(train_line)
+    
+    # Convert the provided time to a datetime object
+    fixed_time = time.replace(" ", "+")
+    query_time = datetime.fromisoformat(fixed_time)
+
+    # Find the matching entry based on train_line, station and time
+    for entry in density_data['value']:
+        start_time = datetime.fromisoformat(entry['StartTime'])
+        end_time = datetime.fromisoformat(entry['EndTime'])
+
+        # Look for an entry where the query time is within the start and end times
+        if entry['Station'] == station and start_time <= query_time <= end_time:
+            return jsonify({"CrowdLevel": entry['CrowdLevel'], "StartTime": entry['StartTime'], "EndTime": entry['EndTime']})
+
+    # If no matching entry is found
+    return jsonify({"error": "No data found for given station and time."})    
+
 # (To be completed) Call methods from the OneMap API
 
 
