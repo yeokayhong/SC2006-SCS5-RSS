@@ -25,7 +25,7 @@ class LtaApi:
 
 
 
-     def get_platform_crowd_density_realtime(self, train_line):
+    def get_platform_crowd_density_realtime(self, train_line):
         url = f"{self.base_url}/PCDRealTime?TrainLine={train_line}"
         headers = {
             'AccountKey': self.api_key,
