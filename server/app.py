@@ -34,6 +34,44 @@ def get_estimated_waiting_time():
     except Exception as e:
         return jsonify({"error": str(e)})
 
+@app.route('/query_train_service_discription', methods=['GET'])
+def get_train_service_alerts():
+    try:
+        alerts = lta_api.get_train_service_alerts()
+        
+        disrupted_services = [alert for alert in alerts if alert['Status'] == '2']
+        
+        if not disrupted_services:
+            return jsonify({"message": "All train services are operating normally."})
+        
+        return jsonify({"disrupted_services": disrupted_services})
+    except Exception as e:
+        return jsonify({"error": str(e)})
+
+@app.route('/get_platform_crowd_density_realtime', methods=['GET'])
+def get_platform_crowd_density_realtime():
+    train_line = request.args.get('train_line')
+    if not train_line:
+        return jsonify({"error": "TrainLine parameter is required"})
+
+    try:
+        density_data = lta_api.get_platform_crowd_density_realtime(train_line)
+        return jsonify(density_data)
+    except Exception as e:
+        return jsonify({"error": str(e)})
+
+@app.route('/get_platform_crowd_density_forecast', methods=['GET'])
+def get_platform_crowd_density_forecast():
+    train_line = request.args.get('train_line')
+    if not train_line:
+        return jsonify({"error": "TrainLine parameter is required"})
+
+    try:
+        forecast_data = lta_api.get_platform_crowd_density_forecast(train_line)
+        return jsonify(forecast_data)
+    except Exception as e:
+        return jsonify({"error": str(e)})
+
 # (To be completed) Call methods from the OneMap API
 
 
