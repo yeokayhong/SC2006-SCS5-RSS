@@ -56,23 +56,40 @@ def new_api_route():
     return jsonify({"message": "This is a new API route"})
 ```
 
-### Run the server locally
+### Running the server locally
 
-```
-python server.py
+```bash
+flask run
 ```
 
 Then you can see the following information
 
-```
- * Serving Flask app 'server'
+```bash
  * Debug mode: off
 WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
- * Running on all addresses (0.0.0.0)
  * Running on http://127.0.0.1:5000
- * Running on http://xxx.xxx.xx.xx:5000
 Press CTRL+C to quit
 ```
+
+### Running the server with hot reload
+
+```bash
+flask --debug run
+```
+
+Then you can see the following information
+
+```bash
+ * Debug mode: on
+WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+ * Running on http://127.0.0.1:5000
+Press CTRL+C to quit
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 961-938-867
+```
+
+When you save any changes to the code, the server will automatically restart.
 
 ## Calling Backend Methods
 
