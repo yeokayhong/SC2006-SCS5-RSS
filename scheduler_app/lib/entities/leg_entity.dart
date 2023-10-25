@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_polyline_algorithm/google_polyline_algorithm.dart';
 import 'legtype_entity.dart';
@@ -11,21 +12,38 @@ class Leg {
   late double distance;
   late int duration;
   late int endTime;
+  late int startTime;
   Leg(Map<String, dynamic> leg) {
     // decode geometry and add to polylineCoordinates
     decodeAndAddToPolylineCoordinates(leg['legGeometry']['points']);
 
     // initialize start
+    Map<String, dynamic> from = leg['from'];
+    start = Location(lat: from['lat'], lon: from['lon'], name: from['name']);
 
     // initialize dest
+    Map<String, dynamic> to = leg['to'];
+    dest = Location(lat: to['lat'], lon: to['lon'], name: to['name']);
 
-    // intialize legType
+    // intialize legType using a Simple Factory Pattern
+    String mode = leg['mode'];
+    try {
+      LegFactory.createLegType(mode, leg);
+    } catch (e) {
+      debugPrint(e.toString());
+    }
 
     // intialize distance
+    distance = leg['distance'];
 
     // initalize duration
+    duration = leg['duration'];
 
     // intialize endTime
+    endTime = leg['endTime'];
+
+    // intialize startTime
+    startTime = leg['startTime'];
   }
 
   void decodeAndAddToPolylineCoordinates(String legGeometry) {
