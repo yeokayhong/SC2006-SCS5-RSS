@@ -1,5 +1,4 @@
-
-.vscode/settings.json
-scheduler_app/pubspec.lock
-scheduler_app/pubspec.lock
-server/__pychache__/*.pyc
+**/settings.json
+**/pubspec.lock
+__pycache__/
+.env
