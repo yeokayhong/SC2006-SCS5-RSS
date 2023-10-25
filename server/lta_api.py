@@ -63,13 +63,6 @@ class LtaApi:
                 f"Failed to fetch platform crowd density forecast: {e}")
 
     def get_estimated_waiting_time(self, bus_stop_code, service_no=""):
-        url = f"{self.base_url}/BusArrivalv2?BusStopCode={bus_stop_code}&ServiceNo={service_no}"
-        headers = {
-            'AccountKey': self.api_key,
-        }
-        return requests.get(url, headers=headers, *args, **kwargs)
-
-    def get_estimated_waiting_time(self, bus_stop_code, service_no=""):
         try:
             response = self.get(
                 f"/BusArrivalv2?BusStopCode={bus_stop_code}&ServiceNo={service_no}")
