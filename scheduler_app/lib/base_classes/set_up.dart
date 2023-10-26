@@ -24,7 +24,7 @@ Future<void> instanceSetUp() async {
 
   // LegFactory
   // Register constructors for Legs
-  LegFactory.register(LegMode.WALK.toString(), (arg) => WalkLeg(json: arg));
-  LegFactory.register(LegMode.BUS.toString(), (arg) => BusLeg(json: arg));
-  LegFactory.register(LegMode.SUBWAY.toString(), (arg) => SubwayLeg(json: arg));
+  LegFactory.register("WALK", (arg) => WalkLeg(json: arg));
+  LegFactory.register("BUS", (arg) => BusLeg(json: arg));
+  LegFactory.register("SUBWAY", (arg) => SubwayLeg(json: arg));
 }

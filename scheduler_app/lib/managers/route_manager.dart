@@ -19,7 +19,11 @@ class RouteManager {
           await fetchData(event.origin, event.dest, event.routeType);
       debugPrint(
           "Received: ${event.origin}, ${event.dest}, ${event.routeType}");
-      createRoutes(json['plan']['itineraries']);
+      if (json["error"] == "")
+        createRoutes(json['plan']['itineraries']);
+      else {
+        debugPrint(json['error']);
+      }
     });
   }
 

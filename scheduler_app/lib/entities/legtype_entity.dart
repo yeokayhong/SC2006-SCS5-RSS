@@ -2,63 +2,61 @@ import 'package:flutter/rendering.dart';
 import 'package:scheduler_app/entities/step_entity.dart';
 import 'package:scheduler_app/entities/stop_entity.dart';
 
-// create new Legs here
-enum LegMode {
-  WALK,
-  BUS,
-  SUBWAY,
-}
-
 abstract class LegType {
-  late LegMode mode;
+  late String mode;
 }
 
 class WalkLeg extends LegType {
-  late List<Step> steps;
+  List<Step> steps = [];
   WalkLeg({required Map<String, dynamic> json}) {
-    super.mode = LegMode.WALK;
+    super.mode = "WALK";
     // intialize step list
     List<dynamic> stepsJson = json['steps'];
     // debug message
-    debugPrint(stepsJson.toString());
+    debugPrint("StepsJson obtained: ${stepsJson.toString()}");
     for (var step in stepsJson) {
       steps.add(Step(
           absoluteDirection: step['absoluteDirection'],
           distance: step['distance'],
           lat: step['lat'],
           lon: step['lon'],
-          name: step['name']));
+          name: step['streetName']));
     }
+    debugPrint("Successful Created Steps: ${steps.length}");
   }
 }
 
 class BusLeg extends LegType {
-  late List<Stop> stops;
+  List<Stop> stops = [];
   BusLeg({required Map<String, dynamic> json}) {
-    super.mode = LegMode.BUS;
+    super.mode = "BUS";
     // intialize stop list
     List<dynamic> stopsJson = json['intermediateStops'];
     // debug message
-    debugPrint(stopsJson.toString());
+    debugPrint("StopsJson obtained: ${stopsJson.toString()}");
     for (var stop in stopsJson) {
       // create Stop
-      stops.add(Stop(
+      stops.add(
+        Stop(
           arrivalTime: stop['arrival'],
-          departureTime: stop['lat'],
+          departureTime: stop['departure'],
           lat: stop['lat'],
           lon: stop['lon'],
           name: stop['name'],
           stopCode: stop['stopCode'],
           stopIndex: stop['stopIndex'],
-          stopSequence: stop['stopSequence']));
+          stopSequence: stop['stopSequence'],
+        ),
+      );
     }
+    debugPrint("Successful Created Stops: ${stops.length}");
   }
 }
 
 class SubwayLeg extends LegType {
-  late List<Stop> stops;
+  List<Stop> stops = [];
   SubwayLeg({required Map<String, dynamic> json}) {
-    super.mode = LegMode.SUBWAY;
+    super.mode = "SUBWAY";
     // intialize stop list
     List<dynamic> unparsed = json['intermediateStops'];
     // debug message
@@ -93,7 +91,7 @@ class LegFactory {
     if (constructor != null) {
       return constructor(json);
     } else {
-      throw Exception('Invalid Leg Mode');
+      throw Exception('Invalid Leg Mode: $mode');
     }
   }
 }
