@@ -1,11 +1,10 @@
 import 'package:event_bus/event_bus.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:get_it/get_it.dart';
-import 'package:http/http.dart';
 import 'package:scheduler_app/managers/notification_manager.dart';
+import 'package:scheduler_app/managers/concern_manager.dart';
 import 'package:scheduler_app/managers/route_manager.dart';
-
 import '../entities/legtype_entity.dart';
+import 'package:get_it/get_it.dart';
 
 GetIt getIt = GetIt.instance;
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
@@ -21,6 +20,7 @@ Future<void> instanceSetUp() async {
       flutterLocalNotificationsPlugin);
   getIt.registerSingleton<FlutterLocalNotificationsPlugin>(
       flutterLocalNotificationsPlugin);
+  getIt.registerSingleton<ConcernManager>(ConcernManager());
 
   // LegFactory
   // Register constructors for Legs

@@ -6,42 +6,43 @@ import 'package:get_it/get_it.dart';
 class ConcernManager {
   final NotificationManager _notificationManager =
       GetIt.instance<NotificationManager>();
-  final html.EventSource _concernEvents = html.EventSource("/concerns/events");
+  final html.EventSource _concernEvents =
+      html.EventSource("http://10.0.2.2:5000/concerns/subscribe");
 
   ConcernManager() {
-    _concernEvents.addEventListener("added", (html.Event event) {
+    _concernEvents.onMessage.listen((html.MessageEvent event) {
+      print(event.data);
+    });
+    _concernEvents.addEventListener("add", (html.Event event) {
       _handleAddedConcern(event);
     });
-    _concernEvents.addEventListener("updated", (html.Event event) {
+    _concernEvents.addEventListener("update", (html.Event event) {
       _handleUpdatedConcern(event);
     });
-    _concernEvents.addEventListener("removed", (html.Event event) {
+    _concernEvents.addEventListener("remove", (html.Event event) {
       _handleRemovedConcern(event);
     });
   }
 
   void _handleAddedConcern(html.Event event) {
-    if (!isActiveRouteAffected()) {
-      String title = "Concern added";
-      String body = "A new concern has been added";
-      _notificationManager.createNotification(title: title, body: body);
-    }
+    if (!isActiveRouteAffected()) return;
+    String title = "Concern added";
+    String body = "A new concern has been added";
+    _notificationManager.createNotification(title: title, body: body);
   }
 
   void _handleUpdatedConcern(html.Event event) {
-    if (!isActiveRouteAffected()) {
-      String title = "Concern updated";
-      String body = "A concern has been updated";
-      _notificationManager.createNotification(title: title, body: body);
-    }
+    if (!isActiveRouteAffected()) return;
+    String title = "Concern updated";
+    String body = "A concern has been updated";
+    _notificationManager.createNotification(title: title, body: body);
   }
 
   void _handleRemovedConcern(html.Event event) {
-    if (!isActiveRouteAffected()) {
-      String title = "Concern removed";
-      String body = "A concern has been removed";
-      _notificationManager.createNotification(title: title, body: body);
-    }
+    if (!isActiveRouteAffected()) return;
+    String title = "Concern removed";
+    String body = "A concern has been removed";
+    _notificationManager.createNotification(title: title, body: body);
   }
 
   Future<List<Concern>> getConcerns() async {
@@ -64,7 +65,7 @@ class ConcernManager {
   }
 
   bool isActiveRouteAffected() {
-    return false;
+    return true;
   }
 
   void dispose() {
