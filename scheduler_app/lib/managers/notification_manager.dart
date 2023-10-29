@@ -65,8 +65,8 @@ class NotificationManager {
                 '"${notification.message}"',
               ])
           .toList();
-          print(csvData);
-          print(const ListToCsvConverter().convert(csvData));
+      print(csvData);
+      print(const ListToCsvConverter().convert(csvData));
       try {
         await file.writeAsString(const ListToCsvConverter().convert(csvData),
             mode: FileMode.write);
@@ -100,28 +100,26 @@ class NotificationManager {
 
   static Future initializeNotifications(
       FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin) async {
-    const AndroidInitializationSettings androidInitialize = AndroidInitializationSettings('mipmap/ic_launcher');
+    const AndroidInitializationSettings androidInitialize =
+        AndroidInitializationSettings('mipmap/ic_launcher');
     var initializationSettings =
         const InitializationSettings(android: androidInitialize);
     await flutterLocalNotificationsPlugin.initialize(initializationSettings);
   }
 
-  Future<void> _displayRealTimeNotification(
-      id,
-      String title,
-      String body,
+  Future<void> _displayRealTimeNotification(id, String title, String body,
       FlutterLocalNotificationsPlugin fln) async {
     try {
       const AndroidNotificationDetails androidPlatformChannelSpecifics =
-      AndroidNotificationDetails(
+          AndroidNotificationDetails(
         'you can name it whatever1',
         'channelName',
         playSound: true,
         importance: Importance.max,
         priority: Priority.high,
       );
-      const NotificationDetails not = NotificationDetails(
-          android: androidPlatformChannelSpecifics);
+      const NotificationDetails not =
+          NotificationDetails(android: androidPlatformChannelSpecifics);
       await fln.show(0, title, body, not);
       print('Successful');
     } catch (e) {
@@ -130,7 +128,7 @@ class NotificationManager {
     }
   }
 
-  Future<void> createNotification({id=0, title="", body, fln}) async {
+  Future<void> createNotification({id = 0, title = "", body, fln}) async {
     if (fln == null) {
       fln = getIt<FlutterLocalNotificationsPlugin>();
     }

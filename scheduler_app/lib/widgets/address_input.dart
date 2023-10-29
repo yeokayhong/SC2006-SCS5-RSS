@@ -113,6 +113,7 @@ class _AddressSearchWidgetState extends State<AddressSearchWidget> {
   @override
   Widget build(BuildContext context) {
     return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
       children: [
         TextField(
           controller: _origin_controller,
@@ -131,7 +132,8 @@ class _AddressSearchWidgetState extends State<AddressSearchWidget> {
         Offstage(
           offstage: !(_origin_focus.hasFocus || _destination_focus.hasFocus),
           child: BottomSheet(
-            onClosing: () {},
+            enableDrag: false,
+            onClosing: () => {},
             builder: (context) => ListView.builder(
               keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
               shrinkWrap: true,

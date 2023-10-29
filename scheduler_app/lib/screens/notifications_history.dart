@@ -26,10 +26,8 @@ class _NotificationUIState extends State<NotificationUI> {
   void initState() {
     super.initState();
     //_setupEventListeners();
-    notificationList = getIt<NotificationManager>()
-        .getNotificationHistory()
-        .reversed
-        .toList();
+    notificationList =
+        getIt<NotificationManager>().getNotificationHistory().reversed.toList();
   }
 
   @override

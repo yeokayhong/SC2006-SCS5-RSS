@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:scheduler_app/entities/route_event.dart';
+import 'package:scheduler_app/screens/route_selection.dart';
 import 'package:scheduler_app/widgets/address_input.dart';
 import 'screens_barrel.dart';
 import 'package:scheduler_app/widgets/map.dart';
@@ -43,15 +44,19 @@ class _MapInputPageState extends State<MapInputPage> {
               onOriginChanged: handleOriginChange,
               onDestinationChanged: handleDestinationChange),
 
-          // ElevatedButton(
-          //   onPressed: () {
-          //     // _showRouteOptions(context);
-          //     // for actual implementation of fetching data, this will be done on Route Manager, this event should notify the Route Manager.
-          //     eventBus.fire(RouteEvent(
-          //         "1.393454,103.739601", "1.379828,103.760057", "pt"));
-          //   },
-          //   child: const Text('Search Routes'),
-          // )
+          ElevatedButton(
+            onPressed: () {
+              eventBus.fire(RouteEvent(
+                  "1.393454,103.739601", "1.379828,103.760057", "pt"));
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const RouteSelectionPage(),
+                ),
+              );
+            },
+            child: const Text('Search Routes'),
+          )
         ],
       ),
     );
