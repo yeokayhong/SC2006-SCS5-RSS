@@ -2,6 +2,7 @@ import 'package:event_bus/event_bus.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:scheduler_app/entities/address.dart';
 import 'package:scheduler_app/entities/route_event.dart';
 import 'package:scheduler_app/screens/route_selection.dart';
 import 'package:scheduler_app/widgets/address_input.dart';
@@ -19,12 +20,13 @@ class MapInputPage extends StatefulWidget {
 class _MapInputPageState extends State<MapInputPage> {
   // implement the function callbacks for address search
   EventBus get eventBus => GetIt.instance<EventBus>();
-  void handleOriginChange(String origin) {
-    debugPrint("Origin selected: $origin");
+  void handleOriginChange(Address origin) {
+    debugPrint("Origin selected: ${origin.latitude}, ${origin.longitude}");
   }
 
-  void handleDestinationChange(String destination) {
-    debugPrint("Destination selected: $destination");
+  void handleDestinationChange(Address destination) {
+    debugPrint(
+        "Destination selected: ${destination.latitude}, ${destination.longitude}");
   }
 
   @override

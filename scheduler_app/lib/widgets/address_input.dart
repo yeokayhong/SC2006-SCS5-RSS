@@ -5,8 +5,8 @@ import 'dart:convert';
 import 'dart:async';
 
 class AddressSearchWidget extends StatefulWidget {
-  final Function(String) onOriginChanged;
-  final Function(String) onDestinationChanged;
+  final Function(Address) onOriginChanged;
+  final Function(Address) onDestinationChanged;
 
   const AddressSearchWidget({
     Key key = const Key('address_search'),
@@ -69,7 +69,7 @@ class _AddressSearchWidgetState extends State<AddressSearchWidget> {
     }
   }
 
-  void fetch_token() async {
+  void fetchToken() async {
     final Map<String, dynamic> payload = {
       "email": "do_not_commit",
       "password": "do_not_commit"
@@ -90,14 +90,14 @@ class _AddressSearchWidgetState extends State<AddressSearchWidget> {
     Map<String, dynamic> data = jsonDecode(response.body);
 
     setState(() {
-      _token = data["accessToken"];
+      _token = data["access_token"];
     });
   }
 
   @override
   void initState() {
     super.initState();
-    fetch_token();
+    fetchToken();
   }
 
   @override
@@ -147,14 +147,14 @@ class _AddressSearchWidgetState extends State<AddressSearchWidget> {
                   if (_origin_focus.hasFocus) {
                     _origin_controller.text =
                         _addresses[index].street_address();
-                    widget.onOriginChanged(_origin_controller.text);
+                    widget.onOriginChanged(_addresses[index]);
                     _debounced_search_address(_destination_controller.text);
                     _origin_focus.unfocus();
                     _destination_focus.requestFocus();
                   } else if (_destination_focus.hasFocus) {
                     _destination_controller.text =
                         _addresses[index].street_address();
-                    widget.onDestinationChanged(_destination_controller.text);
+                    widget.onDestinationChanged(_addresses[index]);
                     _destination_focus.unfocus();
                     setState(() {});
                   }

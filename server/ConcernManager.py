@@ -12,7 +12,7 @@ class ConcernManager:
 
         self.mode = mode
 
-        self.seconds_between_queries = 10
+        self.seconds_between_queries = 300
         self.timer_thread = threading.Thread(target=self.monitor_concerns)
         self.timer_thread.daemon = True
         self.timer_thread.start()
