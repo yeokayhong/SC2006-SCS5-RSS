@@ -2,6 +2,7 @@ import 'package:scheduler_app/managers/notification_manager.dart';
 import "package:universal_html/html.dart" as html;
 import 'package:http/http.dart' as http;
 import 'package:get_it/get_it.dart';
+import 'dart:convert';
 
 class ConcernManager {
   final NotificationManager _notificationManager =
@@ -10,9 +11,6 @@ class ConcernManager {
       html.EventSource("http://10.0.2.2:5000/concerns/subscribe");
 
   ConcernManager() {
-    _concernEvents.onMessage.listen((html.MessageEvent event) {
-      print(event.data);
-    });
     _concernEvents.addEventListener("add", (html.Event event) {
       _handleAddedConcern(event);
     });
@@ -26,23 +24,31 @@ class ConcernManager {
 
   void _handleAddedConcern(html.Event event) {
     if (!isActiveRouteAffected()) return;
-    String title = "Concern added";
-    String body = "A new concern has been added";
-    _notificationManager.createNotification(title: title, body: body);
+    String message = (event as html.MessageEvent).data as String;
+    Map<String, dynamic> json = jsonDecode(message);
+
+    _notificationManager.createNotification(
+        title: json["message"], body: "Click to view details");
   }
 
   void _handleUpdatedConcern(html.Event event) {
     if (!isActiveRouteAffected()) return;
-    String title = "Concern updated";
-    String body = "A concern has been updated";
-    _notificationManager.createNotification(title: title, body: body);
+    String message = (event as html.MessageEvent).data as String;
+    Map<String, dynamic> json = jsonDecode(message);
+
+    _notificationManager.createNotification(
+        title: "An alert along your route has been updated",
+        body: "Click to view details");
   }
 
   void _handleRemovedConcern(html.Event event) {
     if (!isActiveRouteAffected()) return;
-    String title = "Concern removed";
-    String body = "A concern has been removed";
-    _notificationManager.createNotification(title: title, body: body);
+    String message = (event as html.MessageEvent).data as String;
+    Map<String, dynamic> json = jsonDecode(message);
+
+    _notificationManager.createNotification(
+        title: "An alert along your route has been removed",
+        body: "Click to view details");
   }
 
   Future<List<Concern>> getConcerns() async {
