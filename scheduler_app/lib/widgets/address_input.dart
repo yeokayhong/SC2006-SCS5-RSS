@@ -113,6 +113,7 @@ class _AddressSearchWidgetState extends State<AddressSearchWidget> {
   @override
   Widget build(BuildContext context) {
     return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
       children: [
         TextField(
           controller: _origin_controller,
@@ -130,36 +131,34 @@ class _AddressSearchWidgetState extends State<AddressSearchWidget> {
         ),
         Offstage(
           offstage: !(_origin_focus.hasFocus || _destination_focus.hasFocus),
-          child: SingleChildScrollView(
-            child: BottomSheet(
-              onClosing: () {},
-              builder: (context) => ListView.builder(
-                keyboardDismissBehavior:
-                    ScrollViewKeyboardDismissBehavior.onDrag,
-                shrinkWrap: true,
-                itemCount: _addresses.length,
-                itemBuilder: (context, index) => ListTile(
-                  title: Text(_addresses[index].building_name),
-                  subtitle: Text(
-                      "0.0km | ${_addresses[index].street_address()} | ${_addresses[index].postal_code}"),
-                  onTap: () {
-                    // update the active text field with the selected address
-                    if (_origin_focus.hasFocus) {
-                      _origin_controller.text =
-                          _addresses[index].street_address();
-                      widget.onOriginChanged(_origin_controller.text);
-                      _debounced_search_address(_destination_controller.text);
-                      _origin_focus.unfocus();
-                      _destination_focus.requestFocus();
-                    } else if (_destination_focus.hasFocus) {
-                      _destination_controller.text =
-                          _addresses[index].street_address();
-                      widget.onDestinationChanged(_destination_controller.text);
-                      _destination_focus.unfocus();
-                      setState(() {});
-                    }
-                  },
-                ),
+          child: BottomSheet(
+            enableDrag: false,
+            onClosing: () => {},
+            builder: (context) => ListView.builder(
+              keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+              shrinkWrap: true,
+              itemCount: _addresses.length,
+              itemBuilder: (context, index) => ListTile(
+                title: Text(_addresses[index].building_name),
+                subtitle: Text(
+                    "0.0km | ${_addresses[index].street_address()} | ${_addresses[index].postal_code}"),
+                onTap: () {
+                  // update the active text field with the selected address
+                  if (_origin_focus.hasFocus) {
+                    _origin_controller.text =
+                        _addresses[index].street_address();
+                    widget.onOriginChanged(_origin_controller.text);
+                    _debounced_search_address(_destination_controller.text);
+                    _origin_focus.unfocus();
+                    _destination_focus.requestFocus();
+                  } else if (_destination_focus.hasFocus) {
+                    _destination_controller.text =
+                        _addresses[index].street_address();
+                    widget.onDestinationChanged(_destination_controller.text);
+                    _destination_focus.unfocus();
+                    setState(() {});
+                  }
+                },
               ),
             ),
           ),

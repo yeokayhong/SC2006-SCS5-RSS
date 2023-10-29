@@ -46,3 +46,4 @@ app.*.map.json
 # Additional Files (KH)
 *.rest
 server/__pychache__/*.pyc
+.env

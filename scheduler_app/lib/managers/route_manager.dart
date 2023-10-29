@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:event_bus/event_bus.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
@@ -10,6 +12,8 @@ import 'concern_manager.dart';
 
 // RouteManager contains a class of methods for retrieving information on the retrieved Route Objects
 class RouteManager {
+  final StreamController<Map<int, r.Route>> _routeStreamController =
+      StreamController.broadcast();
   final Map<int, r.Route> _routeDict = {};
   EventBus get eventBus => GetIt.instance<EventBus>();
 
@@ -19,7 +23,11 @@ class RouteManager {
           await fetchData(event.origin, event.dest, event.routeType);
       debugPrint(
           "Received: ${event.origin}, ${event.dest}, ${event.routeType}");
-      createRoutes(json['plan']['itineraries']);
+      if (json["error"] == "")
+        createRoutes(json['plan']['itineraries']);
+      else {
+        debugPrint(json['error']);
+      }
     });
   }
 
@@ -55,16 +63,24 @@ class RouteManager {
   void searchAffectedRoutesWithConcernList(List<Concern> concernList) {}
 
   // get Bus Waiting Time
-  void getBusWaitingTime() {}
+  void getBusWaitingTime() {
+    // update Routes into Stream
+    _routeStreamController.add(_routeDict);
+  }
 
   // get MRT Waiting Time
-  void getMRTWaitingTime() {}
+  void getMRTWaitingTime() {
+    // update Routes into Stream
+    _routeStreamController.add(_routeDict);
+  }
 
   // update Route Arrival Time inclusive of live Waiting Time
   void updateLiveArrivalTime() {}
 
   // create Route Object and add to dictionary, json should be of json['itineraries]
   void createRoutes(List<dynamic> json) {
+    // remove previous route data, since new origin and destination are chosen
+    _routeDict.clear();
     int counter = 1;
     for (var route in json) {
       r.Route newRoute = r.Route(json: route, mapIndex: counter);
@@ -72,5 +88,12 @@ class RouteManager {
       counter++;
     }
     debugPrint("Routes: $_routeDict");
+
+    // update Routes into Stream
+    _routeStreamController.add(_routeDict);
+    debugPrint("Event emitted: $_routeDict");
   }
+
+  // Stream object
+  Stream<Map<int, r.Route>> get routeStream => _routeStreamController.stream;
 }

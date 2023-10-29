@@ -31,32 +31,32 @@ class _MapWidgetState extends State<MapWidget> {
   // unitTest list
   List<List<num>> decodedPolyLines = [];
 
-  void processLegGeometry(String legGeometry) {
-    // get the leg geometry
-    // decode leg geometry
-    setState(() {
-      decodedPolyLines = decodePolyline(legGeometry);
-    });
-  }
+  // void processLegGeometry(String legGeometry) {
+  //   // get the leg geometry
+  //   // decode leg geometry
+  //   setState(() {
+  //     decodedPolyLines = decodePolyline(legGeometry);
+  //   });
+  // }
 
-  void getPolyPoints() async {
-    // server should return a list of legs that contains a list of points based on decoded leg geometry
-    List<String> legGeometryList;
-    processLegGeometry(
-        "s~`GmayxRa@a@VSDE@CFEHIPOBC@CA?@A\\Y@CnAmAHIBCDEDEDCDCJGFCJCFAHALAh@El@GXCXCF?TCAGC[?EB?JCPA@A@A?AEa@UaAAMB?");
-    for (var i = 0; i < decodedPolyLines.length; i++) {
-      polylineCoordinates.add(LatLng(decodedPolyLines[i][0].toDouble(),
-          decodedPolyLines[i][1].toDouble()));
-    }
+  // void getPolyPoints() async {
+  //   // server should return a list of legs that contains a list of points based on decoded leg geometry
+  //   List<String> legGeometryList;
+  //   processLegGeometry(
+  //       "s~`GmayxRa@a@VSDE@CFEHIPOBC@CA?@A\\Y@CnAmAHIBCDEDEDCDCJGFCJCFAHALAh@El@GXCXCF?TCAGC[?EB?JCPA@A@A?AEa@UaAAMB?");
+  //   for (var i = 0; i < decodedPolyLines.length; i++) {
+  //     polylineCoordinates.add(LatLng(decodedPolyLines[i][0].toDouble(),
+  //         decodedPolyLines[i][1].toDouble()));
+  //   }
 
-    // empty setState rebuilds the whole widget tree, ensuring the polylines are drawn.
-    debugPrint("Coordinates are: " + polylineCoordinates.toString());
-    setState(() {});
-  }
+  //   // empty setState rebuilds the whole widget tree, ensuring the polylines are drawn.
+  //   debugPrint("Coordinates are: " + polylineCoordinates.toString());
+  //   setState(() {});
+  // }
 
   @override
   void initState() {
-    getPolyPoints();
+    // getPolyPoints();
     super.initState();
   }
 

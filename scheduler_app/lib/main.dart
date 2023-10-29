@@ -25,7 +25,6 @@ Future<void> main() async {
 // ... [Your imports and existing code remains the same]
 
 enum AppTab {
-  authentication,
   mapInput,
   routeDetails,
   selectedRoute,
@@ -38,7 +37,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  AppTab _currentTab = AppTab.authentication;
+  AppTab _currentTab = AppTab.mapInput;
 
   @override
   Widget build(BuildContext context) {
@@ -60,10 +59,6 @@ class _MyAppState extends State<MyApp> {
             });
           },
           items: [
-            BottomNavigationBarItem(
-              icon: Icon(Icons.login),
-              label: 'Login',
-            ),
             BottomNavigationBarItem(
               icon: Icon(Icons.map),
               label: 'Map Input',
@@ -89,8 +84,6 @@ class _MyAppState extends State<MyApp> {
 
   Widget _buildBodyForTab(AppTab tab) {
     switch (tab) {
-      case AppTab.authentication:
-        return AuthenticationPage();
       case AppTab.mapInput:
         return MapInputPage();
       case AppTab.routeDetails:
