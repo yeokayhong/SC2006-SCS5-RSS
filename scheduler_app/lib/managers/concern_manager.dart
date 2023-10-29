@@ -1,5 +1,6 @@
 import 'package:scheduler_app/managers/notification_manager.dart';
 import "package:universal_html/html.dart" as html;
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:get_it/get_it.dart';
 import 'dart:convert';
@@ -26,9 +27,16 @@ class ConcernManager {
     if (!isActiveRouteAffected()) return;
     String message = (event as html.MessageEvent).data as String;
     Map<String, dynamic> json = jsonDecode(message);
-
     _notificationManager.createNotification(
-        title: json["message"], body: "Click to view details");
+        title: json["message"],
+        body: "There is a new alert along your route, click to view details",
+        payload: {
+          "type": json["type"],
+          "service": json["service"],
+          "affectedStops": json["affected_stops"],
+          "time": json["time"],
+          "message": json["message"]
+        });
   }
 
   void _handleUpdatedConcern(html.Event event) {
@@ -37,8 +45,15 @@ class ConcernManager {
     Map<String, dynamic> json = jsonDecode(message);
 
     _notificationManager.createNotification(
-        title: "An alert along your route has been updated",
-        body: "Click to view details");
+        title: json["message"],
+        body: "An alert along your route has updates, click to view details",
+        payload: {
+          "type": json["type"],
+          "service": json["service"],
+          "affectedStops": json["affected_stops"],
+          "time": json["time"],
+          "message": json["message"]
+        });
   }
 
   void _handleRemovedConcern(html.Event event) {
@@ -47,8 +62,15 @@ class ConcernManager {
     Map<String, dynamic> json = jsonDecode(message);
 
     _notificationManager.createNotification(
-        title: "An alert along your route has been removed",
-        body: "Click to view details");
+        title: json["message"],
+        body: "This alert along your route has been removed",
+        payload: {
+          "type": json["type"],
+          "service": json["service"],
+          "affectedStops": json["affected_stops"],
+          "time": json["time"],
+          "message": json["message"]
+        });
   }
 
   Future<List<Concern>> getConcerns() async {
@@ -80,27 +102,30 @@ class ConcernManager {
 }
 
 class Concern {
-  String type;
-  String service;
-  List<String> affectedStops;
-  DateTime time;
-  String message;
+  final String type;
+  final String service;
+  final List<String> affectedStops;
+  final DateTime time;
+  final String message;
 
-  Concern(
-      {required this.type,
-      required this.service,
-      required this.affectedStops,
-      required this.time,
-      required this.message});
+  Concern({
+    required this.type,
+    required this.service,
+    required this.affectedStops,
+    required this.time,
+    required this.message,
+  });
 
   @override
   bool operator ==(Object other) {
     if (other is! Concern) {
       return false;
     }
-    return type == other.type && service == other.service && time == other.time;
+    return type == other.type &&
+        service == other.service &&
+        listEquals(affectedStops, other.affectedStops);
   }
 
   @override
-  int get hashCode => type.hashCode ^ service.hashCode ^ time.hashCode;
+  int get hashCode => type.hashCode ^ service.hashCode ^ affectedStops.hashCode;
 }

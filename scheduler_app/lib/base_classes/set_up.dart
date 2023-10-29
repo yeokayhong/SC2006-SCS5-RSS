@@ -1,8 +1,8 @@
-import 'package:event_bus/event_bus.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:scheduler_app/managers/notification_manager.dart';
 import 'package:scheduler_app/managers/concern_manager.dart';
 import 'package:scheduler_app/managers/route_manager.dart';
+import 'package:event_bus/event_bus.dart';
 import '../entities/legtype_entity.dart';
 import 'package:get_it/get_it.dart';
 

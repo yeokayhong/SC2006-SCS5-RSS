@@ -1,16 +1,12 @@
-import 'package:flutter/material.dart';
-import 'package:scheduler_app/base_classes/date_time_format.dart';
-//import 'package:scheduler_app/base_classes/set_up.dart';
-
-import 'package:scheduler_app/managers/notification_manager.dart';
 import 'package:scheduler_app/entities/notification_entity.dart'
     as notification_entity;
-
-import 'package:event_bus/event_bus.dart';
-import 'package:get_it/get_it.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-
-//import '../managers/concern_manager.dart';
+import 'package:scheduler_app/base_classes/date_time_format.dart';
+import 'package:scheduler_app/managers/notification_manager.dart';
+import 'package:scheduler_app/widgets/notification_details.dart';
+import 'package:event_bus/event_bus.dart';
+import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 
 class NotificationUI extends StatefulWidget {
   @override
@@ -26,10 +22,8 @@ class _NotificationUIState extends State<NotificationUI> {
   void initState() {
     super.initState();
     //_setupEventListeners();
-    notificationList = getIt<NotificationManager>()
-        .getNotificationHistory()
-        .reversed
-        .toList();
+    notificationList =
+        getIt<NotificationManager>().getNotificationHistory().reversed.toList();
   }
 
   @override
@@ -48,15 +42,15 @@ class _NotificationUIState extends State<NotificationUI> {
         child: ListView.builder(
           itemCount: notificationList.length,
           itemBuilder: (context, index) {
-            final object = notificationList[index];
+            final notification = notificationList[index];
             const maxSubtitleLength = 100;
 
-            final isSubtitleLong = object.message.length > maxSubtitleLength;
+            final isSubtitleLong = notification.body.length > maxSubtitleLength;
 
             // Extract the displayed subtitle text
             final displayedSubtitle = isSubtitleLong
-                ? '${object.message.substring(0, maxSubtitleLength)}...'
-                : object.message; // Display full subtitle
+                ? '${notification.body.substring(0, maxSubtitleLength)}...'
+                : notification.body; // Display full subtitle
 
             return SizedBox(
               height: 150.0,
@@ -76,7 +70,7 @@ class _NotificationUIState extends State<NotificationUI> {
                           Expanded(
                             flex: 3,
                             child: ListTile(
-                              title: Text(object.time.customFormat()),
+                              title: Text(notification.time.customFormat()),
                               titleTextStyle: const TextStyle(
                                 fontSize: 20.0,
                                 color: Colors.black,
@@ -116,25 +110,11 @@ class _NotificationUIState extends State<NotificationUI> {
                         builder: (context) {
                           return AlertDialog(
                             title: const Text('Notification Details'),
-                            content: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Text(
-                                  'Time: ${object.time.customFormat()}',
-                                  style: const TextStyle(
-                                    fontSize: 20.0,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                const SizedBox(height: 10.0),
-                                Text(
-                                  'Message: ${object.message}',
-                                  style: const TextStyle(
-                                    fontSize: 16.0,
-                                  ),
-                                ),
-                              ],
+                            content: NotificationDetailsWidget(
+                              notification: notification,
+                              onRequest: (String message) {
+                                return;
+                              },
                             ),
                             actions: <Widget>[
                               TextButton(

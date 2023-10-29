@@ -1,6 +1,7 @@
 from Concern import Concern
 from lta_api import LtaApi
 import threading
+import datetime
 import time
 
 
@@ -11,7 +12,7 @@ class ConcernManager:
 
         self.mode = mode
 
-        self.seconds_between_queries = 5
+        self.seconds_between_queries = 10
         self.timer_thread = threading.Thread(target=self.monitor_concerns)
         self.timer_thread.daemon = True
         self.timer_thread.start()
@@ -49,7 +50,7 @@ class ConcernManager:
                 case "development":
                     print("Returning dummy data...")
                     concern = Concern("TrainDisruption", "EW", [
-                        "EW1", "EW2"], time.time(), "Test Due to a signal fault, expect delays of 10 minutes for train services between EW1 and EW2")
+                        "EW1", "EW2"], datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S"), "Test Due to a signal fault, expect delays of 10 minutes for train services between EW1 and EW2")
                     self.update_concerns([concern])
             time.sleep(self.seconds_between_queries)
 

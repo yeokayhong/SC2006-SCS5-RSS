@@ -1,16 +1,15 @@
-import 'package:flutter/services.dart';
-import 'package:csv/csv.dart';
-import 'dart:io';
-import 'package:path_provider/path_provider.dart' as path_provider;
-
-import 'package:get_it/get_it.dart';
-import 'package:event_bus/event_bus.dart';
-import 'package:scheduler_app/base_classes/set_up.dart';
-
-import 'package:scheduler_app/entities/notification_entity.dart';
+import 'dart:convert';
 
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:path_provider/path_provider.dart' as path_provider;
 import 'package:scheduler_app/managers/concern_manager.dart';
+import 'package:scheduler_app/entities/notification_entity.dart';
+import 'package:scheduler_app/base_classes/set_up.dart';
+import 'package:event_bus/event_bus.dart';
+import 'package:flutter/services.dart';
+import 'package:get_it/get_it.dart';
+import 'package:csv/csv.dart';
+import 'dart:io';
 
 class NotificationManager {
   List<Notification> _notifications = [];
@@ -35,9 +34,13 @@ class NotificationManager {
       final fields = const CsvToListConverter().convert(fileContents);
 
       List<Notification> newNotifications = fields.map((field) {
+        print(field);
         return Notification(
-          time: DateTime.parse(field[0]),
-          message: field[1],
+          id: field[0],
+          title: field[1],
+          body: field[2],
+          payload: jsonDecode(field[3]),
+          time: DateTime.parse(field[4]),
         );
       }).toList();
       _notifications.addAll(newNotifications);
@@ -53,7 +56,7 @@ class NotificationManager {
     final File file = File(csvFilePath);
     if (_notifications.isEmpty) {
       final defaultCsvData = [
-        ['Timestamp', 'Message']
+        ['id', 'title', 'body', 'payload', 'time'],
       ];
       await file.writeAsString(
           const ListToCsvConverter().convert(defaultCsvData),
@@ -61,16 +64,19 @@ class NotificationManager {
     } else {
       final List<List<dynamic>> csvData = _notifications
           .map((notification) => [
+                notification.id,
+                notification.title,
+                notification.body,
+                notification.payload.toString(),
                 notification.time.toIso8601String(),
-                '"${notification.message}"',
               ])
           .toList();
-          print(csvData);
-          print(const ListToCsvConverter().convert(csvData));
+      // print(csvData);
+      // print(const ListToCsvConverter().convert(csvData));
       try {
         await file.writeAsString(const ListToCsvConverter().convert(csvData),
             mode: FileMode.write);
-        print('CSV file updated successfully.');
+        // print('CSV file updated successfully.');
       } catch (e) {
         print('Error updating CSV file: $e');
       }
@@ -91,50 +97,56 @@ class NotificationManager {
     await updateNotificationFile();
   }
 
-  Future<void> _createNotificationObject(String message) async {
+  Future<void> _createNotificationObject(
+      String title, String body, dynamic payload) async {
     await _addNotification(Notification(
-      message: message,
-      time: DateTime.now(),
+      title: title,
+      body: body,
+      payload: payload,
     ));
   }
 
   static Future initializeNotifications(
       FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin) async {
-    const AndroidInitializationSettings androidInitialize = AndroidInitializationSettings('mipmap/ic_launcher');
+    const AndroidInitializationSettings androidInitialize =
+        AndroidInitializationSettings('mipmap/ic_launcher');
     var initializationSettings =
         const InitializationSettings(android: androidInitialize);
-    await flutterLocalNotificationsPlugin.initialize(initializationSettings);
+    await flutterLocalNotificationsPlugin.initialize(initializationSettings,
+        onDidReceiveNotificationResponse: handleNotificationClick);
   }
 
-  Future<void> _displayRealTimeNotification(
-      id,
-      String title,
-      String body,
-      FlutterLocalNotificationsPlugin fln) async {
+  static Future<void> handleNotificationClick(
+      NotificationResponse notificationResponse) async {
+    jsonDecode(notificationResponse.payload ?? "");
+  }
+
+  Future<void> _displayRealTimeNotification(id, String title, String body,
+      dynamic payload, FlutterLocalNotificationsPlugin fln) async {
     try {
       const AndroidNotificationDetails androidPlatformChannelSpecifics =
-      AndroidNotificationDetails(
+          AndroidNotificationDetails(
         'you can name it whatever1',
         'channelName',
         playSound: true,
         importance: Importance.max,
         priority: Priority.high,
       );
-      const NotificationDetails not = NotificationDetails(
-          android: androidPlatformChannelSpecifics);
-      await fln.show(0, title, body, not);
-      print('Successful');
+      const NotificationDetails notification =
+          NotificationDetails(android: androidPlatformChannelSpecifics);
+      await fln.show(0, title, body, notification,
+          payload: jsonEncode(payload));
+      // print('Successful');
     } catch (e) {
       // Handle any errors or exceptions here
       print("Notification display error: $e");
     }
   }
 
-  Future<void> createNotification({id=0, title="", body, fln}) async {
-    if (fln == null) {
-      fln = getIt<FlutterLocalNotificationsPlugin>();
-    }
-    await _createNotificationObject(body);
-    await _displayRealTimeNotification(id, title, body, fln);
+  Future<void> createNotification(
+      {id = 0, title = "", body, payload = const {}, fln}) async {
+    fln ??= getIt<FlutterLocalNotificationsPlugin>();
+    await _createNotificationObject(title, body, payload);
+    await _displayRealTimeNotification(id, title, body, payload, fln);
   }
 }
