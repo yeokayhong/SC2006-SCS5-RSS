@@ -1,9 +1,9 @@
+from flask_queue_sse import ServerSentEvents
 from flask import Flask, request, jsonify
 from ConcernManager import ConcernManager
 from routes_api import ServerRoutesAPI
 from dotenv import load_dotenv
 from lta_api import LtaApi
-import json
 import os
 
 load_dotenv()
@@ -15,7 +15,7 @@ one_map_api = ServerRoutesAPI(
     os.getenv("ONEMAP_EMAIL"), os.getenv("ONEMAP_PASSWORD"))
 
 # Create instances of ConcernManager
-concern_manager = ConcernManager()
+concern_manager = ConcernManager(mode=os.getenv("MODE"))
 
 # Example: Obtain estimated bus waiting time using bus stop code and service number instead of a route object
 
@@ -34,20 +34,24 @@ def get_estimated_waiting_time():
     except Exception as e:
         return jsonify({"error": str(e)})
 
+
 @app.route('/query_train_service_discription', methods=['GET'])
 def get_train_service_alerts():
     try:
         alerts = lta_api.get_train_service_alerts()
-        
-        disrupted_services = [alert for alert in alerts if alert['Status'] == '2']
-        
+
+        disrupted_services = [
+            alert for alert in alerts if alert['Status'] == '2']
+
         if not disrupted_services:
             return jsonify({"message": "All train services are operating normally."})
-        
+
         return jsonify({"disrupted_services": disrupted_services})
     except Exception as e:
         return jsonify({"error": str(e)})
 # for test only
+
+
 @app.route('/get_platform_crowd_density_realtime', methods=['GET'])
 def get_platform_crowd_density_realtime():
     train_line = request.args.get('train_line')
@@ -60,6 +64,8 @@ def get_platform_crowd_density_realtime():
     except Exception as e:
         return jsonify({"error": str(e)})
 # for test only
+
+
 @app.route('/get_platform_crowd_density_forecast', methods=['GET'])
 def get_platform_crowd_density_forecast():
     train_line = request.args.get('train_line')
@@ -72,10 +78,13 @@ def get_platform_crowd_density_forecast():
     except Exception as e:
         return jsonify({"error": str(e)})
 
+
 '''
 sample input curl "http://localhost:5000/query_crowded_Stations?train_line=EWL&station=EW1&time=2023-10-25T21:16:00%2B08:00"
 where 2023-10-25T21:16:00 is a valid time can be identity by get_platform_crowd_density_realtime function
 '''
+
+
 @app.route('/query_crowded_Stations', methods=['GET'])
 def get_crowd_density():
     train_line = request.args.get('train_line')
@@ -85,9 +94,9 @@ def get_crowd_density():
     # Check if all parameters are provided
     if not all([train_line, station, time]):
         return jsonify({"error": "TrainLine, Station and Time parameters are required"})
-    #density_data = lta_api.get_platform_crowd_density_forecast(train_line)
+    # density_data = lta_api.get_platform_crowd_density_forecast(train_line)
     density_data = lta_api.get_platform_crowd_density_realtime(train_line)
-    
+
     # Convert the provided time to a datetime object
     fixed_time = time.replace(" ", "+")
     query_time = datetime.fromisoformat(fixed_time)
@@ -102,7 +111,7 @@ def get_crowd_density():
             return jsonify({"CrowdLevel": entry['CrowdLevel'], "StartTime": entry['StartTime'], "EndTime": entry['EndTime']})
 
     # If no matching entry is found
-    return jsonify({"error": "No data found for given station and time."})    
+    return jsonify({"error": "No data found for given station and time."})
 
 # (To be completed) Call methods from the OneMap API
 
@@ -137,6 +146,13 @@ def get_concerns():
         {"concerns": [concern.__dict__ for concern in concerns]})
     print(response)
     return response
+
+
+@app.route('/concerns/subscribe', methods=['GET'])
+def subscribe():
+    sse = ServerSentEvents()
+    concern_manager.add_subscriber(sse)
+    return sse.response()
 
 # Add other app routes here and call methods from RouteManager and ConcernManager
 

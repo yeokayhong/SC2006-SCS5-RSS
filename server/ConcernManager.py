@@ -5,10 +5,13 @@ import time
 
 
 class ConcernManager:
-    def __init__(self):
+    def __init__(self, mode="production"):
         self.concerns = []
-        self.seconds_between_queries = 300
+        self.sse_instances = []
 
+        self.mode = mode
+
+        self.seconds_between_queries = 15
         self.timer_thread = threading.Thread(target=self.monitor_concerns)
         self.timer_thread.daemon = True
         self.timer_thread.start()
@@ -40,21 +43,41 @@ class ConcernManager:
 
     def monitor_concerns(self):
         while True:
-            self.query_train_service_alerts()
+            match self.mode:
+                case "production":
+                    self.query_train_service_alerts()
+                case "development":
+                    print("Returning dummy data...")
+                    concern = Concern("TrainDisruption", "EW", [
+                        "EW1", "EW2"], 1698582180.3384624, "Test")
+                    self.update_concerns([concern])
             time.sleep(self.seconds_between_queries)
 
     def update_concerns(self, concerns: list[Concern]):
         for existing_concern in self.concerns:
             if existing_concern not in concerns:
-                # Fire remove event
+                self.update_subscribers(
+                    event="remove", payload=existing_concern.__dict__)
                 self.concerns.remove(existing_concern)
+
             matching_concern = next(
-                [concern for concern in concerns if concern == existing_concern])
+                concern for concern in concerns if concern == existing_concern)
             if matching_concern.time != existing_concern.time:
-                # Fire update event
+                self.update_subscribers(
+                    event="update", payload=matching_concern.__dict__)
                 self.concerns.remove(existing_concern)
                 self.concerns.append(matching_concern)
-                concerns.remove(matching_concern)
+            concerns.remove(matching_concern)
+
         for concern in concerns:
-            # Fire add event
+            self.update_subscribers(event="add", payload=concern.__dict__)
             self.concerns.append(concern)
+
+    def update_subscribers(self, *args, **kwargs):
+        for sse_instance in self.sse_instances:
+            sse_instance.send(*args, **kwargs)
+        return
+
+    def add_subscriber(self, sse_instance):
+        self.sse_instances.append(sse_instance)
+        return
