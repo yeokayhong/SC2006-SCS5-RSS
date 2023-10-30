@@ -3,6 +3,7 @@ import 'package:get_it/get_it.dart';
 import 'package:scheduler_app/managers/route_manager.dart';
 import 'package:scheduler_app/entities/route_entity.dart' as r;
 import 'package:scheduler_app/entities/duration.dart' as d;
+import 'package:scheduler_app/screens/route_details.dart';
 
 class RouteSelectionPage extends StatefulWidget {
   const RouteSelectionPage({super.key});
@@ -75,6 +76,13 @@ class _RouteSelectionPageState extends State<RouteSelectionPage> {
                     size: 20.0, color: Colors.blueAccent),
                 onTap: () {
                   // Perform actions like navigation
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          RouteDetailsPage(routeNumber: routeKey),
+                    ),
+                  );
                 },
               );
             },

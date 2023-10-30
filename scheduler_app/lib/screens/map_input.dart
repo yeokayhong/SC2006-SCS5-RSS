@@ -20,13 +20,25 @@ class MapInputPage extends StatefulWidget {
 class _MapInputPageState extends State<MapInputPage> {
   // implement the function callbacks for address search
   EventBus get eventBus => GetIt.instance<EventBus>();
+  late double originLatitude;
+  late double originLongitude;
+  late double destinationLatitude;
+  late double destinationLongitude;
   void handleOriginChange(Address origin) {
     debugPrint("Origin selected: ${origin.latitude}, ${origin.longitude}");
+    setState(() {
+      originLatitude = origin.latitude;
+      originLongitude = origin.longitude;
+    });
   }
 
   void handleDestinationChange(Address destination) {
     debugPrint(
         "Destination selected: ${destination.latitude}, ${destination.longitude}");
+    setState(() {
+      destinationLatitude = destination.latitude;
+      destinationLongitude = destination.longitude;
+    });
   }
 
   @override
@@ -45,19 +57,32 @@ class _MapInputPageState extends State<MapInputPage> {
           AddressSearchWidget(
               onOriginChanged: handleOriginChange,
               onDestinationChanged: handleDestinationChange),
-
-          ElevatedButton(
-            onPressed: () {
-              eventBus.fire(RouteEvent(
-                  "1.393454,103.739601", "1.379828,103.760057", "pt"));
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const RouteSelectionPage(),
+          const Spacer(),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 15),
+            child: ElevatedButton(
+              onPressed: () {
+                eventBus.fire(RouteEvent("$originLatitude,$originLongitude",
+                    "$destinationLatitude,$destinationLongitude", "pt"));
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const RouteSelectionPage(),
+                  ),
+                );
+              },
+              child: const Text('Search Routes'),
+              style: ElevatedButton.styleFrom(
+                textStyle: TextStyle(
+                  fontSize: 18, // font size
                 ),
-              );
-            },
-            child: const Text('Search Routes'),
+                padding: EdgeInsets.symmetric(
+                    horizontal: 30, vertical: 15), // padding
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10), // rounded corners
+                ),
+              ),
+            ),
           )
         ],
       ),

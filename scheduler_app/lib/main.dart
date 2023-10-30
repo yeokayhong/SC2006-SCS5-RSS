@@ -8,26 +8,8 @@ Future<void> main() async {
   runApp(MyApp());
 }
 
-// class MyApp extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) {
-//     return MaterialApp(
-//       debugShowCheckedModeBanner: false,
-//       theme: ThemeData(
-//         primarySwatch: Colors.red, // Adjust as needed
-//       ),
-//       home: AuthenticationPage(),
-//       //home: LoginPage(),
-//     );
-//   }
-// }
-
-// ... [Your imports and existing code remains the same]
-
 enum AppTab {
   mapInput,
-  routeDetails,
-  selectedRoute,
   notificationHistory,
 }
 
@@ -44,14 +26,35 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        primarySwatch: Colors.red,
+        // Primary Color
+        primaryColor: Colors.lightBlue,
+
+        // Secondary (Accent) Color
+        secondaryHeaderColor: Colors.orange,
+
+        // Text Theme
+        textTheme: TextTheme(
+          bodyLarge: TextStyle(color: const Color.fromARGB(255, 8, 37, 87)),
+          bodyMedium: TextStyle(color: const Color.fromARGB(255, 8, 37, 87)),
+          displayLarge: TextStyle(color: const Color.fromARGB(255, 8, 37, 87)),
+          // Add more text styles
+        ),
+
+        // Customization for BottomNavigationBar
+        bottomNavigationBarTheme: BottomNavigationBarThemeData(
+          backgroundColor: Colors.lightBlue,
+          selectedItemColor: Colors.black,
+          unselectedItemColor: Colors.black.withOpacity(0.4),
+        ),
+
+        // Additional theme customization can go here
       ),
       home: Scaffold(
-        body: _buildBodyForTab(_currentTab),
+        body: SafeArea(child: _buildBodyForTab(_currentTab)),
         bottomNavigationBar: BottomNavigationBar(
-          backgroundColor: Colors.red,
+          backgroundColor: Colors.lightBlue,
           selectedItemColor: Colors.black,
-          unselectedItemColor: Colors.blue.withOpacity(0.6),
+          unselectedItemColor: Colors.black.withOpacity(0.4),
           currentIndex: _currentTab.index,
           onTap: (index) {
             setState(() {
@@ -61,15 +64,7 @@ class _MyAppState extends State<MyApp> {
           items: [
             BottomNavigationBarItem(
               icon: Icon(Icons.map),
-              label: 'Map Input',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.directions),
-              label: 'Route Details',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.check_circle),
-              label: 'Selected Route',
+              label: 'Search',
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.notifications_rounded),
@@ -86,14 +81,8 @@ class _MyAppState extends State<MyApp> {
     switch (tab) {
       case AppTab.mapInput:
         return MapInputPage();
-      case AppTab.routeDetails:
-        return RouteDetailsPage(routeNumber: 1); // Placeholder
-      case AppTab.selectedRoute:
-        return SelectedRoutePage(routeNumber: 1); // Placeholder
       case AppTab.notificationHistory:
         return NotificationUI();
-      default:
-        return AuthenticationPage(); // Default page
     }
   }
 }

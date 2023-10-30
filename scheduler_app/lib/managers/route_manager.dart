@@ -94,6 +94,24 @@ class RouteManager {
     debugPrint("Event emitted: $_routeDict");
   }
 
-  // Stream object
+  String formatEndTime(String endTimeInUnix) {
+    // endTime is in Unix TimeStamp
+    debugPrint(endTimeInUnix);
+    DateTime result = DateTime.fromMillisecondsSinceEpoch(
+        int.parse(endTimeInUnix),
+        isUtc: true);
+    // temporary fix, but not sure why local time is not reflecting probably.
+    result = result.add(const Duration(hours: 8));
+    debugPrint(result.toString());
+    // convert time eg. display in 9:30 pm
+    return DateFormat('h:mm a').format(result);
+  }
+
+  void updateSingleRoute(int routeNumber, r.Route newRoute) {
+    _routeDict[routeNumber] = newRoute;
+    _routeStreamController.add(_routeDict);
+  }
+
+  // Stream Map<object>
   Stream<Map<int, r.Route>> get routeStream => _routeStreamController.stream;
 }

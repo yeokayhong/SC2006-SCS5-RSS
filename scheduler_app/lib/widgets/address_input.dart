@@ -115,19 +115,44 @@ class _AddressSearchWidgetState extends State<AddressSearchWidget> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
-        TextField(
-          controller: _origin_controller,
-          focusNode: _origin_focus,
-          onTap: () => _debounced_search_address(_origin_controller.text),
-          onChanged: (value) => _debounced_search_address(value),
-          decoration: InputDecoration(labelText: 'Origin'),
+        Padding(
+          padding: EdgeInsets.all(10),
+          child: TextField(
+            controller: _origin_controller,
+            focusNode: _origin_focus,
+            onTap: () => _debounced_search_address(_origin_controller.text),
+            onChanged: (value) => _debounced_search_address(value),
+            decoration: InputDecoration(
+              labelText: 'Origin',
+              labelStyle: TextStyle(color: Colors.lightBlue),
+              focusedBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.lightBlue, width: 2.0),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.lightBlue, width: 1.0),
+              ),
+            ),
+          ),
         ),
-        TextField(
-          controller: _destination_controller,
-          focusNode: _destination_focus,
-          onTap: () => _debounced_search_address(_destination_controller.text),
-          onChanged: (value) => _debounced_search_address(value),
-          decoration: InputDecoration(labelText: 'Destination'),
+        Padding(
+          padding: EdgeInsets.all(10),
+          child: TextField(
+            controller: _destination_controller,
+            focusNode: _destination_focus,
+            onTap: () =>
+                _debounced_search_address(_destination_controller.text),
+            onChanged: (value) => _debounced_search_address(value),
+            decoration: InputDecoration(
+              labelText: 'Destination',
+              labelStyle: TextStyle(color: Colors.lightBlue),
+              focusedBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.lightBlue, width: 2.0),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.lightBlue, width: 1.0),
+              ),
+            ),
+          ),
         ),
         Offstage(
           offstage: !(_origin_focus.hasFocus || _destination_focus.hasFocus),

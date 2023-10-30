@@ -1,12 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:scheduler_app/widgets/waiting_time.dart';
+import 'package:scheduler_app/entities/duration.dart' as d;
+import '../entities/leg_entity.dart';
+import '../managers/route_manager.dart';
 
 class LegsWidget extends StatelessWidget {
+  late Leg leg;
+  LegsWidget({required this.leg});
+  RouteManager routeManager = GetIt.instance<RouteManager>();
   @override
   Widget build(BuildContext context) {
-    return ListView(
+    return Column(
       children: [
-        _buildLocationTile('Your location', '15:04'),
+        _buildLocationTile('${leg.start.name}',
+            '${routeManager.formatEndTime(leg.startTime.toString())}'),
         WaitingTimeWidget(duration: '2 min'),
         _buildWalkingTile('Walk 8 min (450 m)'),
         WaitingTimeWidget(duration: '3 min'),

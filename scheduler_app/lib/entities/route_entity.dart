@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
@@ -11,7 +13,7 @@ class Route {
   late List<LatLng> decodedLegGoemetry;
   late D.Duration duration;
   late String endTime;
-  late double fare;
+  late dynamic fare;
   late double walkDistance;
 
   Route.placeholder() {
@@ -23,10 +25,10 @@ class Route {
         json['walkTime']);
 
     // get endTime in h:mm a format
-    formatEndTime(json['endTime'].toString());
+    endTime = (json['endTime'].toString());
 
     // fare
-    fare = double.parse(json['fare'].toString());
+    fare = json['fare'];
 
     // walkDistance
     walkDistance = json['walkDistance'];
@@ -46,19 +48,6 @@ class Route {
         transitTime: transitTime,
         waitingTime: waitingTime,
         walkingTime: walkingTime);
-  }
-
-  void formatEndTime(String endTimeInUnix) {
-    // endTime is in Unix TimeStamp
-    debugPrint(endTimeInUnix);
-    DateTime result = DateTime.fromMillisecondsSinceEpoch(
-        int.parse(endTimeInUnix),
-        isUtc: true);
-    // temporary fix, but not sure why local time is not reflecting probably.
-    result = result.add(const Duration(hours: 8));
-    debugPrint(result.toString());
-    // convert time eg. display in 9:30 pm
-    endTime = DateFormat('h:mm a').format(result);
   }
 
   void createLegs(List<dynamic> legs) {
