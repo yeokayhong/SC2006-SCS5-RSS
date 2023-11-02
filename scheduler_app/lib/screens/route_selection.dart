@@ -1,9 +1,9 @@
+import 'package:scheduler_app/entities/route_entity.dart' as route_entity;
+import 'package:scheduler_app/managers/route_manager.dart';
+import 'package:scheduler_app/screens/route_details.dart';
+import 'package:scheduler_app/entities/duration.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
-import 'package:scheduler_app/managers/route_manager.dart';
-import 'package:scheduler_app/entities/route_entity.dart' as r;
-import 'package:scheduler_app/entities/duration.dart' as d;
-import 'package:scheduler_app/screens/route_details.dart';
 
 class RouteSelectionPage extends StatefulWidget {
   const RouteSelectionPage({super.key});
@@ -14,7 +14,7 @@ class RouteSelectionPage extends StatefulWidget {
 
 class _RouteSelectionPageState extends State<RouteSelectionPage> {
   GetIt getIt = GetIt.instance;
-  late Stream<Map<int, r.Route>> routeStream;
+  late Stream<Map<int, route_entity.Route>> routeStream;
 
   @override
   void initState() {
@@ -28,7 +28,7 @@ class _RouteSelectionPageState extends State<RouteSelectionPage> {
       appBar: AppBar(
         title: const Text("Route Selection"),
       ),
-      body: StreamBuilder<Map<int, r.Route>>(
+      body: StreamBuilder<Map<int, route_entity.Route>>(
         stream: routeStream,
         builder: (context, snapshot) {
           debugPrint("Snapshot State: ${snapshot.connectionState}");
@@ -50,7 +50,7 @@ class _RouteSelectionPageState extends State<RouteSelectionPage> {
             itemCount: routes!.length,
             itemBuilder: (context, index) {
               final routeKey = routes.keys.elementAt(index);
-              r.Route routeValue = routes[routeKey]!;
+              route_entity.Route routeValue = routes[routeKey]!;
 
               return ListTile(
                 contentPadding: EdgeInsets.all(16.0),
@@ -60,7 +60,7 @@ class _RouteSelectionPageState extends State<RouteSelectionPage> {
                       style: TextStyle(color: Colors.white)),
                 ),
                 title: Text(
-                  'Duration: ${d.Duration.convertDurationToMin(routeValue.duration.totalDuration)} minutes', // Assuming duration is a field on r.Route
+                  'Duration: ${Duration.convertDurationToMin(routeValue.duration.totalDuration)} minutes', // Assuming duration is a field on r.Route
                   style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
                 ),
                 subtitle: Column(
@@ -79,8 +79,8 @@ class _RouteSelectionPageState extends State<RouteSelectionPage> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) =>
-                          RouteDetailsPage(routeNumber: routeKey),
+                      builder: (context) => RouteDetailsPage(
+                          route_number: routeKey, route_data: routeValue),
                     ),
                   );
                 },

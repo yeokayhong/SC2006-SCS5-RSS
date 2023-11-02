@@ -1,20 +1,18 @@
-import 'dart:async';
-
+import 'package:scheduler_app/entities/route_entity.dart' as route_entity;
+import 'package:scheduler_app/APIs/routes_api.dart';
 import 'package:event_bus/event_bus.dart';
 import 'package:flutter/material.dart';
+import '../entities/route_event.dart';
 import 'package:get_it/get_it.dart';
 import 'package:intl/intl.dart';
-import 'package:scheduler_app/APIs/routes_api.dart';
-import 'package:scheduler_app/entities/route_entity.dart' as r;
-
-import '../entities/route_event.dart';
 import 'concern_manager.dart';
+import 'dart:async';
 
 // RouteManager contains a class of methods for retrieving information on the retrieved Route Objects
 class RouteManager {
-  final StreamController<Map<int, r.Route>> _routeStreamController =
+  final StreamController<Map<int, route_entity.Route>> _routeStreamController =
       StreamController.broadcast();
-  final Map<int, r.Route> _routeDict = {};
+  final Map<int, route_entity.Route> _routeDict = {};
   EventBus get eventBus => GetIt.instance<EventBus>();
 
   RouteManager() {
@@ -49,7 +47,7 @@ class RouteManager {
     return json;
   }
 
-  r.Route? getRouteDetail(String routeId) {
+  route_entity.Route? getRouteDetail(String routeId) {
     if (_routeDict.containsKey(routeId)) {
       return _routeDict[routeId];
     }
@@ -83,7 +81,8 @@ class RouteManager {
     _routeDict.clear();
     int counter = 1;
     for (var route in json) {
-      r.Route newRoute = r.Route(json: route, mapIndex: counter);
+      route_entity.Route newRoute =
+          route_entity.Route(json: route, mapIndex: counter);
       _routeDict[counter] = newRoute;
       counter++;
     }
@@ -107,11 +106,12 @@ class RouteManager {
     return DateFormat('h:mm a').format(result);
   }
 
-  void updateSingleRoute(int routeNumber, r.Route newRoute) {
+  void updateSingleRoute(int routeNumber, route_entity.Route newRoute) {
     _routeDict[routeNumber] = newRoute;
     _routeStreamController.add(_routeDict);
   }
 
   // Stream Map<object>
-  Stream<Map<int, r.Route>> get routeStream => _routeStreamController.stream;
+  Stream<Map<int, route_entity.Route>> get routeStream =>
+      _routeStreamController.stream;
 }
