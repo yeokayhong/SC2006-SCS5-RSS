@@ -2,8 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:intl/intl.dart';
 import 'duration.dart' as D;
+import 'package:scheduler_app/entities/location_entity.dart' as l;
 
 import 'leg_entity.dart';
 
@@ -15,10 +15,8 @@ class Route {
   late String endTime;
   late dynamic fare;
   late double walkDistance;
-
-  Route.placeholder() {
-    debugPrint("Route Placeholder");
-  }
+  late l.Location from;
+  late l.Location dest;
 
   Route({required Map<String, dynamic> json, required this.mapIndex}) {
     createDuration(json['duration'], json['transitTime'], json['waitingTime'],
@@ -35,6 +33,14 @@ class Route {
 
     // create Legs
     createLegs(json['legs']);
+
+    // get the from and dest from legList
+    if (legs.isNotEmpty) {
+      from = legs[0].start;
+      dest = legs[legs.length - 1].dest;
+    } else {
+      throw "Legs are empty, something unexpected happened";
+    }
 
     // debugging
     debugPrint(

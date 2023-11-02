@@ -7,17 +7,22 @@ import 'package:intl/intl.dart';
 import 'package:scheduler_app/APIs/routes_api.dart';
 import 'package:scheduler_app/entities/route_entity.dart' as r;
 
+import '../entities/address.dart';
 import '../entities/route_event.dart';
 import 'concern_manager.dart';
 
 // RouteManager contains a class of methods for retrieving information on the retrieved Route Objects
 class RouteManager {
   final StreamController<Map<int, r.Route>> _routeStreamController =
-      StreamController.broadcast();
+      StreamController<Map<int, r.Route>>.broadcast();
   final Map<int, r.Route> _routeDict = {};
   EventBus get eventBus => GetIt.instance<EventBus>();
+  late Address from;
+  late Address dest;
 
   RouteManager() {
+    // initialize Stream to look at the _routeDict
+    _routeStreamController.add(_routeDict);
     eventBus.on<RouteEvent>().listen((event) async {
       Map<String, dynamic> json =
           await fetchData(event.origin, event.dest, event.routeType);
@@ -29,6 +34,14 @@ class RouteManager {
         debugPrint(json['error']);
       }
     });
+  }
+
+  void setFrom(Address from) {
+    this.from = from;
+  }
+
+  void setDest(Address dest) {
+    this.dest = dest;
   }
 
   // for debugging purposes
@@ -56,11 +69,11 @@ class RouteManager {
     throw 'Route not found!';
   }
 
-  // search affected Routes and update them
-  void searchAffectedRoutes(Concern concern) {}
+  // // search affected Routes and update them
+  // void searchAffectedRoutes(Concern concern) {}
 
-  // search affected Routes with entire concernList
-  void searchAffectedRoutesWithConcernList(List<Concern> concernList) {}
+  // // search affected Routes with entire concernList
+  // void searchAffectedRoutesWithConcernList(List<Concern> concernList) {}
 
   // get Bus Waiting Time
   void getBusWaitingTime() {
@@ -94,14 +107,17 @@ class RouteManager {
     debugPrint("Event emitted: $_routeDict");
   }
 
-  String formatEndTime(String endTimeInUnix) {
+  static String formatEndTime(
+      {required String endTimeInUnix, int offset = 28800000}) {
     // endTime is in Unix TimeStamp
     debugPrint(endTimeInUnix);
     DateTime result = DateTime.fromMillisecondsSinceEpoch(
         int.parse(endTimeInUnix),
         isUtc: true);
-    // temporary fix, but not sure why local time is not reflecting probably.
-    result = result.add(const Duration(hours: 8));
+
+    result = result.add(
+      Duration(milliseconds: offset),
+    );
     debugPrint(result.toString());
     // convert time eg. display in 9:30 pm
     return DateFormat('h:mm a').format(result);

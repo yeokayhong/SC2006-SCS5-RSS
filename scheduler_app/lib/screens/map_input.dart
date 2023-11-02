@@ -20,15 +20,12 @@ class MapInputPage extends StatefulWidget {
 class _MapInputPageState extends State<MapInputPage> {
   // implement the function callbacks for address search
   EventBus get eventBus => GetIt.instance<EventBus>();
-  late double originLatitude;
-  late double originLongitude;
-  late double destinationLatitude;
-  late double destinationLongitude;
+  late Address origin;
+  late Address dest;
   void handleOriginChange(Address origin) {
     debugPrint("Origin selected: ${origin.latitude}, ${origin.longitude}");
     setState(() {
-      originLatitude = origin.latitude;
-      originLongitude = origin.longitude;
+      this.origin = origin;
     });
   }
 
@@ -36,50 +33,57 @@ class _MapInputPageState extends State<MapInputPage> {
     debugPrint(
         "Destination selected: ${destination.latitude}, ${destination.longitude}");
     setState(() {
-      destinationLatitude = destination.latitude;
-      destinationLongitude = destination.longitude;
+      dest = destination;
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Map Page')),
-      body: Column(
+      appBar: AppBar(title: Text('Search Page')),
+      body: Stack(
         children: [
-          // temporarily substitute values in for testing
-          // MapWidget(
-          //   source: LatLng(1.320981, 103.84415),
-          //   dest: LatLng(1.31875833025, 103.846554958),
-          //   route: r.Route.placeholder(),
-          // ),
-
-          AddressSearchWidget(
-              onOriginChanged: handleOriginChange,
-              onDestinationChanged: handleDestinationChange),
-          const Spacer(),
-          Padding(
-            padding: const EdgeInsets.only(bottom: 15),
-            child: ElevatedButton(
-              onPressed: () {
-                eventBus.fire(RouteEvent("$originLatitude,$originLongitude",
-                    "$destinationLatitude,$destinationLongitude", "pt"));
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const RouteSelectionPage(),
+          Positioned.fill(
+            child: AddressSearchWidget(
+                onOriginChanged: handleOriginChange,
+                onDestinationChanged: handleDestinationChange),
+          ),
+          Positioned(
+            bottom: 0,
+            left: 5,
+            right: 5,
+            child: SizedBox(
+              height: 75,
+              width: MediaQuery.of(context).size.width * 0.5,
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: 15),
+                child: ElevatedButton(
+                  onPressed: () {
+                    if (origin != null || dest != null) {
+                      eventBus.fire(RouteEvent(
+                          "${origin.latitude},${origin.longitude}",
+                          "${dest.latitude},${dest.longitude}",
+                          "pt"));
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const RouteSelectionPage(),
+                        ),
+                      );
+                    }
+                  },
+                  child: const Text('Search Routes'),
+                  style: ElevatedButton.styleFrom(
+                    textStyle: TextStyle(
+                      fontSize: 16, // font size
+                    ),
+                    padding: EdgeInsets.symmetric(
+                        horizontal: 30, vertical: 15), // padding
+                    shape: RoundedRectangleBorder(
+                      borderRadius:
+                          BorderRadius.circular(10), // rounded corners
+                    ),
                   ),
-                );
-              },
-              child: const Text('Search Routes'),
-              style: ElevatedButton.styleFrom(
-                textStyle: TextStyle(
-                  fontSize: 18, // font size
-                ),
-                padding: EdgeInsets.symmetric(
-                    horizontal: 30, vertical: 15), // padding
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10), // rounded corners
                 ),
               ),
             ),

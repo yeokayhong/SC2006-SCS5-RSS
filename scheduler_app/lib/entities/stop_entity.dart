@@ -6,6 +6,7 @@ class Stop extends Location {
   late String stopCode;
   late int stopIndex;
   late int stopSequence;
+  int waitingTime = 0;
 
   Stop({
     required this.arrivalTime,
@@ -16,5 +17,7 @@ class Stop extends Location {
     required double lat,
     required double lon,
     required String name,
-  }) : super(lat: lat, lon: lon, name: name);
+  }) : super(lat: lat, lon: lon, name: name) {
+    waitingTime = ((departureTime - arrivalTime) / (1000 * 60)).round();
+  }
 }

@@ -1,13 +1,18 @@
+import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:scheduler_app/entities/step_entity.dart';
+import 'package:scheduler_app/entities/step_entity.dart' as s;
 import 'package:scheduler_app/entities/stop_entity.dart';
+import 'package:scheduler_app/widgets/bus_leg.dart';
+import 'package:scheduler_app/widgets/legs_widget_methods.dart';
+import 'package:scheduler_app/widgets/walk_leg.dart';
 
 abstract class LegType {
   late String mode;
+  Widget createLeg();
 }
 
 class WalkLeg extends LegType {
-  List<Step> steps = [];
+  List<s.Step> steps = [];
   WalkLeg({required Map<String, dynamic> json}) {
     super.mode = "WALK";
     // intialize step list
@@ -15,7 +20,7 @@ class WalkLeg extends LegType {
     // debug message
     debugPrint("StepsJson obtained: ${stepsJson.toString()}");
     for (var step in stepsJson) {
-      steps.add(Step(
+      steps.add(s.Step(
           absoluteDirection: step['absoluteDirection'],
           distance: step['distance'],
           lat: step['lat'],
@@ -24,9 +29,15 @@ class WalkLeg extends LegType {
     }
     debugPrint("Successful Created Steps: ${steps.length}");
   }
+
+  @override
+  Widget createLeg() {
+    return WalkLegWidget(steps: steps);
+  }
 }
 
 class BusLeg extends LegType {
+  int waitingTime = 0;
   List<Stop> stops = [];
   BusLeg({required Map<String, dynamic> json}) {
     super.mode = "BUS";
@@ -51,6 +62,11 @@ class BusLeg extends LegType {
     }
     debugPrint("Successful Created Stops: ${stops.length}");
   }
+
+  @override
+  Widget createLeg() {
+    return TransitLegWidget(stops: stops);
+  }
 }
 
 class SubwayLeg extends LegType {
@@ -73,6 +89,11 @@ class SubwayLeg extends LegType {
           stopIndex: stop['stopIndex'],
           stopSequence: stop['stopSequence']));
     }
+  }
+
+  @override
+  Widget createLeg() {
+    return TransitLegWidget(stops: stops);
   }
 }
 

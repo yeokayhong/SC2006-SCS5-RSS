@@ -8,11 +8,11 @@ class Leg {
   List<LatLng> polylineCoordinates = [];
   late Location start;
   late Location dest;
-  late LegType legType;
-  late double distance;
-  late int duration;
-  late int endTime;
-  late int startTime;
+  late dynamic legType;
+  late dynamic distance;
+  late dynamic duration;
+  late dynamic endTime;
+  late dynamic startTime;
   Leg(Map<String, dynamic> leg) {
     // decode geometry and add to polylineCoordinates
     decodeAndAddToPolylineCoordinates(leg['legGeometry']['points']);
@@ -27,10 +27,11 @@ class Leg {
 
     // intialize legType using a Simple Factory Pattern
     String mode = leg['mode'];
+    debugPrint('LegMode: $mode');
     try {
-      LegFactory.createLegType(mode, leg);
+      legType = LegFactory.createLegType(mode, leg);
     } catch (e) {
-      debugPrint(e.toString());
+      debugPrint('Failed to make LegType: ${e.toString()}');
     }
 
     // intialize distance
