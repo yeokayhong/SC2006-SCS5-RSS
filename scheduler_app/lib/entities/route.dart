@@ -1,17 +1,13 @@
-import 'dart:async';
-
-import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:intl/intl.dart';
-import 'duration.dart' as D;
-
-import 'leg_entity.dart';
+import 'package:flutter/material.dart';
+import 'leg.dart';
+import 'duration.dart';
 
 class Route {
   late int mapIndex;
   List<Leg> legs = [];
   late List<LatLng> decodedLegGoemetry;
-  late D.Duration duration;
+  late Duration duration;
   late String endTime;
   late dynamic fare;
   late double walkDistance;
@@ -24,17 +20,10 @@ class Route {
     createDuration(json['duration'], json['transitTime'], json['waitingTime'],
         json['walkTime']);
 
-    // get endTime in h:mm a format
     endTime = (json['endTime'].toString());
-
-    // fare
     fare = json['fare'];
-
-    // walkDistance
     walkDistance = json['walkDistance'];
-
-    // create Legs
-    createLegs(json['legs']);
+    legs = parseLegs(json['legs']);
 
     // debugging
     debugPrint(
@@ -43,17 +32,21 @@ class Route {
 
   void createDuration(int totalDurationInSeconds, int transitTime,
       int waitingTime, int walkingTime) {
-    duration = D.Duration(
+    duration = Duration(
         totalDuration: totalDurationInSeconds,
         transitTime: transitTime,
         waitingTime: waitingTime,
         walkingTime: walkingTime);
   }
 
-  void createLegs(List<dynamic> legs) {
-    for (var entry in legs) {
-      Leg newLeg = Leg(entry);
-      this.legs.add(newLeg);
+  List<Leg> parseLegs(List<dynamic> legs) {
+    List<Leg> parsedLegs = [];
+
+    for (Map<String, dynamic> leg_data in legs) {
+      Leg leg = Leg.create(leg_data, leg_data['mode']);
+      parsedLegs.add(leg);
     }
+
+    return parsedLegs;
   }
 }

@@ -1,4 +1,4 @@
-import 'package:scheduler_app/entities/route_entity.dart' as route_entity;
+import 'package:scheduler_app/entities/route.dart' as route_entity;
 import 'package:scheduler_app/APIs/routes_api.dart';
 import 'package:event_bus/event_bus.dart';
 import 'package:flutter/material.dart';

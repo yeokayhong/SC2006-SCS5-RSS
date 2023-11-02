@@ -3,7 +3,6 @@ import 'package:scheduler_app/managers/notification_manager.dart';
 import 'package:scheduler_app/managers/concern_manager.dart';
 import 'package:scheduler_app/managers/route_manager.dart';
 import 'package:event_bus/event_bus.dart';
-import '../entities/legtype_entity.dart';
 import 'package:get_it/get_it.dart';
 
 GetIt getIt = GetIt.instance;
@@ -21,10 +20,4 @@ Future<void> instanceSetUp() async {
   getIt.registerSingleton<FlutterLocalNotificationsPlugin>(
       flutterLocalNotificationsPlugin);
   getIt.registerSingleton<ConcernManager>(ConcernManager());
-
-  // LegFactory
-  // Register constructors for Legs
-  LegFactory.register("WALK", (arg) => WalkLeg(json: arg));
-  LegFactory.register("BUS", (arg) => BusLeg(json: arg));
-  LegFactory.register("SUBWAY", (arg) => SubwayLeg(json: arg));
 }

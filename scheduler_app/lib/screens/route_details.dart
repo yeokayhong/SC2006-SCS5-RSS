@@ -1,18 +1,13 @@
-import 'package:scheduler_app/entities/route_entity.dart' as route_entity;
-import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:scheduler_app/entities/leg_entity.dart';
+import 'package:scheduler_app/entities/route.dart' as route_entity;
+import 'package:scheduler_app/entities/leg.dart';
 import 'package:scheduler_app/widgets/legs.dart';
-import 'package:scheduler_app/widgets/map.dart';
-import '../managers/route_manager.dart';
 import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
-import 'screens_barrel.dart';
 
 class RouteDetailsPage extends StatefulWidget {
-  final int route_number;
-  final route_entity.Route route_data;
+  final int routeNumber;
+  final route_entity.Route routeData;
   const RouteDetailsPage(
-      {super.key, required this.route_number, required this.route_data});
+      {super.key, required this.routeNumber, required this.routeData});
 
   @override
   State<RouteDetailsPage> createState() => _RouteDetailsPageState();
@@ -26,17 +21,14 @@ class _RouteDetailsPageState extends State<RouteDetailsPage> {
   }
 
   Widget build(BuildContext context) {
-    List<Leg> legs = widget.route_data.legs;
+    List<Leg> legs = widget.routeData.legs;
     return Scaffold(
-        appBar: AppBar(title: Text('Route #${widget.route_number} Details')),
+        appBar: AppBar(title: Text('Route #${widget.routeNumber} Details')),
         body: ListView.builder(
           itemCount: legs.length,
           itemBuilder: (context, index) {
             final leg = legs[index];
-
-            return LegsWidget(
-              leg: leg,
-            );
+            return LegWidget.fromLeg(leg);
           },
         )
         // Column(

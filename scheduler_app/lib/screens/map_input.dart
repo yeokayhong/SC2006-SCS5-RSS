@@ -1,15 +1,13 @@
-import 'package:scheduler_app/entities/route_entity.dart' as r;
+import 'package:scheduler_app/entities/route.dart' as route_entity;
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:scheduler_app/screens/route_selection.dart';
 import 'package:scheduler_app/widgets/address_input.dart';
 import 'package:scheduler_app/entities/route_event.dart';
-import 'package:scheduler_app/base_classes/set_up.dart';
 import 'package:scheduler_app/entities/address.dart';
 import 'package:scheduler_app/widgets/map.dart';
 import 'package:event_bus/event_bus.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
-import 'screens_barrel.dart';
 
 class MapInputPage extends StatefulWidget {
   const MapInputPage({super.key});
@@ -53,7 +51,7 @@ class _MapInputPageState extends State<MapInputPage> {
               child: MapWidget(
                 source: LatLng(1.320981, 103.84415),
                 dest: LatLng(1.31875833025, 103.846554958),
-                route: r.Route.placeholder(),
+                route: route_entity.Route.placeholder(),
               ),
             ),
             AddressSearchWidget(

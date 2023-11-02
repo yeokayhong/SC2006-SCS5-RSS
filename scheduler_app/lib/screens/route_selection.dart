@@ -1,4 +1,4 @@
-import 'package:scheduler_app/entities/route_entity.dart' as route_entity;
+import 'package:scheduler_app/entities/route.dart' as route_entity;
 import 'package:scheduler_app/managers/route_manager.dart';
 import 'package:scheduler_app/screens/route_details.dart';
 import 'package:scheduler_app/entities/duration.dart';
@@ -33,13 +33,14 @@ class _RouteSelectionPageState extends State<RouteSelectionPage> {
         builder: (context, snapshot) {
           debugPrint("Snapshot State: ${snapshot.connectionState}");
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(
+            return const Center(
               child: CircularProgressIndicator(),
             );
           }
 
-          if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return Center(
+          if (!snapshot.hasData ||
+              (snapshot.data != null && snapshot.data!.isEmpty)) {
+            return const Center(
               child: Text('No routes available.'),
             );
           }
@@ -80,7 +81,7 @@ class _RouteSelectionPageState extends State<RouteSelectionPage> {
                     context,
                     MaterialPageRoute(
                       builder: (context) => RouteDetailsPage(
-                          route_number: routeKey, route_data: routeValue),
+                          routeNumber: routeKey, routeData: routeValue),
                     ),
                   );
                 },
