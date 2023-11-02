@@ -31,12 +31,16 @@ class BusLegWidget extends LegWidget {
     BusLeg busLeg = leg as BusLeg;
     return Column(
       children: [
+        const Divider(),
+        ListTile(
+          title: Text(busLeg.serviceName ?? ""),
+        ),
+        BusOriginWidget(stop: busLeg.origin),
         Text("Waiting Time"),
-        Text("Origin"),
         Column(
             children:
-                busLeg.stops.map((stop) => StopWidget.fromStop(stop)).toList()),
-        Text("End Stop")
+                busLeg.stops.map((stop) => BusStopWidget(stop: stop)).toList()),
+        BusDestinationWidget(stop: busLeg.destination),
       ],
     );
   }
@@ -50,16 +54,14 @@ class RailLegWidget extends LegWidget {
     RailLeg railLeg = leg as RailLeg;
     return Column(
       children: [
+        const Divider(),
         Text("Waiting Time"),
-        Text("Origin"),
-        // ListView.builder(
-        //   itemCount: railLeg.stops.length,
-        //   itemBuilder: (context, index) {
-        //     final stop = railLeg.stops[index];
-        //     return StopWidget.fromStop(stop);
-        //   },
-        // ),
-        Text("End Stop")
+        RailOriginWidget(stop: railLeg.origin),
+        Column(
+            children: railLeg.stops
+                .map((stop) => RailStopWidget(stop: stop))
+                .toList()),
+        RailDestinationWidget(stop: railLeg.destination),
       ],
     );
   }
@@ -72,7 +74,11 @@ class WalkLegWidget extends LegWidget {
   Widget build(BuildContext context) {
     WalkLeg walkLeg = leg as WalkLeg;
     return Column(
-      children: [Text("Origin"), Text("End Stop")],
+      children: [
+        const Divider(),
+        WalkOriginWidget(stop: walkLeg.origin),
+        WalkDestinationWidget(stop: walkLeg.destination)
+      ],
     );
   }
 }
