@@ -2,11 +2,13 @@ class Stop {
   final String name;
   final double lat;
   final double lon;
+  bool isCurrentStop;
 
   Stop({
     required this.lat,
     required this.lon,
     required this.name,
+    this.isCurrentStop = false,
   });
 
   static Stop create(Map<String, dynamic> stopData, String type) {

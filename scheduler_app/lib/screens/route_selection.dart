@@ -80,8 +80,8 @@ class _RouteSelectionPageState extends State<RouteSelectionPage> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => RouteDetailsPage(
-                          routeNumber: routeKey, routeData: routeValue),
+                      builder: (context) =>
+                          RouteDetailsPage(routeNumber: routeKey),
                     ),
                   );
                 },

@@ -42,6 +42,7 @@ class BusStopWidget extends StopWidget {
                 backgroundColor: Colors.red,
               ))),
       title: Text(busStop.name),
+      tileColor: busStop.isCurrentStop ? Colors.red : Colors.transparent,
     );
   }
 }

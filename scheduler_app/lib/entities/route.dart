@@ -1,4 +1,5 @@
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:scheduler_app/entities/stop.dart';
 import 'package:flutter/material.dart';
 import 'leg.dart';
 import 'duration.dart';
@@ -11,6 +12,7 @@ class Route {
   late String endTime;
   late dynamic fare;
   late double walkDistance;
+  Stop? currentStop;
 
   Route.placeholder() {
     debugPrint("Route Placeholder");

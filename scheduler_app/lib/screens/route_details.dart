@@ -1,35 +1,62 @@
 import 'package:scheduler_app/entities/route.dart' as route_entity;
+import 'package:scheduler_app/managers/route_manager.dart';
 import 'package:scheduler_app/entities/leg.dart';
 import 'package:scheduler_app/widgets/legs.dart';
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 
 class RouteDetailsPage extends StatefulWidget {
   final int routeNumber;
-  final route_entity.Route routeData;
-  const RouteDetailsPage(
-      {super.key, required this.routeNumber, required this.routeData});
+  final RouteManager routeManager = GetIt.instance<RouteManager>();
+
+  RouteDetailsPage({super.key, required this.routeNumber});
 
   @override
   State<RouteDetailsPage> createState() => _RouteDetailsPageState();
 }
 
 class _RouteDetailsPageState extends State<RouteDetailsPage> {
+  late route_entity.Route routeData;
+  late Stream<Map<int, route_entity.Route>> routeStream =
+      widget.routeManager.routeStream;
+
   @override
   void initState() {
+    routeData = widget.routeManager.getRoute(widget.routeNumber);
     // TODO: implement initState
     super.initState();
   }
 
   Widget build(BuildContext context) {
-    List<Leg> legs = widget.routeData.legs;
+    List<Leg> legs = routeData.legs;
     return Scaffold(
         appBar: AppBar(title: Text('Route #${widget.routeNumber} Details')),
-        body: ListView.builder(
-          itemCount: legs.length,
-          itemBuilder: (context, index) {
-            final leg = legs[index];
-            return LegWidget.fromLeg(leg);
+        body: StreamBuilder(
+            stream: routeStream,
+            builder: (context, snapshot) {
+              return ListView.builder(
+                itemCount: legs.length,
+                itemBuilder: (context, index) {
+                  final leg = legs[index];
+                  return LegWidget.fromLeg(leg);
+                },
+              );
+            }),
+        floatingActionButton: ElevatedButton(
+          onPressed: () {
+            widget.routeManager.setActiveRoute(routeData);
           },
+          style: ElevatedButton.styleFrom(
+            textStyle: const TextStyle(
+              fontSize: 16, // font size
+            ),
+            padding: const EdgeInsets.symmetric(
+                horizontal: 30, vertical: 15), // padding
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10), // rounded corners
+            ),
+          ),
+          child: const Text('Begin Journey'),
         )
         // Column(
         //   children: [

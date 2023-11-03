@@ -1,5 +1,11 @@
+import 'dart:math';
+
 import 'package:scheduler_app/entities/route.dart' as route_entity;
+import 'package:scheduler_app/base_classes/geolocator.dart';
 import 'package:scheduler_app/APIs/routes_api.dart';
+import 'package:scheduler_app/entities/stop.dart';
+import 'package:scheduler_app/entities/leg.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:event_bus/event_bus.dart';
 import 'package:flutter/material.dart';
 import '../entities/route_event.dart';
@@ -12,8 +18,12 @@ import 'dart:async';
 class RouteManager {
   final StreamController<Map<int, route_entity.Route>> _routeStreamController =
       StreamController.broadcast();
-  final Map<int, route_entity.Route> _routeDict = {};
   EventBus get eventBus => GetIt.instance<EventBus>();
+  final Map<int, route_entity.Route> _routeDict = {};
+  final double stopDetectionRadiusMeters = 50;
+  route_entity.Route? _activeRoute;
+  Timer? _activeRouteUpdateTimer;
+  final _activeRouteUpdateInterval = const Duration(seconds: 5);
 
   RouteManager() {
     eventBus.on<RouteEvent>().listen((event) async {
@@ -27,6 +37,66 @@ class RouteManager {
         debugPrint(json['error']);
       }
     });
+  }
+
+  Future<Stop?> getCurrentStopAlongRoute(route_entity.Route route) async {
+    Stop? nearestStop;
+
+    int numLegs = route.legs.length;
+    if (numLegs == 0) return null;
+    int randomLeg = Random().nextInt(numLegs);
+    int numStops = route.legs[randomLeg].stops.length;
+    if (numStops == 0) return null;
+    int randomStop = Random().nextInt(numStops);
+    nearestStop = route.legs[randomLeg].stops[randomStop];
+
+    // Position currentPosition = await requestLocation();
+    // double minDistance = double.infinity;
+    // for (Leg leg in route.legs) {
+    //   for (Stop stop in leg.stops) {
+    //     double distance = Geolocator.distanceBetween(stop.lat, stop.lon,
+    //         currentPosition.latitude, currentPosition.longitude);
+    //     if (distance < minDistance) {
+    //       minDistance = distance;
+    //       nearestStop = stop;
+    //     }
+    //   }
+    // }
+
+    // if (minDistance > stopDetectionRadiusMeters) {
+    //   throw Exception("No stops within $stopDetectionRadiusMeters meters");
+    // }
+
+    return nearestStop;
+  }
+
+  void updatePositionAlongRoute(route_entity.Route route) async {
+    try {
+      Stop? newCurrentStop = await getCurrentStopAlongRoute(route);
+      if (newCurrentStop != null) {
+        if (route.currentStop != null) {
+          route.currentStop!.isCurrentStop = false;
+          print("Previous Stop: ${route.currentStop!.name}");
+        }
+        newCurrentStop.isCurrentStop = true;
+        route.currentStop = newCurrentStop;
+        print("New Stop: ${route.currentStop!.name}");
+        updateSingleRoute(route.mapIndex, route);
+      }
+    } catch (exception) {
+      if (exception is! Exception) rethrow;
+      if (!exception.toString().contains("No stops within")) rethrow;
+    }
+  }
+
+  void setActiveRoute(route_entity.Route route) {
+    _activeRoute = route;
+    _activeRouteUpdateTimer?.cancel();
+    _activeRouteUpdateTimer =
+        Timer.periodic(_activeRouteUpdateInterval, (timer) {
+      updatePositionAlongRoute(route);
+    });
+    print("Active Route: $_activeRoute");
   }
 
   // for debugging purposes
@@ -47,9 +117,9 @@ class RouteManager {
     return json;
   }
 
-  route_entity.Route? getRouteDetail(String routeId) {
+  route_entity.Route getRoute(int routeId) {
     if (_routeDict.containsKey(routeId)) {
-      return _routeDict[routeId];
+      return _routeDict[routeId]!;
     }
     throw 'Route not found!';
   }
