@@ -20,8 +20,9 @@ class MapInputPage extends StatefulWidget {
 class _MapInputPageState extends State<MapInputPage> {
   // implement the function callbacks for address search
   EventBus get eventBus => GetIt.instance<EventBus>();
-  late Address origin;
-  late Address dest;
+  Address? origin;
+  Address? dest;
+  bool isWrongInput = false;
   void handleOriginChange(Address origin) {
     debugPrint("Origin selected: ${origin.latitude}, ${origin.longitude}");
     setState(() {
@@ -52,40 +53,67 @@ class _MapInputPageState extends State<MapInputPage> {
             bottom: 0,
             left: 5,
             right: 5,
-            child: SizedBox(
-              height: 75,
-              width: MediaQuery.of(context).size.width * 0.5,
-              child: Padding(
-                padding: const EdgeInsets.only(bottom: 15),
-                child: ElevatedButton(
-                  onPressed: () {
-                    if (origin != null || dest != null) {
-                      eventBus.fire(RouteEvent(
-                          "${origin.latitude},${origin.longitude}",
-                          "${dest.latitude},${dest.longitude}",
-                          "pt"));
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const RouteSelectionPage(),
-                        ),
-                      );
-                    }
-                  },
-                  child: const Text('Search Routes'),
-                  style: ElevatedButton.styleFrom(
-                    textStyle: TextStyle(
-                      fontSize: 16, // font size
-                    ),
-                    padding: EdgeInsets.symmetric(
-                        horizontal: 30, vertical: 15), // padding
-                    shape: RoundedRectangleBorder(
-                      borderRadius:
-                          BorderRadius.circular(10), // rounded corners
+            child: Column(
+              children: [
+                Visibility(
+                  visible: isWrongInput,
+                  child: SizedBox(
+                    height: 30,
+                    width: MediaQuery.of(context).size.width * 0.5,
+                    child: const Text(
+                      "Please choose a valid address",
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Colors.red,
+                      ),
                     ),
                   ),
                 ),
-              ),
+                SizedBox(
+                  height: 75,
+                  width: MediaQuery.of(context).size.width * 0.5,
+                  child: Padding(
+                    padding: const EdgeInsets.only(bottom: 15),
+                    child: ElevatedButton(
+                      onPressed: () {
+                        if (origin != null && dest != null) {
+                          eventBus.fire(RouteEvent(
+                              "${origin!.latitude},${origin!.longitude}",
+                              "${dest!.latitude},${dest!.longitude}",
+                              "pt"));
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const RouteSelectionPage(),
+                            ),
+                          );
+                        } else {
+                          setState(() {
+                            isWrongInput = true;
+                            Future.delayed(Duration(seconds: 2), () {
+                              setState(() {
+                                isWrongInput = false;
+                              });
+                            });
+                          });
+                        }
+                      },
+                      child: const Text('Search Routes'),
+                      style: ElevatedButton.styleFrom(
+                        textStyle: TextStyle(
+                          fontSize: 16, // font size
+                        ),
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 30, vertical: 15), // padding
+                        shape: RoundedRectangleBorder(
+                          borderRadius:
+                              BorderRadius.circular(10), // rounded corners
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
           )
         ],

@@ -54,9 +54,6 @@ abstract class LegsWidget {
                   title: Text("Bus Stop: ${stop.name}"),
                   subtitle: Text("Stop Code: ${stop.stopCode}"),
                 ),
-                WaitingTimeWidget(
-                  duration: stop.waitingTime.toString(),
-                )
               ],
             ),
           )
@@ -81,11 +78,12 @@ abstract class LegsWidget {
   }
 
   static Widget buildLocationTile(String title, String time,
-      {String? liveStatus}) {
+      {int? liveStatus}) {
     return ListTile(
       title: Text(title),
       subtitle: Text(time),
-      trailing: liveStatus != null ? Text('Live: $liveStatus') : null,
+      trailing:
+          liveStatus != null ? Text('WaitingTime: $liveStatus min(s)') : null,
     );
   }
 }

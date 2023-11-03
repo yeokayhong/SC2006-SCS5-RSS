@@ -82,10 +82,14 @@ class _RouteDetailsPageState extends State<RouteDetailsPage> {
                       return Column(
                         // Leg Start
                         children: [
-                          LegsWidget.buildLocationTile(
-                            leg.start.name,
-                            RouteManager.formatEndTime(
-                              endTimeInUnix: leg.startTime.toString(),
+                          SizedBox(
+                            height: 60,
+                            child: LegsWidget.buildLocationTile(
+                              leg.start.name,
+                              RouteManager.formatEndTime(
+                                endTimeInUnix: leg.startTime.toString(),
+                              ),
+                              liveStatus: leg.legType.waitingTime,
                             ),
                           ),
                           leg.legType.createLeg(),

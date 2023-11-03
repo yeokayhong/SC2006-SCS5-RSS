@@ -8,6 +8,7 @@ import 'package:scheduler_app/widgets/walk_leg.dart';
 
 abstract class LegType {
   late String mode;
+  int? waitingTime;
   Widget createLeg();
 }
 
@@ -37,10 +38,10 @@ class WalkLeg extends LegType {
 }
 
 class BusLeg extends LegType {
-  int waitingTime = 0;
   List<Stop> stops = [];
   BusLeg({required Map<String, dynamic> json}) {
     super.mode = "BUS";
+    super.waitingTime = 0;
     // intialize stop list
     List<dynamic> stopsJson = json['intermediateStops'];
     // debug message
@@ -65,7 +66,10 @@ class BusLeg extends LegType {
 
   @override
   Widget createLeg() {
-    return TransitLegWidget(stops: stops);
+    return TransitLegWidget(
+      stops: stops,
+      waitingTime: super.waitingTime,
+    );
   }
 }
 
@@ -73,6 +77,7 @@ class SubwayLeg extends LegType {
   List<Stop> stops = [];
   SubwayLeg({required Map<String, dynamic> json}) {
     super.mode = "SUBWAY";
+    super.waitingTime = 0;
     // intialize stop list
     List<dynamic> unparsed = json['intermediateStops'];
     // debug message
@@ -93,7 +98,7 @@ class SubwayLeg extends LegType {
 
   @override
   Widget createLeg() {
-    return TransitLegWidget(stops: stops);
+    return TransitLegWidget(stops: stops, waitingTime: super.waitingTime);
   }
 }
 
