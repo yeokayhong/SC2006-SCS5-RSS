@@ -19,15 +19,15 @@ class AddressSearchWidget extends StatefulWidget {
 }
 
 class _AddressSearchWidgetState extends State<AddressSearchWidget> {
-  TextEditingController _origin_controller = TextEditingController();
-  TextEditingController _destination_controller = TextEditingController();
-  FocusNode _origin_focus = FocusNode();
-  FocusNode _destination_focus = FocusNode();
+  final TextEditingController _originController = TextEditingController();
+  final TextEditingController _destinationController = TextEditingController();
+  final FocusNode _originFocus = FocusNode();
+  final FocusNode _destinationFocus = FocusNode();
   List<Address> _addresses = [];
   String _token = "";
   Timer? debounce;
 
-  void _debounced_search_address(String query) async {
+  void _debouncedSearchAddress(String query) async {
     debounce?.cancel();
     debounce = Timer(const Duration(milliseconds: 300), () async {
       if (query.length < 3) {
@@ -102,93 +102,125 @@ class _AddressSearchWidgetState extends State<AddressSearchWidget> {
 
   @override
   void dispose() {
-    _origin_controller.dispose();
-    _destination_controller.dispose();
-    _origin_focus.dispose();
-    _destination_focus.dispose();
+    _originController.dispose();
+    _destinationController.dispose();
+    _originFocus.dispose();
+    _destinationFocus.dispose();
     debounce?.cancel();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        Padding(
-          padding: EdgeInsets.all(10),
-          child: TextField(
-            controller: _origin_controller,
-            focusNode: _origin_focus,
-            onTap: () => _debounced_search_address(_origin_controller.text),
-            onChanged: (value) => _debounced_search_address(value),
-            decoration: InputDecoration(
-              labelText: 'Origin',
-              labelStyle: TextStyle(color: Colors.lightBlue),
-              focusedBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.lightBlue, width: 2.0),
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.lightBlue, width: 1.0),
-              ),
+    return AnimatedBuilder(
+        animation: Listenable.merge([_originFocus, _destinationFocus]),
+        builder: (context, child) => Container(
+            decoration: BoxDecoration(
+              color: _originFocus.hasFocus || _destinationFocus.hasFocus
+                  ? Colors.white
+                  : Colors.transparent,
             ),
-          ),
-        ),
-        Padding(
-          padding: EdgeInsets.all(10),
-          child: TextField(
-            controller: _destination_controller,
-            focusNode: _destination_focus,
-            onTap: () =>
-                _debounced_search_address(_destination_controller.text),
-            onChanged: (value) => _debounced_search_address(value),
-            decoration: InputDecoration(
-              labelText: 'Destination',
-              labelStyle: TextStyle(color: Colors.lightBlue),
-              focusedBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.lightBlue, width: 2.0),
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.lightBlue, width: 1.0),
-              ),
-            ),
-          ),
-        ),
-        Offstage(
-          offstage: !(_origin_focus.hasFocus || _destination_focus.hasFocus),
-          child: BottomSheet(
-            enableDrag: false,
-            onClosing: () => {},
-            builder: (context) => ListView.builder(
-              keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-              shrinkWrap: true,
-              itemCount: _addresses.length,
-              itemBuilder: (context, index) => ListTile(
-                title: Text(_addresses[index].building_name),
-                subtitle: Text(
-                    "0.0km | ${_addresses[index].street_address()} | ${_addresses[index].postal_code}"),
-                onTap: () {
-                  // update the active text field with the selected address
-                  if (_origin_focus.hasFocus) {
-                    _origin_controller.text =
-                        _addresses[index].street_address();
-                    widget.onOriginChanged(_addresses[index]);
-                    _debounced_search_address(_destination_controller.text);
-                    _origin_focus.unfocus();
-                    _destination_focus.requestFocus();
-                  } else if (_destination_focus.hasFocus) {
-                    _destination_controller.text =
-                        _addresses[index].street_address();
-                    widget.onDestinationChanged(_addresses[index]);
-                    _destination_focus.unfocus();
-                    setState(() {});
-                  }
-                },
-              ),
-            ),
-          ),
-        )
-      ],
-    );
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                Offstage(
+                    offstage:
+                        !_originFocus.hasFocus && _destinationFocus.hasFocus,
+                    child: Padding(
+                      padding: const EdgeInsets.all(10),
+                      child: TextField(
+                        controller: _originController,
+                        focusNode: _originFocus,
+                        onTap: () =>
+                            _debouncedSearchAddress(_originController.text),
+                        onChanged: (value) => _debouncedSearchAddress(value),
+                        style: const TextStyle(fontSize: 12),
+                        decoration: InputDecoration(
+                          labelText: 'Origin',
+                          labelStyle: const TextStyle(color: Colors.lightBlue),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(40),
+                            borderSide: const BorderSide(
+                                color: Colors.lightBlue, width: 2.0),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(40),
+                            borderSide: const BorderSide(
+                                color: Colors.lightBlue, width: 1.0),
+                          ),
+                          filled: true,
+                          fillColor: Colors.white70,
+                        ),
+                      ),
+                    )),
+                Offstage(
+                  offstage:
+                      _originFocus.hasFocus && !_destinationFocus.hasFocus,
+                  child: Padding(
+                    padding:
+                        !_originFocus.hasFocus && _destinationFocus.hasFocus
+                            ? const EdgeInsets.all(10)
+                            : const EdgeInsets.fromLTRB(10, 0, 10, 10),
+                    child: TextField(
+                      controller: _destinationController,
+                      focusNode: _destinationFocus,
+                      onTap: () =>
+                          _debouncedSearchAddress(_destinationController.text),
+                      onChanged: (value) => _debouncedSearchAddress(value),
+                      style: const TextStyle(fontSize: 12),
+                      decoration: InputDecoration(
+                        labelText: 'Destination',
+                        labelStyle: const TextStyle(color: Colors.lightBlue),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(40),
+                          borderSide: const BorderSide(
+                              color: Colors.lightBlue, width: 2.0),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(40),
+                          borderSide: const BorderSide(
+                              color: Colors.lightBlue, width: 1.0),
+                        ),
+                        filled: true,
+                        fillColor: Colors.white70,
+                      ),
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: Offstage(
+                    offstage:
+                        !(_originFocus.hasFocus || _destinationFocus.hasFocus),
+                    child: ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: _addresses.length,
+                      itemBuilder: (context, index) => ListTile(
+                        title: Text(_addresses[index].building_name),
+                        subtitle: Text(
+                            "0.0km | ${_addresses[index].street_address()} | ${_addresses[index].postal_code}"),
+                        onTap: () {
+                          // update the active text field with the selected address
+                          if (_originFocus.hasFocus) {
+                            _originController.text =
+                                _addresses[index].street_address();
+                            widget.onOriginChanged(_addresses[index]);
+                            _debouncedSearchAddress(
+                                _destinationController.text);
+                            _originFocus.unfocus();
+                            _destinationFocus.requestFocus();
+                          } else if (_destinationFocus.hasFocus) {
+                            _destinationController.text =
+                                _addresses[index].street_address();
+                            widget.onDestinationChanged(_addresses[index]);
+                            _destinationFocus.unfocus();
+                          }
+                        },
+                      ),
+                    ),
+                  ),
+                )
+              ],
+            )));
   }
 }

@@ -1,8 +1,8 @@
 import 'package:scheduler_app/entities/route.dart' as route_entity;
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:scheduler_app/entities/route_event.dart';
 import 'package:scheduler_app/screens/route_selection.dart';
 import 'package:scheduler_app/widgets/address_input.dart';
-import 'package:scheduler_app/entities/route_event.dart';
 import 'package:scheduler_app/entities/address.dart';
 import 'package:scheduler_app/widgets/map.dart';
 import 'package:event_bus/event_bus.dart';
@@ -19,25 +19,22 @@ class MapInputPage extends StatefulWidget {
 class _MapInputPageState extends State<MapInputPage> {
   // implement the function callbacks for address search
   EventBus get eventBus => GetIt.instance<EventBus>();
-  late double originLatitude;
-  late double originLongitude;
-  late double destinationLatitude;
-  late double destinationLongitude;
+  Address? origin;
+  Address? destination;
 
-  void handleOriginChange(Address origin) {
-    debugPrint("Origin selected: ${origin.latitude}, ${origin.longitude}");
+  void handleOriginChange(Address newOrigin) {
+    debugPrint(
+        "Origin selected: ${newOrigin.latitude}, ${newOrigin.longitude}");
     setState(() {
-      originLatitude = origin.latitude;
-      originLongitude = origin.longitude;
+      origin = newOrigin;
     });
   }
 
-  void handleDestinationChange(Address destination) {
+  void handleDestinationChange(Address newDestination) {
     debugPrint(
-        "Destination selected: ${destination.latitude}, ${destination.longitude}");
+        "Destination selected: ${newDestination.latitude}, ${newDestination.longitude}");
     setState(() {
-      destinationLatitude = destination.latitude;
-      destinationLongitude = destination.longitude;
+      destination = newDestination;
     });
   }
 
@@ -45,45 +42,46 @@ class _MapInputPageState extends State<MapInputPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(title: const Text('Map Page')),
-        body: Column(
+        body: Stack(
           children: [
-            Expanded(
-              child: MapWidget(
-                source: LatLng(1.320981, 103.84415),
-                dest: LatLng(1.31875833025, 103.846554958),
-                route: route_entity.Route.placeholder(),
-              ),
+            MapWidget(
+              source: const LatLng(1.320981, 103.84415),
+              dest: const LatLng(1.31875833025, 103.846554958),
+              route: route_entity.Route.placeholder(),
             ),
             AddressSearchWidget(
                 onOriginChanged: handleOriginChange,
                 onDestinationChanged: handleDestinationChange),
-            Padding(
-              padding: const EdgeInsets.only(bottom: 15),
-              child: ElevatedButton(
-                onPressed: () {
-                  eventBus.fire(RouteEvent("$originLatitude,$originLongitude",
-                      "$destinationLatitude,$destinationLongitude", "pt"));
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const RouteSelectionPage(),
-                    ),
-                  );
-                },
-                style: ElevatedButton.styleFrom(
-                  textStyle: const TextStyle(
-                    fontSize: 18, // font size
-                  ),
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 30, vertical: 15), // padding
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10), // rounded corners
-                  ),
-                ),
-                child: const Text('Search Routes'),
-              ),
-            )
           ],
+        ),
+        floatingActionButton: ElevatedButton(
+          onPressed: () {
+            if (origin != null && destination != null) {
+              eventBus.fire(RouteEvent(
+                  "${origin!.latitude},${origin!.longitude}",
+                  "${destination!.latitude},${destination!.longitude}",
+                  "pt"));
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const RouteSelectionPage(),
+                ),
+              );
+            } else {
+              // pending merge
+            }
+          },
+          style: ElevatedButton.styleFrom(
+            textStyle: const TextStyle(
+              fontSize: 16, // font size
+            ),
+            padding: const EdgeInsets.symmetric(
+                horizontal: 30, vertical: 15), // padding
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10), // rounded corners
+            ),
+          ),
+          child: const Text('Search Routes'),
         ));
   }
 }

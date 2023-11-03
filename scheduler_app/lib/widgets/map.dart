@@ -88,6 +88,7 @@ class _MapWidgetState extends State<MapWidget> {
             icon:
                 BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed))
       },
+      zoomControlsEnabled: false,
     );
   }
 }
