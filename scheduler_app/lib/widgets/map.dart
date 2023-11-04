@@ -10,8 +10,8 @@ class MapWidget extends StatefulWidget {
   route_entity.Route route;
 
   MapWidget({super.key, required this.route}) {
-    source = LatLng(route.origin.lat, route.origin.lon);
-    dest = LatLng(route.destination.lat, route.destination.lon);
+    source = LatLng(route.origin.latitude, route.origin.longitude);
+    dest = LatLng(route.destination.latitude, route.destination.longitude);
     legs = route.legs;
   }
 

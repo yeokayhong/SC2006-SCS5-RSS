@@ -25,8 +25,6 @@ class RouteManager {
   route_entity.Route? _activeRoute;
   Timer? _activeRouteUpdateTimer;
   final _activeRouteUpdateInterval = const Duration(seconds: 5);
-  late Address origin;
-  late Address destination;
 
   RouteManager() {
     // initialize Stream to look at the _routeDict
@@ -42,14 +40,6 @@ class RouteManager {
         debugPrint(json['error']);
       }
     });
-  }
-
-  void setOrigin(Address newOrigin) {
-    origin = newOrigin;
-  }
-
-  void setDest(Address newDestination) {
-    destination = newDestination;
   }
 
   Future<Stop?> getCurrentStopAlongRoute(route_entity.Route route) async {
