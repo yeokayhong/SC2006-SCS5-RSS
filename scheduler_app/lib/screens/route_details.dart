@@ -1,7 +1,7 @@
 import 'package:scheduler_app/entities/route.dart' as route_entity;
 import 'package:scheduler_app/managers/route_manager.dart';
 import 'package:scheduler_app/entities/leg.dart';
-import 'package:scheduler_app/widgets/legs.dart';
+import 'package:scheduler_app/widgets/leg.dart';
 import 'package:scheduler_app/widgets/map.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';

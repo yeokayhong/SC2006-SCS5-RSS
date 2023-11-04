@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:scheduler_app/widgets/map.dart';
-import 'package:scheduler_app/entities/route_entity.dart' as r;
+import 'package:scheduler_app/entities/route.dart' as route_entity;
 
 class MapPage extends StatefulWidget {
-  late r.Route route;
+  late route_entity.Route route;
   MapPage({super.key, required this.route});
 
   @override
@@ -15,7 +15,7 @@ class _MapPageState extends State<MapPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Map Page"),
+        title: const Text("Map Page"),
       ),
       body: MapWidget(route: widget.route),
     );
