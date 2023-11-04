@@ -1,6 +1,4 @@
-import 'package:scheduler_app/entities/stop.dart';
 import 'package:scheduler_app/widgets/stop.dart';
-import 'package:scheduler_app/widgets/waiting_time.dart';
 import 'package:flutter/material.dart';
 import '../entities/leg.dart';
 
