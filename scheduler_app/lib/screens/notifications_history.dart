@@ -152,8 +152,9 @@ class _NotificationUIState extends State<NotificationUI> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          NotificationManager manager = getIt<NotificationManager>();
-          manager.createNotification(title: "Title", body: "Message");
+          // NotificationManager manager = getIt<NotificationManager>();
+          // manager.createNotification(title: "Title", body: "Message");
+          _showConfirmationDialog();
         },
         backgroundColor: Colors.blueAccent,
         child: const Icon(Icons.delete),

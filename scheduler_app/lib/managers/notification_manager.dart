@@ -127,7 +127,7 @@ class NotificationManager {
           AndroidNotificationDetails(
         'you can name it whatever1',
         'channelName',
-        playSound: true,
+        playSound: false,
         importance: Importance.max,
         priority: Priority.high,
       );
