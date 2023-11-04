@@ -1,5 +1,7 @@
+import 'package:provider/provider.dart';
 import 'package:scheduler_app/base_classes/set_up.dart';
 import 'package:flutter/material.dart';
+import 'package:scheduler_app/entities/route_selection_notifier.dart';
 import 'screens/screens_barrel.dart';
 
 Future<void> main() async {
@@ -26,31 +28,36 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        // Primary Color
-        primaryColor: Colors.lightBlue,
+          // Primary Color
+          primaryColor: Colors.lightBlue,
 
-        // Secondary (Accent) Color
-        secondaryHeaderColor: Colors.orange,
+          // Secondary (Accent) Color
+          secondaryHeaderColor: Colors.orange,
 
-        // Text Theme
-        textTheme: TextTheme(
-          bodyLarge: TextStyle(color: const Color.fromARGB(255, 8, 37, 87)),
-          bodyMedium: TextStyle(color: const Color.fromARGB(255, 8, 37, 87)),
-          displayLarge: TextStyle(color: const Color.fromARGB(255, 8, 37, 87)),
-          // Add more text styles
-        ),
+          // Text Theme
+          textTheme: const TextTheme(
+            bodyLarge: TextStyle(color: const Color.fromARGB(255, 8, 37, 87)),
+            bodyMedium: TextStyle(color: const Color.fromARGB(255, 8, 37, 87)),
+            displayLarge:
+                TextStyle(color: const Color.fromARGB(255, 8, 37, 87)),
+            // Add more text styles
+          ),
 
-        // Customization for BottomNavigationBar
-        bottomNavigationBarTheme: BottomNavigationBarThemeData(
-          backgroundColor: Colors.lightBlue,
-          selectedItemColor: Colors.black,
-          unselectedItemColor: Colors.black.withOpacity(0.4),
-        ),
+          // Customization for BottomNavigationBar
+          bottomNavigationBarTheme: BottomNavigationBarThemeData(
+            backgroundColor: Colors.lightBlue,
+            selectedItemColor: Colors.black,
+            unselectedItemColor: Colors.black.withOpacity(0.4),
+          ),
+          bottomSheetTheme:
+              const BottomSheetThemeData(backgroundColor: Colors.transparent)
 
-        // Additional theme customization can go here
-      ),
+          // Additional theme customization can go here
+          ),
       home: Scaffold(
-        body: SafeArea(child: _buildBodyForTab(_currentTab)),
+        body: ChangeNotifierProvider(
+            create: (context) => RouteSelectionNotifier(),
+            child: SafeArea(child: _buildBodyForTab(_currentTab))),
         bottomNavigationBar: BottomNavigationBar(
           backgroundColor: Colors.lightBlue,
           selectedItemColor: Colors.black,
@@ -61,7 +68,7 @@ class _MyAppState extends State<MyApp> {
               _currentTab = AppTab.values[index];
             });
           },
-          items: [
+          items: const [
             BottomNavigationBarItem(
               icon: Icon(Icons.map),
               label: 'Search',

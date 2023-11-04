@@ -15,7 +15,7 @@ class Stop {
     switch (type) {
       case "BUS":
         return BusStop.fromJson(stopData);
-      case "RAIL":
+      case "SUBWAY":
         return RailStop.fromJson(stopData);
       case "WALK":
         return WalkStop.fromJson(stopData);

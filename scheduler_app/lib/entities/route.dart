@@ -1,50 +1,56 @@
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:scheduler_app/entities/address.dart';
 import 'package:scheduler_app/entities/stop.dart';
-import 'package:flutter/material.dart';
-import 'leg.dart';
 import 'duration.dart';
+import 'leg.dart';
 
 class Route {
-  late int mapIndex;
-  List<Leg> legs = [];
-  late List<LatLng> decodedLegGoemetry;
-  late Duration duration;
-  late String endTime;
-  late dynamic fare;
-  late double walkDistance;
+  final int mapIndex;
+  final List<Leg> legs;
+  final Duration duration;
+  final String endTime;
+  final dynamic fare;
+  final double walkDistance;
   Stop? currentStop;
-  late Address origin;
-  late Address destination;
+  final Address origin;
+  final Address destination;
 
-  Route.placeholder() {
-    debugPrint("Route Placeholder");
+  Route({
+    required this.mapIndex,
+    required this.legs,
+    required this.duration,
+    required this.endTime,
+    required this.fare,
+    required this.walkDistance,
+    this.currentStop,
+    required this.origin,
+    required this.destination,
+  });
+
+  static Route fromJson(Map<String, dynamic> json, int mapIndex, Address origin,
+      Address destination) {
+    return Route(
+      mapIndex: mapIndex,
+      legs: parseLegs(json['legs']),
+      duration: parseDuration(json['duration'], json['transitTime'],
+          json['waitingTime'], json['walkTime']),
+      endTime: json['endTime'].toString(),
+      fare: json['fare'],
+      walkDistance: json['walkDistance'],
+      origin: origin,
+      destination: destination,
+    );
   }
 
-  Route({required Map<String, dynamic> json, required this.mapIndex}) {
-    createDuration(json['duration'], json['transitTime'], json['waitingTime'],
-        json['walkTime']);
-
-    endTime = (json['endTime'].toString());
-    fare = json['fare'];
-    walkDistance = json['walkDistance'];
-    legs = parseLegs(json['legs']);
-
-    // debugging
-    debugPrint(
-        "Routeobject $mapIndex: Duration: ${duration.totalDuration},TransitTime: ${duration.transitTime}, WaitingTime: ${duration.waitingTime}, WalkingTime: ${duration.walkingTime} ,endTime: $endTime,fare: $fare,walk: $walkDistance");
-  }
-
-  void createDuration(int totalDurationInSeconds, int transitTime,
+  static Duration parseDuration(int totalDurationInSeconds, int transitTime,
       int waitingTime, int walkingTime) {
-    duration = Duration(
+    return Duration(
         totalDuration: totalDurationInSeconds,
         transitTime: transitTime,
         waitingTime: waitingTime,
         walkingTime: walkingTime);
   }
 
-  List<Leg> parseLegs(List<dynamic> legs) {
+  static List<Leg> parseLegs(List<dynamic> legs) {
     List<Leg> parsedLegs = [];
 
     for (Map<String, dynamic> leg_data in legs) {

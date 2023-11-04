@@ -1,16 +1,24 @@
+import 'package:scheduler_app/entities/route_selection_notifier.dart';
 import 'package:scheduler_app/entities/route.dart' as route_entity;
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:scheduler_app/screens/route_selection.dart';
+import 'package:scheduler_app/widgets/route_selection.dart';
+import 'package:scheduler_app/managers/route_manager.dart';
+import 'package:scheduler_app/widgets/search_button.dart';
+import 'package:scheduler_app/widgets/route_details.dart';
 import 'package:scheduler_app/widgets/address_input.dart';
 import 'package:scheduler_app/entities/route_event.dart';
 import 'package:scheduler_app/entities/address.dart';
 import 'package:scheduler_app/widgets/map.dart';
 import 'package:event_bus/event_bus.dart';
+import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 
 class MapInputPage extends StatefulWidget {
-  const MapInputPage({super.key});
+  final routeManager = GetIt.instance<RouteManager>();
+  final _addressSearchFocus = FocusNode();
+
+  MapInputPage({super.key});
 
   @override
   State<MapInputPage> createState() => _MapInputPageState();
@@ -19,78 +27,65 @@ class MapInputPage extends StatefulWidget {
 class _MapInputPageState extends State<MapInputPage> {
   // implement the function callbacks for address search
   EventBus get eventBus => GetIt.instance<EventBus>();
-  Address? origin;
-  Address? destination;
   bool isWrongInput = false;
+  String searchState = "waiting";
 
   void handleOriginChange(Address newOrigin) {
     debugPrint(
         "Origin selected: ${newOrigin.latitude}, ${newOrigin.longitude}");
-    setState(() {
-      origin = newOrigin;
-    });
+    final routeSelectionNotifier =
+        Provider.of<RouteSelectionNotifier>(context, listen: false);
+    routeSelectionNotifier.origin = newOrigin;
   }
 
   void handleDestinationChange(Address newDestination) {
     debugPrint(
         "Destination selected: ${newDestination.latitude}, ${newDestination.longitude}");
-    setState(() {
-      destination = newDestination;
-    });
+    final routeSelectionNotifier =
+        Provider.of<RouteSelectionNotifier>(context, listen: false);
+    routeSelectionNotifier.destination = newDestination;
+  }
+
+  @override
+  void reassemble() {
+    super.reassemble();
+    widget.routeManager.reload();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Search Page')),
-      body: Stack(
-        children: [
-          MapWidget(
-            route: route_entity.Route.placeholder(),
-          ),
-          Positioned.fill(
-            child: AddressSearchWidget(
-                onOriginChanged: handleOriginChange,
-                onDestinationChanged: handleDestinationChange),
-          ),
-          Positioned(
-            bottom: 0,
-            left: 5,
-            right: 5,
-            child: Column(
-              children: [
-                Visibility(
-                  visible: isWrongInput,
-                  child: SizedBox(
-                    height: 30,
-                    width: MediaQuery.of(context).size.width * 0.5,
-                    child: const Text(
-                      "Please choose a valid address",
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.red,
-                      ),
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  height: 75,
-                  width: MediaQuery.of(context).size.width * 0.5,
-                  child: Padding(
-                    padding: const EdgeInsets.only(bottom: 15),
-                    child: ElevatedButton(
-                      onPressed: () {
-                        if (origin != null && destination != null) {
+        body: Stack(
+          children: [
+            Consumer<RouteSelectionNotifier>(builder: (context, value, child) {
+              return MapWidget(
+                  route: value.route,
+                  origin: Address.toLatLng(value.origin),
+                  destination: Address.toLatLng(value.destination));
+            }),
+            Focus(
+              focusNode: widget._addressSearchFocus,
+              child: AddressSearchWidget(
+                  onOriginChanged: handleOriginChange,
+                  onDestinationChanged: handleDestinationChange),
+            ),
+            Positioned(
+                left: 5,
+                right: 5,
+                bottom: 5,
+                child: Visibility(
+                    visible: searchState == "waiting" &&
+                        !widget._addressSearchFocus.hasFocus,
+                    child: Consumer<RouteSelectionNotifier>(
+                        builder: (context, value, child) {
+                      return SearchButtonWidget(onPressed: () {
+                        if (value.origin != null && value.destination != null) {
                           eventBus.fire(RouteEvent(
-                              "${origin!.latitude},${origin!.longitude}",
-                              "${destination!.latitude},${destination!.longitude}",
-                              "pt"));
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const RouteSelectionPage(),
-                            ),
-                          );
+                              origin: value.origin!,
+                              destination: value.destination!));
+                          setState(() {
+                            searchState = "searching";
+                          });
                         } else {
                           setState(() {
                             isWrongInput = true;
@@ -101,27 +96,84 @@ class _MapInputPageState extends State<MapInputPage> {
                             });
                           });
                         }
+                      });
+                    })))
+          ],
+        ),
+        bottomSheet: Visibility(
+          visible:
+              !widget._addressSearchFocus.hasFocus && searchState != "waiting",
+          child: BottomSheet(
+              onClosing: () {},
+              showDragHandle: true,
+              constraints:
+                  BoxConstraints(minWidth: MediaQuery.of(context).size.width),
+              backgroundColor: Colors.white,
+              shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(10),
+                      topRight: Radius.circular(10))),
+              builder: (context) {
+                return SizedBox(
+                    height: 200,
+                    child: Navigator(
+                      onGenerateRoute: (settings) {
+                        WidgetBuilder builder;
+                        switch (settings.name) {
+                          case '/':
+                            builder = (context) {
+                              return StreamBuilder(
+                                  stream: GetIt.instance<RouteManager>()
+                                      .routeStream,
+                                  builder: (context, snapshot) {
+                                    if (!snapshot.hasData) {
+                                      return const Center(
+                                          child: CircularProgressIndicator());
+                                    }
+                                    Map<int, route_entity.Route> routes =
+                                        snapshot.data!;
+                                    return RouteSelectionWidget(
+                                        routes: routes,
+                                        onRouteSelect: (route) {
+                                          WidgetsBinding.instance
+                                              .addPostFrameCallback((_) {
+                                            Navigator.pushNamed(
+                                              context,
+                                              "/route_details",
+                                              arguments: route,
+                                            );
+                                          });
+                                          final routeSelectionNotifier =
+                                              Provider.of<
+                                                      RouteSelectionNotifier>(
+                                                  context,
+                                                  listen: false);
+                                          routeSelectionNotifier.route = route;
+                                          widget.routeManager
+                                              .setActiveRoute(route);
+                                        });
+                                  });
+                            };
+                            break;
+                          case '/route_details':
+                            if (settings.arguments is! route_entity.Route) {
+                              throw Exception(
+                                  'Invalid data for /route_details: ${settings.name}');
+                            }
+                            builder = (context) {
+                              return RouteDetailsWidget(
+                                  route:
+                                      settings.arguments as route_entity.Route);
+                            };
+                            break;
+                          default:
+                            throw Exception('Invalid route: ${settings.name}');
+                        }
+                        return MaterialPageRoute(
+                            builder: builder, settings: settings);
                       },
-                      style: ElevatedButton.styleFrom(
-                        textStyle: const TextStyle(
-                          fontSize: 16, // font size
-                        ),
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 30, vertical: 15), // padding
-                        shape: RoundedRectangleBorder(
-                          borderRadius:
-                              BorderRadius.circular(10), // rounded corners
-                        ),
-                      ),
-                      child: const Text('Search Routes'),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          )
-        ],
-      ),
-    );
+                    ));
+              }),
+        ));
   }
 }

@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:scheduler_app/entities/route.dart' as route_entity;
 import 'package:scheduler_app/base_classes/geolocator.dart';
 import 'package:scheduler_app/APIs/routes_api.dart';
@@ -12,8 +10,8 @@ import '../entities/route_event.dart';
 import 'package:get_it/get_it.dart';
 import 'package:intl/intl.dart';
 import '../entities/address.dart';
-import 'concern_manager.dart';
 import 'dart:async';
+import 'dart:math';
 
 // RouteManager contains a class of methods for retrieving information on the retrieved Route Objects
 class RouteManager {
@@ -31,12 +29,13 @@ class RouteManager {
     _routeStreamController.add(_routeDict);
     eventBus.on<RouteEvent>().listen((event) async {
       Map<String, dynamic> json =
-          await fetchData(event.origin, event.dest, event.routeType);
+          await fetchData(event.origin, event.destination, event.routeType);
       debugPrint(
-          "Received: ${event.origin}, ${event.dest}, ${event.routeType}");
-      if (json["error"] == "")
-        createRoutes(json['plan']['itineraries']);
-      else {
+          "Received: ${event.origin}, ${event.destination}, ${event.routeType}");
+      if (json["error"] == "") {
+        createRoutes(
+            json['plan']['itineraries'], event.origin, event.destination);
+      } else {
         debugPrint(json['error']);
       }
     });
@@ -102,13 +101,24 @@ class RouteManager {
     print("Active Route: $_activeRoute");
   }
 
+  void reload() {
+    print("cancelling timer");
+    _activeRouteUpdateTimer?.cancel();
+  }
+
+  route_entity.Route? getActiveRoute() {
+    return _activeRoute;
+  }
+
   // for debugging purposes
   Future<Map<String, dynamic>> fetchData(
-      String start, String end, String routeType) async {
-    // get Current Date and Time
+      Address origin, Address destination, String routeType) async {
+    String start = "${origin.latitude},${origin.longitude}";
+    String end = "${destination.latitude},${destination.longitude}";
     DateTime now = DateTime.now();
     String formattedDate = DateFormat('MM-dd-yyyy').format(now);
     String formattedTime = DateFormat('HH:mm:ss').format(now);
+
     debugPrint("Date: ${formattedDate}Time: $formattedTime");
     Map<String, dynamic> json = await RoutesAPI.getRoutes(
         start: start,
@@ -149,13 +159,13 @@ class RouteManager {
   void updateLiveArrivalTime() {}
 
   // create Route Object and add to dictionary, json should be of json['itineraries]
-  void createRoutes(List<dynamic> json) {
+  void createRoutes(List<dynamic> json, Address origin, Address destination) {
     // remove previous route data, since new origin and destination are chosen
     _routeDict.clear();
     int counter = 1;
     for (var route in json) {
       route_entity.Route newRoute =
-          route_entity.Route(json: route, mapIndex: counter);
+          route_entity.Route.fromJson(route, counter, origin, destination);
       _routeDict[counter] = newRoute;
       counter++;
     }

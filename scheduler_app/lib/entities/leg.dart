@@ -1,5 +1,5 @@
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_polyline_algorithm/google_polyline_algorithm.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:scheduler_app/entities/stop.dart';
 
 class Leg {
@@ -31,10 +31,10 @@ class Leg {
         return WalkLeg.fromJson(leg);
       case 'BUS':
         return BusLeg.fromJson(leg);
-      case 'RAIL':
+      case 'SUBWAY':
         return RailLeg.fromJson(leg);
       default:
-        throw Exception("Invalid mode");
+        throw Exception("Invalid mode $mode");
     }
   }
 
