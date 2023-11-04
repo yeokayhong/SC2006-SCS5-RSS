@@ -31,7 +31,8 @@ class _RouteSelectionPageState extends State<RouteSelectionPage> {
       body: StreamBuilder<Map<int, route_entity.Route>>(
         stream: routeStream,
         builder: (context, snapshot) {
-          debugPrint("Snapshot State: ${snapshot.connectionState}");
+          debugPrint(
+              "Snapshot State for Route Selection: ${snapshot.connectionState}");
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(
               child: CircularProgressIndicator(),
@@ -43,51 +44,53 @@ class _RouteSelectionPageState extends State<RouteSelectionPage> {
             return const Center(
               child: Text('No routes available.'),
             );
+          } else {
+            final routes = snapshot.data;
+            debugPrint("Printing Stream Data: $routes");
+            return ListView.builder(
+              itemCount: routes!.length,
+              itemBuilder: (context, index) {
+                final routeKey = routes.keys.elementAt(index);
+                route_entity.Route routeValue = routes[routeKey]!;
+
+                return ListTile(
+                  contentPadding: const EdgeInsets.all(16.0),
+                  leading: CircleAvatar(
+                    backgroundColor: Colors.blueAccent,
+                    child: Text(routeKey.toString(), // Route index as string
+                        style: const TextStyle(color: Colors.white)),
+                  ),
+                  title: Text(
+                    'Duration: ${Duration.convertDurationToMin(routeValue.duration.totalDuration)} minutes', // Assuming duration is a field on r.Route
+                    style: const TextStyle(
+                        fontSize: 18.0, fontWeight: FontWeight.bold),
+                  ),
+                  subtitle: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Fare(SGD): ${routeValue.fare}', // Assuming fare is a field on r.Route
+                        style:
+                            TextStyle(fontSize: 16.0, color: Colors.grey[600]),
+                      ),
+                    ],
+                  ),
+                  trailing: const Icon(Icons.arrow_forward_ios,
+                      size: 20.0, color: Colors.blueAccent),
+                  onTap: () {
+                    // Perform actions like navigation
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            RouteDetailsPage(route: routeValue),
+                      ),
+                    );
+                  },
+                );
+              },
+            );
           }
-
-          final routes = snapshot.data;
-
-          return ListView.builder(
-            itemCount: routes!.length,
-            itemBuilder: (context, index) {
-              final routeKey = routes.keys.elementAt(index);
-              route_entity.Route routeValue = routes[routeKey]!;
-
-              return ListTile(
-                contentPadding: EdgeInsets.all(16.0),
-                leading: CircleAvatar(
-                  backgroundColor: Colors.blueAccent,
-                  child: Text(routeKey.toString(), // Route index as string
-                      style: TextStyle(color: Colors.white)),
-                ),
-                title: Text(
-                  'Duration: ${Duration.convertDurationToMin(routeValue.duration.totalDuration)} minutes', // Assuming duration is a field on r.Route
-                  style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
-                ),
-                subtitle: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Fare(SGD): ${routeValue.fare}', // Assuming fare is a field on r.Route
-                      style: TextStyle(fontSize: 16.0, color: Colors.grey[600]),
-                    ),
-                  ],
-                ),
-                trailing: Icon(Icons.arrow_forward_ios,
-                    size: 20.0, color: Colors.blueAccent),
-                onTap: () {
-                  // Perform actions like navigation
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) =>
-                          RouteDetailsPage(routeNumber: routeKey),
-                    ),
-                  );
-                },
-              );
-            },
-          );
         },
       ),
     );

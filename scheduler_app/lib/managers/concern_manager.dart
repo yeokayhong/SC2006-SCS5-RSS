@@ -29,14 +29,15 @@ class ConcernManager {
     Map<String, dynamic> json = jsonDecode(message);
     _notificationManager.createNotification(
         title: json["message"],
-        body: "There is a new alert along your route, click to view details",
-        payload: {
-          "type": json["type"],
-          "service": json["service"],
-          "affectedStops": json["affected_stops"],
-          "time": json["time"],
-          "message": json["message"]
-        });
+        body: "There is a new alert along your route",
+        // payload: {
+        //   "type": json["type"],
+        //   "service": json["service"],
+        //   "affectedStops": json["affected_stops"],
+        //   "time": json["time"],
+        //   "message": json["message"]
+        // }
+        );
   }
 
   void _handleUpdatedConcern(html.Event event) {
@@ -46,14 +47,15 @@ class ConcernManager {
 
     _notificationManager.createNotification(
         title: json["message"],
-        body: "An alert along your route has updates, click to view details",
-        payload: {
-          "type": json["type"],
-          "service": json["service"],
-          "affectedStops": json["affected_stops"],
-          "time": json["time"],
-          "message": json["message"]
-        });
+        body: "An alert along your route has updates",
+        // payload: {
+        //   "type": json["type"],
+        //   "service": json["service"],
+        //   "affectedStops": json["affected_stops"],
+        //   "time": json["time"],
+        //   "message": json["message"]
+        // }
+        );
   }
 
   void _handleRemovedConcern(html.Event event) {
@@ -64,13 +66,14 @@ class ConcernManager {
     _notificationManager.createNotification(
         title: json["message"],
         body: "This alert along your route has been removed",
-        payload: {
-          "type": json["type"],
-          "service": json["service"],
-          "affectedStops": json["affected_stops"],
-          "time": json["time"],
-          "message": json["message"]
-        });
+        // payload: {
+        //   "type": json["type"],
+        //   "service": json["service"],
+        //   "affectedStops": json["affected_stops"],
+        //   "time": json["time"],
+        //   "message": json["message"]
+        // }
+        );
   }
 
   Future<List<Concern>> getConcerns() async {

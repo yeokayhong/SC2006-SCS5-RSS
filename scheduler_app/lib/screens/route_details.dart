@@ -2,14 +2,15 @@ import 'package:scheduler_app/entities/route.dart' as route_entity;
 import 'package:scheduler_app/managers/route_manager.dart';
 import 'package:scheduler_app/entities/leg.dart';
 import 'package:scheduler_app/widgets/legs.dart';
+import 'package:scheduler_app/widgets/map.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 
 class RouteDetailsPage extends StatefulWidget {
-  final int routeNumber;
+  final route_entity.Route route;
   final RouteManager routeManager = GetIt.instance<RouteManager>();
 
-  RouteDetailsPage({super.key, required this.routeNumber});
+  RouteDetailsPage({super.key, required this.route});
 
   @override
   State<RouteDetailsPage> createState() => _RouteDetailsPageState();
@@ -17,66 +18,81 @@ class RouteDetailsPage extends StatefulWidget {
 
 class _RouteDetailsPageState extends State<RouteDetailsPage> {
   late route_entity.Route routeData;
-  late Stream<Map<int, route_entity.Route>> routeStream =
-      widget.routeManager.routeStream;
+  late Stream<route_entity.Route> routeStream = widget.routeManager.routeStream
+      .map((routesMap) => routesMap[widget.route.mapIndex])
+      .where((route) => route != null)
+      .cast<route_entity.Route>();
 
   @override
   void initState() {
-    routeData = widget.routeManager.getRoute(widget.routeNumber);
-    // TODO: implement initState
     super.initState();
   }
 
   Widget build(BuildContext context) {
-    List<Leg> legs = routeData.legs;
     return Scaffold(
-        appBar: AppBar(title: Text('Route #${widget.routeNumber} Details')),
-        body: StreamBuilder(
-            stream: routeStream,
-            builder: (context, snapshot) {
-              return ListView.builder(
-                itemCount: legs.length,
-                itemBuilder: (context, index) {
-                  final leg = legs[index];
-                  return LegWidget.fromLeg(leg);
-                },
+      appBar: AppBar(
+        title: Text('Route #${widget.route.mapIndex} Details'),
+        actions: [
+          IconButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => MapWidget(route: widget.route),
+                ),
               );
-            }),
-        floatingActionButton: ElevatedButton(
-          onPressed: () {
-            widget.routeManager.setActiveRoute(routeData);
-          },
-          style: ElevatedButton.styleFrom(
-            textStyle: const TextStyle(
-              fontSize: 16, // font size
-            ),
-            padding: const EdgeInsets.symmetric(
-                horizontal: 30, vertical: 15), // padding
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10), // rounded corners
-            ),
-          ),
-          child: const Text('Begin Journey'),
-        )
-        // Column(
-        //   children: [
-        //     // 60% of the screen for Map
-        //     Expanded(
-        //       flex: 6,
-        //       child: MapWidget(
-        //         source: LatLng(1.320981,
-        //             103.84415), // You can adjust these coordinates accordingly
-        //         dest: LatLng(1.31875833025, 103.846554958),
-        //         route: r.Route.placeholder(),
-        //       ),
-        //     ),
-        //     // 40% of the screen for travel plan details
-        //     Expanded(
-        //       flex: 4,
-        //       child: LegsWidget(),
-        //     ),
-        //   ],
-        // ),
-        );
+            },
+            icon: const Icon(Icons.map),
+          )
+        ],
+      ),
+      body: StreamBuilder<route_entity.Route>(
+        initialData: widget.route,
+        stream: routeStream,
+        builder: (context, snapshot) {
+          debugPrint(
+              "Snapshot State for Route Details: ${snapshot.connectionState}");
+          if (!snapshot.hasData || snapshot.hasError) {
+            return const Center(
+              child: Text('Route not available, please search route again.'),
+            );
+          } else {
+            final route = snapshot.data!;
+            List<Leg> legs = route.legs;
+
+            return Column(
+              children: [
+                Expanded(
+                  child: MapWidget(route: route),
+                ),
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: legs.length,
+                    itemBuilder: (context, index) {
+                      // if (index == 0) {
+                      //   return Column();
+                      // } else if (index == legs.length - 1) {
+                      //   return Column();
+                      // }
+                      final leg = legs[index];
+
+                      return Column(
+                        // Leg Start
+                        children: [
+                          SizedBox(
+                            height: 60,
+                            child: LegWidget.fromLeg(leg),
+                          ),
+                        ],
+                      );
+                    },
+                  ),
+                ),
+              ],
+            );
+          }
+        },
+      ),
+    );
   }
 }

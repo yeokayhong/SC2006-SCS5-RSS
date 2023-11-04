@@ -14,7 +14,8 @@ class WaitingTimeWidget extends StatelessWidget {
         children: [
           Icon(Icons.hourglass_empty, color: Colors.grey),
           SizedBox(width: 10.0),
-          Text('Wait for $duration', style: TextStyle(color: Colors.grey)),
+          Text('Wait for $duration min(s)',
+              style: TextStyle(color: Colors.grey)),
         ],
       ),
     );

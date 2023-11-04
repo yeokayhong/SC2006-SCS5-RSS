@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:path_provider/path_provider.dart' as path_provider;
-import 'package:scheduler_app/managers/concern_manager.dart';
 import 'package:scheduler_app/entities/notification_entity.dart';
 import 'package:scheduler_app/base_classes/set_up.dart';
 import 'package:event_bus/event_bus.dart';

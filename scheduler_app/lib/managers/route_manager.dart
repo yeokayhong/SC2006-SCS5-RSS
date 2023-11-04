@@ -11,21 +11,26 @@ import 'package:flutter/material.dart';
 import '../entities/route_event.dart';
 import 'package:get_it/get_it.dart';
 import 'package:intl/intl.dart';
+import '../entities/address.dart';
 import 'concern_manager.dart';
 import 'dart:async';
 
 // RouteManager contains a class of methods for retrieving information on the retrieved Route Objects
 class RouteManager {
   final StreamController<Map<int, route_entity.Route>> _routeStreamController =
-      StreamController.broadcast();
+      StreamController<Map<int, route_entity.Route>>.broadcast();
   EventBus get eventBus => GetIt.instance<EventBus>();
   final Map<int, route_entity.Route> _routeDict = {};
   final double stopDetectionRadiusMeters = 50;
   route_entity.Route? _activeRoute;
   Timer? _activeRouteUpdateTimer;
   final _activeRouteUpdateInterval = const Duration(seconds: 5);
+  late Address origin;
+  late Address destination;
 
   RouteManager() {
+    // initialize Stream to look at the _routeDict
+    _routeStreamController.add(_routeDict);
     eventBus.on<RouteEvent>().listen((event) async {
       Map<String, dynamic> json =
           await fetchData(event.origin, event.dest, event.routeType);
@@ -37,6 +42,14 @@ class RouteManager {
         debugPrint(json['error']);
       }
     });
+  }
+
+  void setOrigin(Address newOrigin) {
+    origin = newOrigin;
+  }
+
+  void setDest(Address newDestination) {
+    destination = newDestination;
   }
 
   Future<Stop?> getCurrentStopAlongRoute(route_entity.Route route) async {
@@ -124,11 +137,11 @@ class RouteManager {
     throw 'Route not found!';
   }
 
-  // search affected Routes and update them
-  void searchAffectedRoutes(Concern concern) {}
+  // // search affected Routes and update them
+  // void searchAffectedRoutes(Concern concern) {}
 
-  // search affected Routes with entire concernList
-  void searchAffectedRoutesWithConcernList(List<Concern> concernList) {}
+  // // search affected Routes with entire concernList
+  // void searchAffectedRoutesWithConcernList(List<Concern> concernList) {}
 
   // get Bus Waiting Time
   void getBusWaitingTime() {
@@ -163,14 +176,17 @@ class RouteManager {
     debugPrint("Event emitted: $_routeDict");
   }
 
-  String formatEndTime(String endTimeInUnix) {
+  static String formatEndTime(
+      {required String endTimeInUnix, int offset = 28800000}) {
     // endTime is in Unix TimeStamp
     debugPrint(endTimeInUnix);
     DateTime result = DateTime.fromMillisecondsSinceEpoch(
         int.parse(endTimeInUnix),
         isUtc: true);
-    // temporary fix, but not sure why local time is not reflecting probably.
-    result = result.add(const Duration(hours: 8));
+
+    result = result.add(
+      Duration(milliseconds: offset),
+    );
     debugPrint(result.toString());
     // convert time eg. display in 9:30 pm
     return DateFormat('h:mm a').format(result);

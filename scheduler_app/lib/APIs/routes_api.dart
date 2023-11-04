@@ -11,7 +11,7 @@ class RoutesAPI {
       required String routeType,
       required String date,
       required String time,
-      String mode = "BUS",
+      String mode = "TRANSIT",
       String maxWalkDistance = "1000",
       String numItineraries = "3"}) async {
     // send request

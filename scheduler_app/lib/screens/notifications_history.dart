@@ -130,12 +130,12 @@ class _NotificationUIState extends State<NotificationUI> {
                     },
                     style: ButtonStyle(
                         backgroundColor: MaterialStateProperty.all<Color>(
-                            Colors.red.shade800),
+                            Colors.blueAccent),
                         shape:
                             MaterialStateProperty.all<RoundedRectangleBorder>(
                                 RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(18.0),
-                          side: const BorderSide(color: Colors.red),
+                          side: const BorderSide(color: Colors.blueAccent),
                         ))),
                     child: const Text(
                       'Read more',
@@ -155,7 +155,7 @@ class _NotificationUIState extends State<NotificationUI> {
           NotificationManager manager = getIt<NotificationManager>();
           manager.createNotification(title: "Title", body: "Message");
         },
-        backgroundColor: Colors.red.shade800,
+        backgroundColor: Colors.blueAccent,
         child: const Icon(Icons.delete),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
