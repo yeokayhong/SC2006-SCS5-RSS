@@ -1,22 +1,32 @@
+import 'dart:convert';
 import 'package:scheduler_app/entities/notification_entity.dart'
     as notification_entity;
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:scheduler_app/base_classes/date_time_format.dart';
 import 'package:scheduler_app/managers/notification_manager.dart';
 import 'package:scheduler_app/widgets/notification_details.dart';
 import 'package:event_bus/event_bus.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:http/http.dart' as http;
 
 class NotificationUI extends StatefulWidget {
+  late _NotificationUIState state;
   @override
-  State<NotificationUI> createState() => _NotificationUIState();
+  State<NotificationUI> createState() {
+    state = _NotificationUIState();
+    return state;
+  }
+
+  void callUpdateNotificationList() {
+    state.updateNotificationList();
+  }
 }
 
 class _NotificationUIState extends State<NotificationUI> {
   List<notification_entity.Notification> notificationList = [];
   EventBus get eventBus => GetIt.instance<EventBus>();
   GetIt getIt = GetIt.instance;
+  final baseUrl = "http://10.0.2.2:5000/get_user_input"; // Server URL
 
   @override
   void initState() {
@@ -36,6 +46,27 @@ class _NotificationUIState extends State<NotificationUI> {
         elevation: 0.0,
         backgroundColor: Colors.grey[200],
         titleTextStyle: const TextStyle(color: Colors.black, fontSize: 40.0),
+        actions: [
+          PopupMenuButton<String>(
+            itemBuilder: (BuildContext context) {
+              return {
+                '1. Concern 1',
+                '1.1 Concern 1.1',
+                '2. Concern 2',
+                '3. Empty Concern',
+                '4. Concern with Error',
+              }.map((String choice) {
+                return PopupMenuItem<String>(
+                  value: choice,
+                  child: Text(choice),
+                );
+              }).toList();
+            },
+            onSelected: (String choice) {
+              sendChoice(choice[0]); // Extract the choice from the menu item
+            },
+          ),
+        ],
       ),
       body: RefreshIndicator(
         onRefresh: _refreshNotifications,
@@ -129,8 +160,8 @@ class _NotificationUIState extends State<NotificationUI> {
                       );
                     },
                     style: ButtonStyle(
-                        backgroundColor: MaterialStateProperty.all<Color>(
-                            Colors.blueAccent),
+                        backgroundColor:
+                            MaterialStateProperty.all<Color>(Colors.blueAccent),
                         shape:
                             MaterialStateProperty.all<RoundedRectangleBorder>(
                                 RoundedRectangleBorder(
@@ -152,8 +183,9 @@ class _NotificationUIState extends State<NotificationUI> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          NotificationManager manager = getIt<NotificationManager>();
-          manager.createNotification(title: "Title", body: "Message");
+          // NotificationManager manager = getIt<NotificationManager>();
+          // manager.createNotification(title: "Title", body: "Message");
+          _showConfirmationDialog();
         },
         backgroundColor: Colors.blueAccent,
         child: const Icon(Icons.delete),
@@ -192,18 +224,6 @@ class _NotificationUIState extends State<NotificationUI> {
     );
   }
 
-  // void _setupEventListeners() {
-  //   eventBus.on<ConcernEvent>().listen((event) async {
-  //     await getIt<NotificationManager>().displayRealTimeNotification(
-  //       id: 0,
-  //       title: 'title',
-  //       body: event.concern.message,
-  //       fln: getIt<FlutterLocalNotificationsPlugin>());
-  //     await getIt<NotificationManager>().createNotifications(event);
-  //     updateNotificationList();
-  //   });
-  // }
-
   void updateNotificationList() {
     setState(() {
       notificationList = getIt<NotificationManager>()
@@ -217,5 +237,25 @@ class _NotificationUIState extends State<NotificationUI> {
     // You can call an API or update your data source here
     await Future.delayed(const Duration(seconds: 1));
     updateNotificationList();
+  }
+
+  void sendChoice(String choice) async {
+    if (!['1', '1.1', '2', '3', '4'].contains(choice)) {
+      print("Invalid choice. Please enter a valid option.");
+      return; // Exit the function if the choice is invalid
+    }
+
+    final response = await http.post(
+      Uri.parse(baseUrl),
+      body: jsonEncode({"choice": choice}),
+      headers: {'Content-Type': 'application/json'},
+    );
+
+    if (response.statusCode == 200) {
+      print("POST request was successful.");
+      print("Response content: ${response.body}");
+    } else {
+      print("POST request failed with status code ${response.statusCode}.");
+    }
   }
 }

@@ -153,11 +153,35 @@ class RouteManager {
     throw 'Route not found!';
   }
 
-  // // search affected Routes and update them
-  // void searchAffectedRoutes(Concern concern) {}
+  // search affected Routes and update them
+  void calculateAffectedRoutes() async {
+    final ConcernManager _concernManager = GetIt.instance<ConcernManager>();
+    // ACTUAL IMPLEMENTATION TO GET CONCERN
+    // List<Concern> localConcernList = await _concernManager.getConcerns();
 
-  // // search affected Routes with entire concernList
-  // void searchAffectedRoutesWithConcernList(List<Concern> concernList) {}
+    // TEST IMPLEMENTATION
+    List<Concern> localConcernList = _concernManager.testGetConcerns();
+    debugPrint("Calculating Affected Routes");
+    for (var route in _routeDict.values) {
+      route.concerns.clear();
+      debugPrint("Clear Concern list ${route.concerns}");
+      for (var concern in localConcernList) {
+        debugPrint("Checking each concern...");
+        // check if it is affected by concern
+        // if it is, add the necessary stuff
+        if (route.isAffectedByConcern(concern)) {
+          route.concerns.add(concern);
+          debugPrint(
+              "Route ${route.mapIndex} is affected by ${concern.affectedStops}");
+        }
+        // do my stuff
+      }
+      route.recalculateTime();
+    }
+    debugPrint("Calculated Affected Routes!");
+
+    _routeStreamController.add(_routeDict);
+  }
 
   // get Bus Waiting Time
   void getBusWaitingTime() {
@@ -190,6 +214,9 @@ class RouteManager {
     // update Routes into Stream
     _routeStreamController.add(_routeDict);
     debugPrint("Event emitted: $_routeDict");
+
+    // test the affectedRoutes
+    // GetIt.instance<RouteManager>().calculateAffectedRoutes();
   }
 
   static String formatEndTime(
@@ -198,7 +225,7 @@ class RouteManager {
     debugPrint(endTimeInUnix);
     DateTime result = DateTime.fromMillisecondsSinceEpoch(
         int.parse(endTimeInUnix),
-        isUtc: true);
+        isUtc: false);
 
     result = result.add(
       Duration(milliseconds: offset),

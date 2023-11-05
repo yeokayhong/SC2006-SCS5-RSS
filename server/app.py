@@ -150,6 +150,7 @@ def get_concerns():
 
 @app.route('/concerns/subscribe', methods=['GET'])
 def subscribe():
+    print('subscribed')
     sse = ServerSentEvents()
     concern_manager.add_subscriber(sse)
     return sse.response()
@@ -157,5 +158,21 @@ def subscribe():
 # Add other app routes here and call methods from RouteManager and ConcernManager
 
 
+@app.route('/get_user_input', methods=['POST'])
+def get_user_input():
+    try:
+        data = request.get_json()
+        choice = data.get('choice')
+
+        if choice is not None:
+            concern_manager.create_concern(choice)
+            print(f'Received choice: {choice}')
+
+            return jsonify({'message': 'Choice received and processed successfully'}), 200
+        else:
+            return jsonify({'error': 'Invalid data'}), 400
+    except Exception as e:
+        return jsonify({'error': 'Error processing the request'}), 500
+    
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
