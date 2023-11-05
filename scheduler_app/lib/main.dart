@@ -1,7 +1,7 @@
 import 'package:scheduler_app/base_classes/set_up.dart';
 import 'package:flutter/material.dart';
 import 'screens/screens_barrel.dart';
-
+import 'package:get_it/get_it.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await instanceSetUp();
@@ -82,7 +82,7 @@ class _MyAppState extends State<MyApp> {
       case AppTab.mapInput:
         return MapInputPage();
       case AppTab.notificationHistory:
-        return NotificationUI();
+        return GetIt.instance<NotificationUI>();
     }
   }
 }

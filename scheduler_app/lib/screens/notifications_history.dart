@@ -10,9 +10,18 @@ import 'package:get_it/get_it.dart';
 import 'package:http/http.dart' as http;
 
 class NotificationUI extends StatefulWidget {
+  late _NotificationUIState state;
   @override
-  State<NotificationUI> createState() => _NotificationUIState();
+  State<NotificationUI> createState() {
+    state = _NotificationUIState();
+    return state;
+  }
+
+  void callUpdateNotificationList() {
+    state.updateNotificationList();
+  }
 }
+
 
 class _NotificationUIState extends State<NotificationUI> {
   List<notification_entity.Notification> notificationList = [];

@@ -6,6 +6,8 @@ import 'package:event_bus/event_bus.dart';
 import '../entities/legtype_entity.dart';
 import 'package:get_it/get_it.dart';
 
+import '../screens/notifications_history.dart';
+
 GetIt getIt = GetIt.instance;
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
     FlutterLocalNotificationsPlugin();
@@ -21,6 +23,7 @@ Future<void> instanceSetUp() async {
   getIt.registerSingleton<FlutterLocalNotificationsPlugin>(
       flutterLocalNotificationsPlugin);
   getIt.registerSingleton<ConcernManager>(ConcernManager());
+  getIt.registerSingleton<NotificationUI>(NotificationUI());
 
   // LegFactory
   // Register constructors for Legs

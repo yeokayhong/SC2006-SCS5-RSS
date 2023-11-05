@@ -5,6 +5,8 @@ import 'package:http/http.dart' as http;
 import 'package:get_it/get_it.dart';
 import 'dart:convert';
 
+import '../screens/notifications_history.dart';
+
 class ConcernManager {
   final NotificationManager _notificationManager =
       GetIt.instance<NotificationManager>();
@@ -38,6 +40,7 @@ class ConcernManager {
         //   "message": json["message"]
         // }
         );
+    GetIt.instance<NotificationUI>().callUpdateNotificationList();
   }
 
   void _handleUpdatedConcern(html.Event event) {
@@ -56,6 +59,7 @@ class ConcernManager {
         //   "message": json["message"]
         // }
         );
+    GetIt.instance<NotificationUI>().callUpdateNotificationList();
   }
 
   void _handleRemovedConcern(html.Event event) {
@@ -74,6 +78,7 @@ class ConcernManager {
         //   "message": json["message"]
         // }
         );
+    GetIt.instance<NotificationUI>().callUpdateNotificationList();
   }
 
   Future<List<Concern>> getConcerns() async {

@@ -12,7 +12,7 @@ class ConcernManager:
 
         self.mode = mode
 
-        self.seconds_between_queries = 300
+        self.seconds_between_queries = 15
         self.timer_thread = threading.Thread(target=self.monitor_concerns)
         self.timer_thread.daemon = True
         self.timer_thread.start()
@@ -49,8 +49,10 @@ class ConcernManager:
                     self.query_train_service_alerts()
                 case "development":
                     print("Returning dummy data...")
-                    
-                    # self.update_concerns([])
+                    concern_periodic = Concern("TrainDisruption", "NS", [
+                        "NS5", "NS6"], datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S"), "concern periodic, Test Due to a signal fault, expect delays of 10 minutes for train services between NS5 and NS6")
+    
+                    self.update_concerns([concern_periodic])
                  
             time.sleep(self.seconds_between_queries)
             
