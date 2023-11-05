@@ -22,7 +22,6 @@ class NotificationUI extends StatefulWidget {
   }
 }
 
-
 class _NotificationUIState extends State<NotificationUI> {
   List<notification_entity.Notification> notificationList = [];
   EventBus get eventBus => GetIt.instance<EventBus>();
@@ -161,8 +160,8 @@ class _NotificationUIState extends State<NotificationUI> {
                       );
                     },
                     style: ButtonStyle(
-                        backgroundColor: MaterialStateProperty.all<Color>(
-                            Colors.blueAccent),
+                        backgroundColor:
+                            MaterialStateProperty.all<Color>(Colors.blueAccent),
                         shape:
                             MaterialStateProperty.all<RoundedRectangleBorder>(
                                 RoundedRectangleBorder(
@@ -192,7 +191,6 @@ class _NotificationUIState extends State<NotificationUI> {
         child: const Icon(Icons.delete),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-
     );
   }
 

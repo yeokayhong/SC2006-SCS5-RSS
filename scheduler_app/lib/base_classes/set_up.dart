@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:scheduler_app/managers/notification_manager.dart';
 import 'package:scheduler_app/managers/concern_manager.dart';
@@ -15,14 +17,17 @@ final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
 Future<void> instanceSetUp() async {
   // getIt
   getIt.registerSingleton<EventBus>(EventBus());
+
   getIt.registerSingleton<NotificationManager>(
       NotificationManager.getInstance());
   getIt.registerSingleton<RouteManager>(RouteManager());
+  getIt.registerSingleton<ConcernManager>(ConcernManager());
+
   await NotificationManager.initializeNotifications(
       flutterLocalNotificationsPlugin);
   getIt.registerSingleton<FlutterLocalNotificationsPlugin>(
       flutterLocalNotificationsPlugin);
-  getIt.registerSingleton<ConcernManager>(ConcernManager());
+
   getIt.registerSingleton<NotificationUI>(NotificationUI());
 
   // LegFactory
@@ -30,4 +35,5 @@ Future<void> instanceSetUp() async {
   LegFactory.register("WALK", (arg) => WalkLeg(json: arg));
   LegFactory.register("BUS", (arg) => BusLeg(json: arg));
   LegFactory.register("SUBWAY", (arg) => SubwayLeg(json: arg));
+  LegFactory.register("TRAM", (arg) => TramLeg(json: arg));
 }

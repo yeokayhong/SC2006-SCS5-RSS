@@ -7,9 +7,12 @@ import 'package:scheduler_app/widgets/legs_widget_methods.dart';
 import 'package:scheduler_app/widgets/walk_leg.dart';
 
 abstract class LegType {
-  late String mode;
+  String mode = "";
   int? waitingTime;
   Widget createLeg();
+  String getMode() {
+    return mode;
+  }
 }
 
 class WalkLeg extends LegType {
@@ -46,6 +49,7 @@ class BusLeg extends LegType {
     List<dynamic> stopsJson = json['intermediateStops'];
     // debug message
     debugPrint("StopsJson obtained: ${stopsJson.toString()}");
+
     for (var stop in stopsJson) {
       // create Stop
       stops.add(
@@ -74,6 +78,8 @@ class BusLeg extends LegType {
 }
 
 class SubwayLeg extends LegType {
+  Stop? from;
+  Stop? to;
   List<Stop> stops = [];
   SubwayLeg({required Map<String, dynamic> json}) {
     super.mode = "SUBWAY";
@@ -81,12 +87,107 @@ class SubwayLeg extends LegType {
     // intialize stop list
     List<dynamic> unparsed = json['intermediateStops'];
     // debug message
-    debugPrint(unparsed.toString());
+    // initialize from
+    dynamic fromJson = json['from'];
+    debugPrint('from: $fromJson');
+    if (fromJson['name'] != "Origin") {
+      from = Stop(
+          arrivalTime: fromJson['arrival'],
+          departureTime: fromJson['departure'],
+          lat: fromJson['lat'],
+          lon: fromJson['lon'],
+          name: fromJson['name'],
+          stopCode: fromJson['stopCode'],
+          stopIndex: fromJson['stopIndex'],
+          stopSequence: fromJson['stopSequence']);
+      // initialize from
+      debugPrint('fromStop: ${from!.stopCode}');
+    }
+    debugPrint("Entering to json...");
+    dynamic toJson = json['to'];
+    debugPrint('to: $toJson');
+    if (toJson['name'] != "Destination") {
+      to = Stop(
+          arrivalTime: toJson['arrival'],
+          departureTime: -1,
+          lat: toJson['lat'],
+          lon: toJson['lon'],
+          name: toJson['name'],
+          stopCode: toJson['stopCode'],
+          stopIndex: toJson['stopIndex'],
+          stopSequence: toJson['stopSequence']);
+      debugPrint('toStop: ${to!.stopCode}');
+    }
+    debugPrint("Parsing intermediate Stops...");
+
     for (var stop in unparsed) {
       // create Stop
       stops.add(Stop(
           arrivalTime: stop['arrival'],
-          departureTime: stop['lat'],
+          departureTime: stop['departure'],
+          lat: stop['lat'],
+          lon: stop['lon'],
+          name: stop['name'],
+          stopCode: stop['stopCode'],
+          stopIndex: stop['stopIndex'],
+          stopSequence: stop['stopSequence']));
+    }
+  }
+
+  @override
+  Widget createLeg() {
+    return TransitLegWidget(stops: stops, waitingTime: super.waitingTime);
+  }
+}
+
+class TramLeg extends LegType {
+  Stop? from;
+  Stop? to;
+  List<Stop> stops = [];
+  TramLeg({required Map<String, dynamic> json}) {
+    super.mode = "TRAM";
+    super.waitingTime = 0;
+    // intialize stop list
+    List<dynamic> unparsed = json['intermediateStops'];
+    // debug message
+    // initialize from
+    dynamic fromJson = json['from'];
+    debugPrint('from: $fromJson');
+    if (fromJson['name'] != "Origin") {
+      from = Stop(
+          arrivalTime: fromJson['arrival'],
+          departureTime: fromJson['departure'],
+          lat: fromJson['lat'],
+          lon: fromJson['lon'],
+          name: fromJson['name'],
+          stopCode: fromJson['stopCode'],
+          stopIndex: fromJson['stopIndex'],
+          stopSequence: fromJson['stopSequence']);
+      // initialize from
+      debugPrint('fromStop: ${from!.stopCode}');
+    }
+    debugPrint("Entering to json...");
+    dynamic toJson = json['to'];
+    debugPrint('to: $toJson');
+    if (toJson['name'] != "Destination") {
+      to = Stop(
+          arrivalTime: toJson['arrival'],
+          departureTime: -1,
+          lat: toJson['lat'],
+          lon: toJson['lon'],
+          name: toJson['name'],
+          stopCode: toJson['stopCode'],
+          stopIndex: toJson['stopIndex'],
+          stopSequence: toJson['stopSequence']);
+      debugPrint('toStop: ${to!.stopCode}');
+    }
+    debugPrint("Parsing intermediate Stops...");
+
+    for (var stop in unparsed) {
+      // create Stop
+      stops.add(Stop(
+          arrivalTime: stop['arrival'],
+          departureTime: stop['departure'],
           lat: stop['lat'],
           lon: stop['lon'],
           name: stop['name'],

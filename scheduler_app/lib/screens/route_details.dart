@@ -35,6 +35,7 @@ class _RouteDetailsPageState extends State<RouteDetailsPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Route #${widget.route.mapIndex} Details'),
+        // can remove this i was using this to test if the map widget is working
         actions: [
           IconButton(
             onPressed: () {

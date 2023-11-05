@@ -1,3 +1,4 @@
+import 'package:scheduler_app/constants.dart';
 import 'package:scheduler_app/entities/address.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
@@ -71,12 +72,12 @@ class _AddressSearchWidgetState extends State<AddressSearchWidget> {
 
   void fetchToken() async {
     final Map<String, dynamic> payload = {
-      "email": "do_not_commit",
-      "password": "do_not_commit"
+      "email": Constants.oneMapEmail,
+      "password": Constants.oneMapPassword
     };
 
     final response = await http.post(
-      Uri.parse('https://www.onemap.gov.sg/api/auth/post/getToken'),
+      Uri.parse(Constants.oneMapAPIUrl),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },

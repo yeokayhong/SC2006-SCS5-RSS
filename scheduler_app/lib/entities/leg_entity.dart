@@ -8,7 +8,7 @@ class Leg {
   List<LatLng> polylineCoordinates = [];
   late Location start;
   late Location dest;
-  late dynamic legType;
+  late LegType legType;
   late dynamic distance;
   late dynamic duration;
   late dynamic endTime;
