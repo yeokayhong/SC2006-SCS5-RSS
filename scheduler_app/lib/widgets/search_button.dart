@@ -1,0 +1,35 @@
+import 'package:flutter/material.dart';
+
+class SearchButtonWidget extends StatelessWidget {
+  final Function? onPressed;
+  final bool loading;
+
+  const SearchButtonWidget({super.key, this.onPressed, this.loading = false});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(15),
+      child: ElevatedButton(
+        onPressed: onPressed as void Function()?,
+        style: ElevatedButton.styleFrom(
+          textStyle: const TextStyle(
+            fontSize: 16, // font size
+          ),
+          padding: const EdgeInsets.symmetric(
+              horizontal: 30, vertical: 15), // padding
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10), // rounded corners
+          ),
+        ),
+        child: loading
+            ? const Center(
+                child: SizedBox(
+                    height: 16,
+                    width: 16,
+                    child: CircularProgressIndicator(color: Colors.white)))
+            : const Text('Get Directions'),
+      ),
+    );
+  }
+}

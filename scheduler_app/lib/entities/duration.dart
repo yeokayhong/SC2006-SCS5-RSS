@@ -15,5 +15,19 @@ class Duration {
     return (duration / 60).truncate();
   }
 
+  static String formatDuration(int duration) {
+    int minutes = convertDurationToMin(duration);
+    int hours = (minutes / 60).truncate();
+    minutes = minutes % 60;
+
+    String formattedDuration = "";
+    if (hours > 0) {
+      formattedDuration += "${hours}h ";
+    }
+    formattedDuration += "${minutes}m";
+
+    return formattedDuration;
+  }
+
   // consider implementing getter and setters
 }

@@ -1,4 +1,4 @@
-import 'package:scheduler_app/managers/concern_manager.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'dart:math';
 
 class Address {
@@ -40,5 +40,12 @@ class Address {
         .replaceAll(postal_code, '')
         .replaceAll("SINGAPORE", '')
         .trim();
+  }
+
+  static LatLng? toLatLng(Address? address) {
+    if (address == null) {
+      return null;
+    }
+    return LatLng(address.latitude, address.longitude);
   }
 }

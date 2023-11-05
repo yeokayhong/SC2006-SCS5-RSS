@@ -1,11 +1,11 @@
 import 'dart:convert';
 
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:scheduler_app/base_classes/subway_service_color.dart';
 import 'package:scheduler_app/managers/notification_manager.dart';
 import 'package:scheduler_app/managers/concern_manager.dart';
 import 'package:scheduler_app/managers/route_manager.dart';
 import 'package:event_bus/event_bus.dart';
-import '../entities/legtype_entity.dart';
 import 'package:get_it/get_it.dart';
 
 import '../screens/notifications_history.dart';
@@ -29,11 +29,7 @@ Future<void> instanceSetUp() async {
       flutterLocalNotificationsPlugin);
 
   getIt.registerSingleton<NotificationUI>(NotificationUI());
-
-  // LegFactory
-  // Register constructors for Legs
-  LegFactory.register("WALK", (arg) => WalkLeg(json: arg));
-  LegFactory.register("BUS", (arg) => BusLeg(json: arg));
-  LegFactory.register("SUBWAY", (arg) => SubwayLeg(json: arg));
-  LegFactory.register("TRAM", (arg) => TramLeg(json: arg));
+  SubwayServiceColor subwayServiceColor =
+      await SubwayServiceColor.getInstance();
+  getIt.registerSingleton<SubwayServiceColor>(subwayServiceColor);
 }
