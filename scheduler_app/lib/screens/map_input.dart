@@ -1,6 +1,6 @@
 import 'package:scheduler_app/entities/route_selection_notifier.dart';
+import 'package:scheduler_app/entities/address_search_notifier.dart';
 import 'package:scheduler_app/entities/route.dart' as route_entity;
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:scheduler_app/widgets/route_selection.dart';
 import 'package:scheduler_app/managers/route_manager.dart';
 import 'package:scheduler_app/widgets/search_button.dart';
@@ -27,146 +27,192 @@ class MapInputPage extends StatefulWidget {
 class _MapInputPageState extends State<MapInputPage> {
   // implement the function callbacks for address search
   EventBus get eventBus => GetIt.instance<EventBus>();
+  bool addressBarFocused = false;
   bool isWrongInput = false;
-  String searchState = "waiting";
+  bool loading = false;
 
   void handleOriginChange(Address newOrigin) {
-    debugPrint(
-        "Origin selected: ${newOrigin.latitude}, ${newOrigin.longitude}");
-    final routeSelectionNotifier =
-        Provider.of<RouteSelectionNotifier>(context, listen: false);
-    routeSelectionNotifier.origin = newOrigin;
+    Future.microtask(() {
+      final addressSearchNotifier =
+          Provider.of<AddressSearchNotifier>(context, listen: false);
+      debugPrint(
+          "Origin selected: ${newOrigin.latitude}, ${newOrigin.longitude}");
+      addressSearchNotifier.origin = newOrigin;
+    });
   }
 
   void handleDestinationChange(Address newDestination) {
-    debugPrint(
-        "Destination selected: ${newDestination.latitude}, ${newDestination.longitude}");
+    Future.microtask(() {
+      debugPrint(
+          "Destination selected: ${newDestination.latitude}, ${newDestination.longitude}");
+      final addressSearchNotifier =
+          Provider.of<AddressSearchNotifier>(context, listen: false);
+      addressSearchNotifier.destination = newDestination;
+    });
+  }
+
+  void handleRouteChange(route_entity.Route newRoute) {
+    Future.microtask(() {
+      final routeSelectionNotifier =
+          Provider.of<RouteSelectionNotifier>(context, listen: false);
+      routeSelectionNotifier.selectedRoute = newRoute;
+    });
+  }
+
+  void handleRouteSelect(route_entity.Route newRoute) {
+    Future.microtask(() {
+      widget.routeManager.setActiveRoute(newRoute);
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
     final routeSelectionNotifier =
         Provider.of<RouteSelectionNotifier>(context, listen: false);
-    routeSelectionNotifier.destination = newDestination;
+    widget.routeManager.routeStream.listen((event) {
+      if (mounted) {
+        setState(() {
+          loading = false;
+        });
+      }
+      routeSelectionNotifier.routes = event;
+      routeSelectionNotifier.activeRoute = widget.routeManager.getActiveRoute();
+    });
+    widget._addressSearchFocus.addListener(() {
+      setState(() {
+        addressBarFocused = widget._addressSearchFocus.hasFocus;
+      });
+    });
   }
 
   @override
   void reassemble() {
     super.reassemble();
-    widget.routeManager.reload();
+    widget.routeManager.cancelTimers();
+    widget._addressSearchFocus.dispose();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    widget.routeManager.cancelTimers();
+    widget._addressSearchFocus.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        body: Stack(
-          children: [
-            Consumer<RouteSelectionNotifier>(builder: (context, value, child) {
-              return MapWidget(
-                  route: value.route,
-                  origin: Address.toLatLng(value.origin),
-                  destination: Address.toLatLng(value.destination));
-            }),
-            Focus(
-              focusNode: widget._addressSearchFocus,
-              child: AddressSearchWidget(
-                  onOriginChanged: handleOriginChange,
-                  onDestinationChanged: handleDestinationChange),
-            ),
-            Positioned(
-                left: 5,
-                right: 5,
-                bottom: 5,
-                child: Visibility(
-                    visible: searchState == "waiting" &&
-                        !widget._addressSearchFocus.hasFocus,
-                    child: Consumer<RouteSelectionNotifier>(
-                        builder: (context, value, child) {
-                      return SearchButtonWidget(onPressed: () {
-                        if (value.origin != null && value.destination != null) {
-                          eventBus.fire(RouteEvent(
-                              origin: value.origin!,
-                              destination: value.destination!));
-                          setState(() {
-                            searchState = "searching";
-                          });
-                        } else {
-                          setState(() {
-                            isWrongInput = true;
-                            Future.delayed(const Duration(seconds: 2), () {
-                              setState(() {
-                                isWrongInput = false;
-                              });
-                            });
-                          });
-                        }
-                      });
-                    })))
-          ],
-        ),
-        bottomSheet: Visibility(
-          visible:
-              !widget._addressSearchFocus.hasFocus && searchState != "waiting",
-          child: BottomSheet(
-              onClosing: () {},
-              showDragHandle: true,
-              constraints:
-                  BoxConstraints(minWidth: MediaQuery.of(context).size.width),
-              backgroundColor: Colors.white,
-              shape: const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(10),
-                      topRight: Radius.circular(10))),
-              builder: (context) {
-                return SizedBox(
-                    height: 200,
-                    child: Navigator(
-                      onGenerateRoute: (settings) {
-                        WidgetBuilder builder;
-                        switch (settings.name) {
-                          case '/':
-                            builder = (context) {
-                              return StreamBuilder(
-                                  stream: GetIt.instance<RouteManager>()
-                                      .routeStream,
-                                  builder: (context, snapshot) {
-                                    if (!snapshot.hasData) {
-                                      return const Center(
-                                          child: CircularProgressIndicator());
-                                    }
-                                    Map<int, route_entity.Route> routes =
-                                        snapshot.data!;
-                                    return RouteSelectionWidget(
-                                        routes: routes,
-                                        onRouteSelect: (route) {
-                                          Future.microtask(() {
-                                            final routeSelectionNotifier =
-                                                Provider.of<
-                                                        RouteSelectionNotifier>(
-                                                    context,
-                                                    listen: false);
-                                            routeSelectionNotifier.route =
-                                                route;
+    return Consumer<RouteSelectionNotifier>(
+        builder: (context, routeState, child) {
+      return WillPopScope(
+          onWillPop: () {
+            if (routeState.activeRoute != null) {
+              widget.routeManager.setActiveRoute(null);
+              return Future.value(false);
+            } else if (routeState.routes != null &&
+                routeState.routes!.isNotEmpty) {
+              routeState.selectedRoute = null;
+              routeState.routes = null;
+              return Future.value(false);
+            } else {
+              return Future.value(true);
+            }
+          },
+          child: Scaffold(
+              body: Stack(
+                children: [
+                  Consumer<AddressSearchNotifier>(
+                      builder: (context, addressState, child) {
+                    return MapWidget(
+                        route: routeState.selectedRoute,
+                        origin: Address.toLatLng(addressState.origin),
+                        destination:
+                            Address.toLatLng(addressState.destination));
+                  }),
+                  Consumer<AddressSearchNotifier>(
+                      builder: (context, value, child) {
+                    return Focus(
+                        focusNode: widget._addressSearchFocus,
+                        child: AddressSearchWidget(
+                            initialOrigin: value.origin,
+                            initialDestination: value.destination,
+                            onOriginChanged: handleOriginChange,
+                            onDestinationChanged: handleDestinationChange));
+                  }),
+                  Positioned(
+                      left: 5,
+                      right: 5,
+                      bottom: 5,
+                      child: Visibility(
+                          visible: (routeState.routes == null ||
+                                  routeState.routes!.isEmpty) &&
+                              !addressBarFocused,
+                          child: Consumer<AddressSearchNotifier>(
+                              builder: (context, value, child) {
+                            return SearchButtonWidget(
+                                onPressed: () {
+                                  if (value.origin != null &&
+                                      value.destination != null) {
+                                    eventBus.fire(RouteQueryEvent(
+                                        origin: value.origin!,
+                                        destination: value.destination!));
+                                    setState(() {
+                                      loading = true;
+                                    });
+                                  } else {
+                                    setState(() {
+                                      loading = false;
+                                      isWrongInput = true;
+                                      Future.delayed(const Duration(seconds: 2),
+                                          () {
+                                        if (mounted) {
+                                          setState(() {
+                                            isWrongInput = false;
                                           });
-                                        });
-                                  });
-                            };
-                            break;
-                          case '/route_details':
-                            if (settings.arguments is! route_entity.Route) {
-                              throw Exception(
-                                  'Invalid data for /route_details: ${settings.name}');
-                            }
-                            builder = (context) {
-                              return RouteDetailsWidget(
-                                  route:
-                                      settings.arguments as route_entity.Route);
-                            };
-                            break;
-                          default:
-                            throw Exception('Invalid route: ${settings.name}');
+                                        }
+                                      });
+                                    });
+                                  }
+                                },
+                                loading: loading);
+                          })))
+                ],
+              ),
+              bottomSheet: Consumer<RouteSelectionNotifier>(
+                  builder: (context, routeState, child) {
+                return Visibility(
+                  visible: !addressBarFocused &&
+                      routeState.routes != null &&
+                      routeState.routes!.isNotEmpty,
+                  child: BottomSheet(
+                      onClosing: () {},
+                      showDragHandle: true,
+                      constraints: BoxConstraints(
+                          minWidth: MediaQuery.of(context).size.width),
+                      backgroundColor: Colors.white,
+                      shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(10),
+                              topRight: Radius.circular(10))),
+                      builder: (context) {
+                        if (routeState.activeRoute == null) {
+                          return SizedBox(
+                              height: 150,
+                              child: RouteSelectionWidget(
+                                  initialRoute: routeState.selectedRoute,
+                                  routes: routeState.routes!,
+                                  onRouteChange: handleRouteChange,
+                                  onRouteSelect: handleRouteSelect));
+                        } else {
+                          return SizedBox(
+                              height: 200,
+                              child: SingleChildScrollView(
+                                  child: RouteDetailsWidget(
+                                      route: routeState.activeRoute!)));
                         }
-                        return MaterialPageRoute(
-                            builder: builder, settings: settings);
-                      },
-                    ));
-              }),
-        ));
+                      }),
+                );
+              })));
+    });
   }
 }

@@ -1,5 +1,5 @@
-import 'package:scheduler_app/constants.dart';
 import 'package:scheduler_app/entities/address.dart';
+import 'package:scheduler_app/constants.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'dart:convert';
@@ -8,11 +8,15 @@ import 'dart:async';
 class AddressSearchWidget extends StatefulWidget {
   final Function(Address) onOriginChanged;
   final Function(Address) onDestinationChanged;
+  final Address? initialOrigin;
+  final Address? initialDestination;
 
   const AddressSearchWidget({
     Key key = const Key('address_search'),
     required this.onOriginChanged,
     required this.onDestinationChanged,
+    this.initialOrigin,
+    this.initialDestination,
   }) : super(key: key);
 
   @override
@@ -99,6 +103,14 @@ class _AddressSearchWidgetState extends State<AddressSearchWidget> {
   void initState() {
     super.initState();
     fetchToken();
+    if (widget.initialOrigin != null) {
+      _originController.text = widget.initialOrigin!.street_address();
+      widget.onOriginChanged(widget.initialOrigin!);
+    }
+    if (widget.initialDestination != null) {
+      _destinationController.text = widget.initialDestination!.street_address();
+      widget.onDestinationChanged(widget.initialDestination!);
+    }
   }
 
   @override

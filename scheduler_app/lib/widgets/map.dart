@@ -209,6 +209,16 @@ class _MapWidgetState extends State<MapWidget> {
   @override
   void didUpdateWidget(MapWidget oldWidget) {
     super.didUpdateWidget(oldWidget);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      print("CALLED");
+      if (_controller != null) {
+        print("INSIDE");
+        Future.delayed(const Duration(milliseconds: 250), () {
+          _controller!.animateCamera(_buildCameraUpdate());
+        });
+      }
+    });
+
     if (widget.route == oldWidget.route &&
         widget.origin == oldWidget.origin &&
         widget.destination == oldWidget.destination) return;
@@ -216,12 +226,6 @@ class _MapWidgetState extends State<MapWidget> {
     setState(() {
       _polylines = _buildPolylinefromRoute(widget.route);
       _markers = _buildMarkers();
-    });
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (_controller != null) {
-        _controller!.animateCamera(_buildCameraUpdate());
-      }
     });
   }
 

@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 
 class SearchButtonWidget extends StatelessWidget {
   final Function? onPressed;
+  final bool loading;
 
-  const SearchButtonWidget({super.key, this.onPressed});
+  const SearchButtonWidget({super.key, this.onPressed, this.loading = false});
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +22,13 @@ class SearchButtonWidget extends StatelessWidget {
             borderRadius: BorderRadius.circular(10), // rounded corners
           ),
         ),
-        child: const Text('Get Directions'),
+        child: loading
+            ? const Center(
+                child: SizedBox(
+                    height: 16,
+                    width: 16,
+                    child: CircularProgressIndicator(color: Colors.white)))
+            : const Text('Get Directions'),
       ),
     );
   }

@@ -1,18 +1,23 @@
 import 'package:scheduler_app/entities/route.dart' as route_entity;
 import 'package:scheduler_app/managers/route_manager.dart';
 import 'package:scheduler_app/widgets/route_services.dart';
-import 'package:scheduler_app/widgets/service_icon.dart';
 import 'package:scheduler_app/entities/duration.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 
 class RouteSelectionWidget extends StatefulWidget {
   final routeManager = GetIt.instance<RouteManager>();
+  final Function(route_entity.Route) onRouteChange;
   final Function(route_entity.Route) onRouteSelect;
   final Map<int, route_entity.Route> routes;
+  final route_entity.Route? initialRoute;
 
   RouteSelectionWidget(
-      {super.key, required this.routes, required this.onRouteSelect});
+      {super.key,
+      required this.routes,
+      required this.onRouteChange,
+      required this.onRouteSelect,
+      this.initialRoute});
 
   @override
   State<RouteSelectionWidget> createState() => _RouteSelectionWidgetState();
@@ -33,16 +38,25 @@ class _RouteSelectionWidgetState extends State<RouteSelectionWidget> {
       index++;
     }
 
-    widget.onRouteSelect(widget.routes[newRouteSelections[selection]]!);
-
     setState(() {
       routeSelections = newRouteSelections;
     });
+
+    if (widget.initialRoute != null) {
+      widget.onRouteChange(widget.initialRoute!);
+      setState(() {
+        selection = newRouteSelections.values
+            .toList()
+            .indexOf(widget.initialRoute!.mapIndex);
+      });
+    } else {
+      widget.onRouteChange(widget.routes[newRouteSelections[selection]]!);
+    }
   }
 
   void nextRoute() {
     int newSelection = ((selection + 1) % routeSelections.length);
-    widget.onRouteSelect(widget.routes[routeSelections[newSelection]]!);
+    widget.onRouteChange(widget.routes[routeSelections[newSelection]]!);
 
     setState(() {
       selection = newSelection;
@@ -51,7 +65,7 @@ class _RouteSelectionWidgetState extends State<RouteSelectionWidget> {
 
   void previousRoute() {
     int newSelection = ((selection - 1) % routeSelections.length);
-    widget.onRouteSelect(widget.routes[routeSelections[newSelection]]!);
+    widget.onRouteChange(widget.routes[routeSelections[newSelection]]!);
 
     setState(() {
       selection = newSelection;
@@ -71,11 +85,7 @@ class _RouteSelectionWidgetState extends State<RouteSelectionWidget> {
                       onTap: () {
                         route_entity.Route route =
                             widget.routes[routeSelections[selection]]!;
-                        Future.microtask(() {
-                          Navigator.pushNamed(context, '/route_details',
-                              arguments: route);
-                        });
-                        widget.routeManager.setActiveRoute(route);
+                        widget.onRouteSelect(route);
                       },
                       child: Column(
                           mainAxisAlignment: MainAxisAlignment.start,

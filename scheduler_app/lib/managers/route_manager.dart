@@ -1,4 +1,5 @@
 import 'package:scheduler_app/entities/route.dart' as route_entity;
+import 'package:scheduler_app/managers/concern_manager.dart';
 import 'package:scheduler_app/base_classes/geolocator.dart';
 import 'package:scheduler_app/APIs/routes_api.dart';
 import 'package:scheduler_app/entities/stop.dart';
@@ -20,14 +21,15 @@ class RouteManager {
   EventBus get eventBus => GetIt.instance<EventBus>();
   final Map<int, route_entity.Route> _routeDict = {};
   final double stopDetectionRadiusMeters = 200;
-  route_entity.Route? _activeRoute;
   Timer? _activeRouteUpdateTimer;
   final _activeRouteUpdateInterval = const Duration(seconds: 5);
+  route_entity.Route? _activeRoute;
 
   RouteManager() {
     // initialize Stream to look at the _routeDict
     _routeStreamController.add(_routeDict);
-    eventBus.on<RouteEvent>().listen((event) async {
+
+    eventBus.on<RouteQueryEvent>().listen((event) async {
       Map<String, dynamic> json =
           await fetchData(event.origin, event.destination, event.routeType);
       debugPrint(
@@ -106,7 +108,14 @@ class RouteManager {
     }
   }
 
-  void setActiveRoute(route_entity.Route route) {
+  void setActiveRoute(route_entity.Route? route) {
+    if (route == null) {
+      _activeRouteUpdateTimer?.cancel();
+      _activeRoute = null;
+      _routeStreamController.add(_routeDict);
+      return;
+    }
+
     _activeRoute = route;
     _activeRouteUpdateTimer?.cancel();
     updatePositionAlongRoute(route);
@@ -117,7 +126,7 @@ class RouteManager {
     print("Active Route: $_activeRoute");
   }
 
-  void reload() {
+  void cancelTimers() {
     print("cancelling timer");
     _activeRouteUpdateTimer?.cancel();
   }

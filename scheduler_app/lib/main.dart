@@ -1,9 +1,11 @@
-import 'package:provider/provider.dart';
-import 'package:scheduler_app/base_classes/set_up.dart';
-import 'package:flutter/material.dart';
+import 'package:scheduler_app/entities/address_search_notifier.dart';
 import 'package:scheduler_app/entities/route_selection_notifier.dart';
+import 'package:scheduler_app/base_classes/set_up.dart';
+import 'package:provider/provider.dart';
+import 'package:flutter/material.dart';
 import 'screens/screens_barrel.dart';
 import 'package:get_it/get_it.dart';
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await instanceSetUp();
@@ -57,7 +59,9 @@ class _MyAppState extends State<MyApp> {
       home: Scaffold(
         body: ChangeNotifierProvider(
             create: (context) => RouteSelectionNotifier(),
-            child: SafeArea(child: _buildBodyForTab(_currentTab))),
+            child: ChangeNotifierProvider(
+                create: (context) => AddressSearchNotifier(),
+                child: SafeArea(child: _buildBodyForTab(_currentTab)))),
         bottomNavigationBar: BottomNavigationBar(
           backgroundColor: Colors.lightBlue,
           selectedItemColor: Colors.black,

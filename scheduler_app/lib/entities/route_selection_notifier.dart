@@ -1,28 +1,27 @@
 import 'package:scheduler_app/entities/route.dart' as route_entity;
-import 'package:scheduler_app/entities/address.dart';
 import 'package:flutter/material.dart';
 
 class RouteSelectionNotifier with ChangeNotifier {
-  Address? _origin;
-  Address? _destination;
-  route_entity.Route? _route;
+  Map<int, route_entity.Route>? _routes;
+  route_entity.Route? _selectedRoute;
+  route_entity.Route? _activeRoute;
 
-  Address? get origin => _origin;
-  Address? get destination => _destination;
-  route_entity.Route? get route => _route;
+  Map<int, route_entity.Route>? get routes => _routes;
+  route_entity.Route? get selectedRoute => _selectedRoute;
+  route_entity.Route? get activeRoute => _activeRoute;
 
-  set origin(Address? newOrigin) {
-    _origin = newOrigin;
+  set routes(Map<int, route_entity.Route>? newRoutes) {
+    _routes = newRoutes;
     notifyListeners();
   }
 
-  set destination(Address? newDestination) {
-    _destination = newDestination;
+  set selectedRoute(route_entity.Route? newSelectedRoute) {
+    _selectedRoute = newSelectedRoute;
     notifyListeners();
   }
 
-  set route(route_entity.Route? newRoute) {
-    _route = newRoute;
+  set activeRoute(route_entity.Route? newActiveRoute) {
+    _activeRoute = newActiveRoute;
     notifyListeners();
   }
 }

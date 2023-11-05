@@ -1,10 +1,10 @@
 import 'package:scheduler_app/entities/address.dart';
 
-class RouteEvent {
+class RouteQueryEvent {
   final Address origin;
   final Address destination;
   final String routeType;
 
-  RouteEvent(
+  RouteQueryEvent(
       {required this.origin, required this.destination, this.routeType = "pt"});
 }
