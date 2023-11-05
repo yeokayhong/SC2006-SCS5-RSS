@@ -1,5 +1,6 @@
 import 'package:scheduler_app/entities/route.dart' as route_entity;
 import 'package:scheduler_app/managers/route_manager.dart';
+import 'package:scheduler_app/widgets/service_icon.dart';
 import 'package:scheduler_app/entities/duration.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
@@ -27,10 +28,10 @@ class RouteSelectionWidget extends StatelessWidget {
             child: Text(routeKey.toString(), // Route index as string
                 style: const TextStyle(color: Colors.white)),
           ),
-          title: Text(
-            'Duration: ${Duration.convertDurationToMin(routeValue.duration.totalDuration)} minutes', // Assuming duration is a field on r.Route
-            style: const TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
-          ),
+          title: Row(
+              children: routes[routeKey]!.legs.map((leg) {
+            return ServiceIconWidget.fromLeg(leg);
+          }).toList()),
           subtitle: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
