@@ -11,6 +11,7 @@ class Route {
   final dynamic fare;
   final double walkDistance;
   Stop? currentStop;
+  Leg? currentLeg;
   final Address origin;
   final Address destination;
 

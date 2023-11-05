@@ -19,7 +19,7 @@ class RouteManager {
       StreamController<Map<int, route_entity.Route>>.broadcast();
   EventBus get eventBus => GetIt.instance<EventBus>();
   final Map<int, route_entity.Route> _routeDict = {};
-  final double stopDetectionRadiusMeters = 50;
+  final double stopDetectionRadiusMeters = 200;
   route_entity.Route? _activeRoute;
   Timer? _activeRouteUpdateTimer;
   final _activeRouteUpdateInterval = const Duration(seconds: 5);
@@ -44,45 +44,60 @@ class RouteManager {
   Future<Stop?> getCurrentStopAlongRoute(route_entity.Route route) async {
     Stop? nearestStop;
 
-    int numLegs = route.legs.length;
-    if (numLegs == 0) return null;
-    int randomLeg = Random().nextInt(numLegs);
-    int numStops = route.legs[randomLeg].stops.length;
-    if (numStops == 0) return null;
-    int randomStop = Random().nextInt(numStops);
-    nearestStop = route.legs[randomLeg].stops[randomStop];
+    Position currentPosition = await requestLocation();
+    double minDistance = double.infinity;
+    for (Leg leg in route.legs) {
+      for (Stop stop in leg.allStops) {
+        double distance = Geolocator.distanceBetween(stop.lat, stop.lon,
+            currentPosition.latitude, currentPosition.longitude);
+        if (distance < minDistance) {
+          minDistance = distance;
+          nearestStop = stop;
+        }
+      }
+    }
 
-    // Position currentPosition = await requestLocation();
-    // double minDistance = double.infinity;
-    // for (Leg leg in route.legs) {
-    //   for (Stop stop in leg.stops) {
-    //     double distance = Geolocator.distanceBetween(stop.lat, stop.lon,
-    //         currentPosition.latitude, currentPosition.longitude);
-    //     if (distance < minDistance) {
-    //       minDistance = distance;
-    //       nearestStop = stop;
-    //     }
-    //   }
-    // }
+    print(currentPosition);
+    print(nearestStop);
+    print(minDistance);
 
-    // if (minDistance > stopDetectionRadiusMeters) {
-    //   throw Exception("No stops within $stopDetectionRadiusMeters meters");
-    // }
+    if (minDistance > stopDetectionRadiusMeters) {
+      throw Exception("No stops within $stopDetectionRadiusMeters meters");
+    }
 
     return nearestStop;
+  }
+
+  Leg? getLegOfStopAlongRoute(Stop stop, route_entity.Route route) {
+    for (Leg leg in route.legs) {
+      if (leg.allStops.contains(stop)) {
+        return leg;
+      }
+    }
+    return null;
   }
 
   void updatePositionAlongRoute(route_entity.Route route) async {
     try {
       Stop? newCurrentStop = await getCurrentStopAlongRoute(route);
       if (newCurrentStop != null) {
+        Leg legOfStop = getLegOfStopAlongRoute(newCurrentStop, route)!;
         if (route.currentStop != null) {
           route.currentStop!.isCurrentStop = false;
           print("Previous Stop: ${route.currentStop!.name}");
         }
+        if (route.currentLeg != null) {
+          route.currentLeg!.isCurrentLeg = false;
+          print("Previous Leg: ${route.currentLeg!.serviceName}");
+        }
         newCurrentStop.isCurrentStop = true;
+        legOfStop.isCurrentLeg = true;
+
         route.currentStop = newCurrentStop;
+        route.currentLeg = legOfStop;
+
         print("New Stop: ${route.currentStop!.name}");
+        print("New Leg: ${route.currentLeg!.serviceName}");
         updateSingleRoute(route.mapIndex, route);
       }
     } catch (exception) {
@@ -94,6 +109,7 @@ class RouteManager {
   void setActiveRoute(route_entity.Route route) {
     _activeRoute = route;
     _activeRouteUpdateTimer?.cancel();
+    updatePositionAlongRoute(route);
     _activeRouteUpdateTimer =
         Timer.periodic(_activeRouteUpdateInterval, (timer) {
       updatePositionAlongRoute(route);

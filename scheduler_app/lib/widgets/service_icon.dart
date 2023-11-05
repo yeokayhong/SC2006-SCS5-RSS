@@ -1,6 +1,7 @@
 import 'package:scheduler_app/base_classes/subway_service_color.dart';
 import 'package:scheduler_app/entities/leg.dart';
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 
 abstract class ServiceIconWidget extends StatelessWidget {
   final Leg leg;
@@ -34,42 +35,27 @@ class BusServiceIconWidget extends ServiceIconWidget {
             borderRadius: BorderRadius.all(Radius.circular(5))),
         child: Padding(
             padding: const EdgeInsets.fromLTRB(5, 2, 5, 2),
-            child: Text(leg.serviceName!,
+            child: Text(leg.serviceName,
                 style: const TextStyle(color: Colors.white, fontSize: 12))));
   }
 }
 
 class RailServiceIconWidget extends ServiceIconWidget {
-  const RailServiceIconWidget({super.key, required Leg leg}) : super(leg: leg);
+  final SubwayServiceColor subwayServiceColor =
+      GetIt.instance<SubwayServiceColor>();
+
+  RailServiceIconWidget({super.key, required Leg leg}) : super(leg: leg);
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: SubwayServiceColor.getInstance(),
-      builder: (context, subwayServiceColorSnapshot) {
-        if (subwayServiceColorSnapshot.connectionState !=
-            ConnectionState.done) {
-          return const CircularProgressIndicator();
-        }
-
-        if (subwayServiceColorSnapshot.hasError ||
-            !subwayServiceColorSnapshot.hasData) {
-          return const Icon(Icons.error);
-        }
-
-        Color? color =
-            subwayServiceColorSnapshot.data!.fromServiceName(leg.serviceName!);
-        return Container(
-            decoration: BoxDecoration(
-                color: color,
-                borderRadius: const BorderRadius.all(Radius.circular(5))),
-            child: Padding(
-                padding: const EdgeInsets.fromLTRB(5, 2, 5, 2),
-                child: Text(leg.serviceName!,
-                    style:
-                        const TextStyle(color: Colors.white, fontSize: 12))));
-      },
-    );
+    return Container(
+        decoration: BoxDecoration(
+            color: subwayServiceColor.fromServiceName(leg.serviceName),
+            borderRadius: const BorderRadius.all(Radius.circular(5))),
+        child: Padding(
+            padding: const EdgeInsets.fromLTRB(5, 2, 5, 2),
+            child: Text(leg.serviceName,
+                style: const TextStyle(color: Colors.white, fontSize: 12))));
   }
 }
 
@@ -87,6 +73,6 @@ class WalkServiceIconWidget extends ServiceIconWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Icon(Icons.directions_walk, color: Colors.black);
+    return const Icon(Icons.directions_walk, color: Colors.black, size: 18);
   }
 }

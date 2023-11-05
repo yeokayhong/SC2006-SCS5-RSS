@@ -1,9 +1,11 @@
+import 'package:scheduler_app/base_classes/subway_service_color.dart';
 import 'package:scheduler_app/entities/route.dart' as route_entity;
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:scheduler_app/entities/leg.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
+import 'package:get_it/get_it.dart';
 
 class MapWidget extends StatefulWidget {
   final double defaultCameraZoom = 10;
@@ -11,6 +13,8 @@ class MapWidget extends StatefulWidget {
   final LatLng? origin;
   final LatLng? destination;
   final route_entity.Route? route;
+  final SubwayServiceColor subwayServiceColor =
+      GetIt.instance<SubwayServiceColor>();
 
   MapWidget({super.key, this.origin, this.destination, this.route}) {
     print("CREATING MAP");
@@ -40,16 +44,12 @@ class _MapWidgetState extends State<MapWidget> {
         final Polyline polyline = Polyline(
           polylineId: PolylineId(leg.duration.toString()),
           points: leg.polylineCoordinates,
-          color: Colors.blue,
+          color: leg is RailLeg
+              ? widget.subwayServiceColor.fromServiceName(leg.serviceName)!
+              : Colors.blue,
           width: 4,
         );
         newPolylines.add(polyline);
-      }
-    }
-    print(newPolylines.length);
-    for (Polyline polyline in newPolylines) {
-      for (LatLng point in polyline.points) {
-        print(point);
       }
     }
 

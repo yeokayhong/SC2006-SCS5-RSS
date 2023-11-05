@@ -36,8 +36,9 @@ class BusLegWidget extends LegWidget {
         BusOriginWidget(stop: busLeg.origin),
         Text("Waiting Time"),
         Column(
-            children:
-                busLeg.stops.map((stop) => BusStopWidget(stop: stop)).toList()),
+            children: busLeg.intermediateStops
+                .map((stop) => BusStopWidget(stop: stop))
+                .toList()),
         BusDestinationWidget(stop: busLeg.destination),
       ],
     );
@@ -56,7 +57,7 @@ class RailLegWidget extends LegWidget {
         Text("Waiting Time"),
         RailOriginWidget(stop: railLeg.origin),
         Column(
-            children: railLeg.stops
+            children: railLeg.intermediateStops
                 .map((stop) => RailStopWidget(stop: stop))
                 .toList()),
         RailDestinationWidget(stop: railLeg.destination),

@@ -12,19 +12,16 @@ class RouteSelectionNotifier with ChangeNotifier {
   route_entity.Route? get route => _route;
 
   set origin(Address? newOrigin) {
-    print("ORIGIN CHANGED");
     _origin = newOrigin;
     notifyListeners();
   }
 
   set destination(Address? newDestination) {
-    print("DESTINATION CHANGED");
     _destination = newDestination;
     notifyListeners();
   }
 
   set route(route_entity.Route? newRoute) {
-    print("ROUTE CHANGED");
     _route = newRoute;
     notifyListeners();
   }

@@ -5,25 +5,30 @@ import 'package:scheduler_app/entities/stop.dart';
 class Leg {
   final Stop origin;
   final Stop destination;
-  final String? serviceName;
-  final List<Stop> stops;
+  final String serviceName;
+  final List<Stop> intermediateStops;
+  late List<Stop> allStops;
   final double distance;
   final int duration;
   final int endTime;
   final int startTime;
   final List<LatLng> polylineCoordinates;
+  bool isCurrentLeg;
 
   Leg({
     required this.origin,
     required this.destination,
-    this.serviceName,
-    required this.stops,
+    required this.serviceName,
+    required this.intermediateStops,
     required this.distance,
     required this.duration,
     required this.startTime,
     required this.endTime,
     required this.polylineCoordinates,
-  });
+    this.isCurrentLeg = false,
+  }) {
+    allStops = [origin, ...intermediateStops, destination];
+  }
 
   static Leg create(Map<String, dynamic> leg, String mode) {
     switch (mode) {
@@ -77,7 +82,7 @@ class BusLeg extends Leg {
           origin: origin,
           destination: destination,
           serviceName: serviceName,
-          stops: stops,
+          intermediateStops: stops,
           distance: distance,
           duration: duration,
           startTime: startTime,
@@ -116,7 +121,7 @@ class RailLeg extends Leg {
           origin: origin,
           destination: destination,
           serviceName: serviceName,
-          stops: stops,
+          intermediateStops: stops,
           distance: distance,
           duration: duration,
           startTime: startTime,
@@ -151,15 +156,15 @@ class WalkLeg extends Leg {
     required int endTime,
     required List<LatLng> polylineCoordinates,
   }) : super(
-          origin: origin,
-          destination: destination,
-          stops: stops,
-          distance: distance,
-          duration: duration,
-          startTime: startTime,
-          endTime: endTime,
-          polylineCoordinates: polylineCoordinates,
-        );
+            origin: origin,
+            destination: destination,
+            intermediateStops: stops,
+            distance: distance,
+            duration: duration,
+            startTime: startTime,
+            endTime: endTime,
+            polylineCoordinates: polylineCoordinates,
+            serviceName: "Walking");
 
   static WalkLeg fromJson(Map<String, dynamic> legData) {
     return WalkLeg(

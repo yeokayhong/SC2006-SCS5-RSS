@@ -135,22 +135,15 @@ class _MapInputPageState extends State<MapInputPage> {
                                     return RouteSelectionWidget(
                                         routes: routes,
                                         onRouteSelect: (route) {
-                                          WidgetsBinding.instance
-                                              .addPostFrameCallback((_) {
-                                            Navigator.pushNamed(
-                                              context,
-                                              "/route_details",
-                                              arguments: route,
-                                            );
+                                          Future.microtask(() {
+                                            final routeSelectionNotifier =
+                                                Provider.of<
+                                                        RouteSelectionNotifier>(
+                                                    context,
+                                                    listen: false);
+                                            routeSelectionNotifier.route =
+                                                route;
                                           });
-                                          final routeSelectionNotifier =
-                                              Provider.of<
-                                                      RouteSelectionNotifier>(
-                                                  context,
-                                                  listen: false);
-                                          routeSelectionNotifier.route = route;
-                                          widget.routeManager
-                                              .setActiveRoute(route);
                                         });
                                   });
                             };
