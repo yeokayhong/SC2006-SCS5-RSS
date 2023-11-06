@@ -51,10 +51,10 @@ class _NotificationUIState extends State<NotificationUI> {
             itemBuilder: (BuildContext context) {
               return {
                 '1. Concern 1',
-                '1.1 Concern 1.1',
-                '2. Delayed Concern',
-                '3. Empty Concern',
-                '4. Concern with Error',
+                '2. Concern 2',
+                '3. Delayed Concern',
+                '4. Empty Concern',
+                '5. Concern with Error',
               }.map((String choice) {
                 return PopupMenuItem<String>(
                   value: choice,
@@ -63,7 +63,6 @@ class _NotificationUIState extends State<NotificationUI> {
               }).toList();
             },
             onSelected: (String choice) async {
-              //if (choice[0] == '2') await Future.delayed(const Duration(seconds: 5));
               sendChoice(choice[0]); // Extract the choice from the menu item
             },
           ),
@@ -241,7 +240,7 @@ class _NotificationUIState extends State<NotificationUI> {
   }
 
   void sendChoice(String choice) async {
-    if (!['1', '1.1', '2', '3', '4'].contains(choice)) {
+    if (!['1', '2', '3', '4', '5'].contains(choice)) {
       print("Invalid choice. Please enter a valid option.");
       return; // Exit the function if the choice is invalid
     }
@@ -267,7 +266,7 @@ class _NotificationUIState extends State<NotificationUI> {
       await _makeHTTPPost(choice);
     }
 
-    if (choice == '2') {
+    if (choice == '3') {
       await _delayedHTTPPost(choice);
     } else {
       await _makeHTTPPost(choice);
