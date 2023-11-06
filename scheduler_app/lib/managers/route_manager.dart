@@ -229,7 +229,7 @@ class RouteManager {
     debugPrint("Event emitted: $_routeDict");
 
     // test the affectedRoutes
-    // calculateAffectedRoutes();
+    calculateAffectedRoutes();
   }
 
   static String formatEndTime(

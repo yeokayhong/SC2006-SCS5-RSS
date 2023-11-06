@@ -13,7 +13,7 @@ class ConcernManager {
   final NotificationManager _notificationManager =
       GetIt.instance<NotificationManager>();
   final html.EventSource _concernEvents =
-      html.EventSource(Constants.serverConcernRequest);
+      html.EventSource(Constants.serverConcernRequest + "/subscribe");
   final RouteManager _routeManager = GetIt.instance<RouteManager>();
 
   ConcernManager() {
