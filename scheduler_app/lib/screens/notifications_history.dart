@@ -52,7 +52,7 @@ class _NotificationUIState extends State<NotificationUI> {
               return {
                 '1. Concern 1',
                 '1.1 Concern 1.1',
-                '2. Concern 2',
+                '2. Delayed Concern',
                 '3. Empty Concern',
                 '4. Concern with Error',
               }.map((String choice) {
@@ -62,7 +62,8 @@ class _NotificationUIState extends State<NotificationUI> {
                 );
               }).toList();
             },
-            onSelected: (String choice) {
+            onSelected: (String choice) async {
+              //if (choice[0] == '2') await Future.delayed(const Duration(seconds: 5));
               sendChoice(choice[0]); // Extract the choice from the menu item
             },
           ),
@@ -245,17 +246,31 @@ class _NotificationUIState extends State<NotificationUI> {
       return; // Exit the function if the choice is invalid
     }
 
-    final response = await http.post(
-      Uri.parse(baseUrl),
-      body: jsonEncode({"choice": choice}),
-      headers: {'Content-Type': 'application/json'},
-    );
+    Future<void> _makeHTTPPost(String choice) async {
+      final response = await http.post(
+        Uri.parse(baseUrl),
+        body: jsonEncode({"choice": choice}),
+        headers: {'Content-Type': 'application/json'},
+      );
 
-    if (response.statusCode == 200) {
-      print("POST request was successful.");
-      print("Response content: ${response.body}");
+      if (response.statusCode == 200) {
+        print("POST request was successful.");
+        print("Response content: ${response.body}");
+      } else {
+        print("POST request failed with status code ${response.statusCode}.");
+      }
+    }
+
+    Future<void> _delayedHTTPPost(String choice) async {
+      // Introduce a delay for choice 2 (e.g., 5 seconds)
+      await Future.delayed(Duration(seconds: 5));
+      await _makeHTTPPost(choice);
+    }
+
+    if (choice == '2') {
+      await _delayedHTTPPost(choice);
     } else {
-      print("POST request failed with status code ${response.statusCode}.");
+      await _makeHTTPPost(choice);
     }
   }
 }

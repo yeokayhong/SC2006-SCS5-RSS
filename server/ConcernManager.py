@@ -12,7 +12,7 @@ class ConcernManager:
 
         self.mode = mode
 
-        self.seconds_between_queries = 30000
+        self.seconds_between_queries = 300
         self.timer_thread = threading.Thread(target=self.monitor_concerns)
         self.timer_thread.daemon = True
         self.timer_thread.start()
@@ -43,7 +43,7 @@ class ConcernManager:
         self.update_concerns(concerns)
 
     def monitor_concerns(self):
-        time.sleep(30)        
+        time.sleep(30000)        
         while True:
             match self.mode:
                 case "production":
@@ -71,7 +71,6 @@ class ConcernManager:
         elif choice == '1.1':
             self.update_concerns([concern11])
         elif choice == '2':
-            time.sleep(5)        
             self.update_concerns([concern2])
         elif choice == '3':
             self.update_concerns([concern_empty])
