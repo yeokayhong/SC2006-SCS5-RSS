@@ -60,21 +60,21 @@ class ConcernManager:
     def create_concern(self,choice):
         concern1 = Concern("TrainDisruption", "EW", [
                         "EW1", "EW2"], datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S"), "concern1, Test Due to a signal fault, expect delays of 10 minutes for train services between EW1 and EW2")
-        concern2 = Concern("TrainDisruption", "EW", [
-            "EW1", "EW2", "EW3"], datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S"), "concern2, Test Due to a signal fault, expect delays of 10 minutes for train services between EW1 and EW3")
-        concern3 = Concern("TrainBreakdown", "DT", [
-            "DT1", "DT2", "DT3", "DT4", "DT5", "DT6", "DT7", "DT8", "DT9", "DT10"], datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S"), "concern_delayed, Test Due to a signal fault, expect delays of 30 minutes for train services between DT1 and DT10")
+        concern11 = Concern("TrainDisruption", "EW", [
+            "EW1", "EW2", "EW3"], datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S"), "concern1.1, Test Due to a signal fault, expect delays of 10 minutes for train services between EW1 and EW3")
+        concern2 = Concern("TrainBreakdown", "DT", [
+            "DT1", "DT2", "DT3", "DT4", "DT5", "DT6", "DT7", "DT8", "DT9", "DT10"], datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S"), "concern2, Test Due to a signal fault, expect delays of 30 minutes for train services between DT1 and DT10")
         concern_empty = Concern("", "", [], None, "")
         concern_error = Concern("", 6, [], None, "")
         if choice == '1':
             self.update_concerns([concern1])
+        elif choice == '1.1':
+            self.update_concerns([concern11])
         elif choice == '2':
             self.update_concerns([concern2])
         elif choice == '3':
-            self.update_concerns([concern3])
-        elif choice == '4':
             self.update_concerns([concern_empty])
-        elif choice == '5':
+        elif choice == '4':
             self.update_concerns([concern_error])
         else:
             print("Invalid choice. Please enter a valid option.")
