@@ -58,8 +58,8 @@ class Route {
   static List<Leg> parseLegs(List<dynamic> legs) {
     List<Leg> parsedLegs = [];
 
-    for (Map<String, dynamic> leg_data in legs) {
-      Leg leg = Leg.create(leg_data, leg_data['mode']);
+    for (Map<String, dynamic> legData in legs) {
+      Leg leg = LegFactory.fromJson(legData, legData['mode']);
       parsedLegs.add(leg);
     }
 

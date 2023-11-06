@@ -1,3 +1,18 @@
+class StopFactory {
+  static Stop fromJson(Map<String, dynamic> stopData, String type) {
+    switch (type) {
+      case "BUS":
+        return BusStop.fromJson(stopData);
+      case "SUBWAY":
+        return RailStop.fromJson(stopData);
+      case "WALK":
+        return WalkStop.fromJson(stopData);
+      default:
+        throw Exception("Invalid stop type");
+    }
+  }
+}
+
 class Stop {
   final String name;
   final double lat;
@@ -10,19 +25,6 @@ class Stop {
     required this.name,
     this.isCurrentStop = false,
   });
-
-  static Stop create(Map<String, dynamic> stopData, String type) {
-    switch (type) {
-      case "BUS":
-        return BusStop.fromJson(stopData);
-      case "SUBWAY":
-        return RailStop.fromJson(stopData);
-      case "WALK":
-        return WalkStop.fromJson(stopData);
-      default:
-        throw Exception("Invalid stop type");
-    }
-  }
 }
 
 class BusStop extends Stop {

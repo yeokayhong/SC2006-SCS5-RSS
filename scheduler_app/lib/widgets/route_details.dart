@@ -20,7 +20,7 @@ class RouteDetailsWidget extends StatelessWidget {
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
                   color: Colors.black.withOpacity(0.95))),
-          ServiceIconWidget.fromLeg(route.currentLeg!),
+          ServiceIconWidgetFactory.fromLeg(route.currentLeg!),
           Text(route.currentStop?.name ?? ""),
           Text(route.currentLeg?.destination.name ?? ""),
           Text(route.destination.street_address(),

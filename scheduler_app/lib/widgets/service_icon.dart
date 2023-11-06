@@ -3,12 +3,8 @@ import 'package:scheduler_app/entities/leg.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 
-abstract class ServiceIconWidget extends StatelessWidget {
-  final Leg leg;
-
-  const ServiceIconWidget({super.key, required this.leg});
-
-  factory ServiceIconWidget.fromLeg(Leg leg) {
+class ServiceIconWidgetFactory {
+  static ServiceIconWidget fromLeg(Leg leg) {
     switch (leg.runtimeType) {
       case BusLeg:
         return BusServiceIconWidget(leg: leg);
@@ -22,6 +18,12 @@ abstract class ServiceIconWidget extends StatelessWidget {
         throw Exception("Invalid service name ${leg.serviceName}");
     }
   }
+}
+
+abstract class ServiceIconWidget extends StatelessWidget {
+  final Leg leg;
+
+  const ServiceIconWidget({super.key, required this.leg});
 }
 
 class BusServiceIconWidget extends ServiceIconWidget {

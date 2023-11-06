@@ -2,6 +2,21 @@ import 'package:google_polyline_algorithm/google_polyline_algorithm.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:scheduler_app/entities/stop.dart';
 
+class LegFactory {
+  static Leg fromJson(Map<String, dynamic> leg, String mode) {
+    switch (mode) {
+      case 'WALK':
+        return WalkLeg.fromJson(leg);
+      case 'BUS':
+        return BusLeg.fromJson(leg);
+      case 'SUBWAY':
+        return RailLeg.fromJson(leg);
+      default:
+        throw Exception("Invalid mode $mode");
+    }
+  }
+}
+
 class Leg {
   final Stop origin;
   final Stop destination;
@@ -30,19 +45,6 @@ class Leg {
     allStops = [origin, ...intermediateStops, destination];
   }
 
-  static Leg create(Map<String, dynamic> leg, String mode) {
-    switch (mode) {
-      case 'WALK':
-        return WalkLeg.fromJson(leg);
-      case 'BUS':
-        return BusLeg.fromJson(leg);
-      case 'SUBWAY':
-        return RailLeg.fromJson(leg);
-      default:
-        throw Exception("Invalid mode $mode");
-    }
-  }
-
   static List<LatLng> decodePolylineCoordinates(String legGeometry) {
     List<LatLng> polylineCoordinates = [];
 
@@ -59,7 +61,7 @@ class Leg {
     List<Stop> parsedStops = [];
 
     for (Map<String, dynamic> stop in stops) {
-      Stop newStop = Stop.create(stop, mode);
+      Stop newStop = StopFactory.fromJson(stop, mode);
       parsedStops.add(newStop);
     }
 
@@ -92,8 +94,8 @@ class BusLeg extends Leg {
 
   static BusLeg fromJson(Map<String, dynamic> legData) {
     return BusLeg(
-      origin: Stop.create(legData['from'], legData['mode']),
-      destination: Stop.create(legData['to'], legData['mode']),
+      origin: StopFactory.fromJson(legData['from'], legData['mode']),
+      destination: StopFactory.fromJson(legData['to'], legData['mode']),
       serviceName: legData['route'],
       stops: Leg.parseStops(legData['intermediateStops'], legData['mode']),
       distance: legData['distance'],
@@ -131,8 +133,8 @@ class RailLeg extends Leg {
 
   static RailLeg fromJson(Map<String, dynamic> legData) {
     return RailLeg(
-      origin: Stop.create(legData['from'], legData['mode']),
-      destination: Stop.create(legData['to'], legData['mode']),
+      origin: StopFactory.fromJson(legData['from'], legData['mode']),
+      destination: StopFactory.fromJson(legData['to'], legData['mode']),
       serviceName: legData['route'],
       stops: Leg.parseStops(legData['intermediateStops'], legData['mode']),
       distance: legData['distance'],
@@ -168,8 +170,8 @@ class WalkLeg extends Leg {
 
   static WalkLeg fromJson(Map<String, dynamic> legData) {
     return WalkLeg(
-      origin: Stop.create(legData['from'], legData['mode']),
-      destination: Stop.create(legData['to'], legData['mode']),
+      origin: StopFactory.fromJson(legData['from'], legData['mode']),
+      destination: StopFactory.fromJson(legData['to'], legData['mode']),
       stops: [],
       distance: legData['distance'],
       duration: legData['duration'],

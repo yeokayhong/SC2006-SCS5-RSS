@@ -2,11 +2,7 @@ import 'package:scheduler_app/widgets/stop.dart';
 import 'package:flutter/material.dart';
 import '../entities/leg.dart';
 
-abstract class LegWidget extends StatelessWidget {
-  final Leg leg;
-
-  const LegWidget({super.key, required this.leg});
-
+class LegWidgetFactory {
   static LegWidget fromLeg(Leg leg) {
     switch (leg.runtimeType) {
       case WalkLeg:
@@ -19,6 +15,12 @@ abstract class LegWidget extends StatelessWidget {
         throw Exception("Invalid leg type");
     }
   }
+}
+
+abstract class LegWidget extends StatelessWidget {
+  final Leg leg;
+
+  const LegWidget({super.key, required this.leg});
 }
 
 class BusLegWidget extends LegWidget {
