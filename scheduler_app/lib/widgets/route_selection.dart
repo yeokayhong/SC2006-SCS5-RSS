@@ -74,6 +74,8 @@ class _RouteSelectionWidgetState extends State<RouteSelectionWidget> {
 
   @override
   Widget build(BuildContext context) {
+    debugPrint(
+        "Route: ${widget.routes[routeSelections[selection]]!.mapIndex}, additional Time: ${widget.routes[routeSelections[selection]]!.additionalTime}");
     return Padding(
         padding: const EdgeInsets.all(20),
         child: Row(
@@ -95,13 +97,45 @@ class _RouteSelectionWidgetState extends State<RouteSelectionWidget> {
                                 route:
                                     widget.routes[routeSelections[selection]]!),
                             const Divider(),
-                            Text(
-                              Duration.formatDuration(widget
-                                  .routes[routeSelections[selection]]!
-                                  .duration
-                                  .totalDuration),
-                              style: const TextStyle(
-                                  fontWeight: FontWeight.bold, fontSize: 20),
+                            Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                  Duration.formatDuration(widget
+                                          .routes[routeSelections[selection]]!
+                                          .duration
+                                          .totalDuration +
+                                      widget.routes[routeSelections[selection]]!
+                                          .additionalTime),
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 20,
+                                      color: widget.routes[
+                                                  routeSelections[selection]]!
+                                              .isThereConcern()
+                                          ? Colors.red
+                                          : Colors.black),
+                                ),
+                                if (widget.routes[routeSelections[selection]]!
+                                    .isThereConcern()) // This is a condition to check if the route is affected. You might need to replace it with your actual condition check.
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 8.0),
+                                    child: Container(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 6, vertical: 2),
+                                      decoration: BoxDecoration(
+                                        color: Colors
+                                            .red, // Choose color based on your design
+                                        borderRadius: BorderRadius.circular(4),
+                                      ),
+                                      child: const Text(
+                                        'Affected',
+                                        style: TextStyle(
+                                            color: Colors.white, fontSize: 12),
+                                      ),
+                                    ),
+                                  ),
+                              ],
                             ),
                             Text(
                               '${widget.routes[routeSelections[selection]]!.fare}SGD',

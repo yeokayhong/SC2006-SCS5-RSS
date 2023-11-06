@@ -67,12 +67,13 @@ class Route {
   }
 
   void recalculateTime() {
+    additionalTime = 0;
     for (var concern in concerns) {
       if (concern.getAdditionalTime() != null) {
         additionalTime += concern.getAdditionalTime()!;
       }
     }
-    debugPrint("AdditionalTime: $additionalTime");
+    debugPrint("AdditionalTime: $additionalTime Route: $mapIndex");
   }
 
   bool isAffectedByConcern(Concern concern) {

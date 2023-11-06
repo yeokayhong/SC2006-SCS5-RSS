@@ -88,21 +88,32 @@ class ConcernManager {
   }
 
   Future<List<Concern>> getConcerns() async {
-    http.Response response = await http.get(Uri.parse("/concerns"));
+    debugPrint("Entering getConcerns...");
+    List<Concern> concerns = [];
+    http.Response response =
+        await http.get(Uri.parse(Constants.serverConcernRequest));
     if (response.statusCode != 200) {
-      throw Exception("Failed to get concerns");
+      debugPrint("response code is wrong. ${response.statusCode}");
+      return concerns;
     }
 
-    List<Concern> concerns = [];
-    for (var concern in response.body as List<dynamic>) {
+    Map<String, dynamic> concernMap =
+        json.decode(response.body) as Map<String, dynamic>;
+    debugPrint("Displaying concernList $concernMap");
+    List<dynamic> concernList = concernMap['concerns'] as List<dynamic>;
+    debugPrint("Displaying concernList $concernList");
+    for (var concern in concernList) {
+      debugPrint("adding Concern $concern");
       concerns.add(Concern(
           type: concern["type"],
           service: concern["service"],
-          affectedStops: concern["affectedStops"],
+          affectedStops: List<String>.from(concern[
+              "affected_stops"]), // Note the change here to match the JSON response
           time: DateTime.parse(concern["time"]),
           message: concern["message"]));
+      debugPrint("concern added");
     }
-
+    debugPrint("Exiting getConcerns...");
     return concerns;
   }
 

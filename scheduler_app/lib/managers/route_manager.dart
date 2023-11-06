@@ -166,10 +166,10 @@ class RouteManager {
   void calculateAffectedRoutes() async {
     final ConcernManager _concernManager = GetIt.instance<ConcernManager>();
     // ACTUAL IMPLEMENTATION TO GET CONCERN
-    // List<Concern> localConcernList = await _concernManager.getConcerns();
+    List<Concern> localConcernList = await _concernManager.getConcerns();
 
     // TEST IMPLEMENTATION
-    List<Concern> localConcernList = _concernManager.testGetConcerns();
+    // List<Concern> localConcernList = _concernManager.testGetConcerns();
     debugPrint("Calculating Affected Routes");
     for (var route in _routeDict.values) {
       route.concerns.clear();
@@ -188,6 +188,10 @@ class RouteManager {
       route.recalculateTime();
     }
     debugPrint("Calculated Affected Routes!");
+    for (var route in _routeDict.values) {
+      debugPrint(
+          "Route ${route.mapIndex} Additional Time: ${route.additionalTime}");
+    }
 
     _routeStreamController.add(_routeDict);
   }
@@ -225,7 +229,7 @@ class RouteManager {
     debugPrint("Event emitted: $_routeDict");
 
     // test the affectedRoutes
-    // GetIt.instance<RouteManager>().calculateAffectedRoutes();
+    // calculateAffectedRoutes();
   }
 
   static String formatEndTime(

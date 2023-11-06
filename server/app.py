@@ -5,6 +5,7 @@ from routes_api import ServerRoutesAPI
 from dotenv import load_dotenv
 from lta_api import LtaApi
 import os
+from flask_restx import Api, Resource
 
 load_dotenv()
 app = Flask(__name__)
@@ -17,162 +18,151 @@ one_map_api = ServerRoutesAPI(
 # Create instances of ConcernManager
 concern_manager = ConcernManager(mode=os.getenv("MODE"))
 
-# Example: Obtain estimated bus waiting time using bus stop code and service number instead of a route object
+api = Api(app, doc='/')
+# HelloWorld resource as provided
+@api.route('/hello')
+class HelloWorld(Resource):
+    def get(self):
+        return {'hello': 'world'}
 
+# EstimatedWaitingTime resource
+class EstimatedWaitingTime(Resource):
+    def get(self):
+        bus_stop_code = request.args.get('bus_stop_code')
+        service_no = request.args.get('service_no', "")
+        try:
+            estimated_waiting_time = lta_api.get_estimated_waiting_time(bus_stop_code, service_no)
+            return jsonify({"estimated_waiting_time": estimated_waiting_time})
+        except Exception as e:
+            return jsonify({"error": str(e)})
 
-@app.route('/get_estimated_waiting_time', methods=['GET'])
-def get_estimated_waiting_time():
-    # Get bus stop code and service number from the request parameters
-    bus_stop_code = request.args.get('bus_stop_code')
-    service_no = request.args.get('service_no', "")
+# Register the resource with the API
+api.add_resource(EstimatedWaitingTime, '/get_estimated_waiting_time')
 
-    try:
-        # Call the method of the LtaApi instance to get the estimated waiting time
-        estimated_waiting_time = lta_api.get_estimated_waiting_time(
-            bus_stop_code, service_no)
-        return jsonify({"estimated_waiting_time": estimated_waiting_time})
-    except Exception as e:
-        return jsonify({"error": str(e)})
+# TrainServiceAlerts resource
+class TrainServiceAlerts(Resource):
+    def get(self):
+        try:
+            alerts = lta_api.get_train_service_alerts()
+            disrupted_services = [alert for alert in alerts if alert['Status'] == '2']
+            if not disrupted_services:
+                return jsonify({"message": "All train services are operating normally."})
+            return jsonify({"disrupted_services": disrupted_services})
+        except Exception as e:
+            return jsonify({"error": str(e)})
 
+# Register the resource with the API
+api.add_resource(TrainServiceAlerts, '/query_train_service_discription')
 
-@app.route('/query_train_service_discription', methods=['GET'])
-def get_train_service_alerts():
-    try:
-        alerts = lta_api.get_train_service_alerts()
+# PlatformCrowdDensityRealtime resource
+class PlatformCrowdDensityRealtime(Resource):
+    def get(self):
+        train_line = request.args.get('train_line')
+        if not train_line:
+            return jsonify({"error": "TrainLine parameter is required"})
+        try:
+            density_data = lta_api.get_platform_crowd_density_realtime(train_line)
+            return jsonify(density_data)
+        except Exception as e:
+            return jsonify({"error": str(e)})
 
-        disrupted_services = [
-            alert for alert in alerts if alert['Status'] == '2']
+# Register the resource with the API
+api.add_resource(PlatformCrowdDensityRealtime, '/get_platform_crowd_density_realtime')
 
-        if not disrupted_services:
-            return jsonify({"message": "All train services are operating normally."})
+# PlatformCrowdDensityForecast resource
+class PlatformCrowdDensityForecast(Resource):
+    def get(self):
+        train_line = request.args.get('train_line')
+        if not train_line:
+            return jsonify({"error": "TrainLine parameter is required"})
+        try:
+            forecast_data = lta_api.get_platform_crowd_density_forecast(train_line)
+            return jsonify(forecast_data)
+        except Exception as e:
+            return jsonify({"error": str(e)})
 
-        return jsonify({"disrupted_services": disrupted_services})
-    except Exception as e:
-        return jsonify({"error": str(e)})
-# for test only
+# Register the resource with the API
+api.add_resource(PlatformCrowdDensityForecast, '/get_platform_crowd_density_forecast')
 
-
-@app.route('/get_platform_crowd_density_realtime', methods=['GET'])
-def get_platform_crowd_density_realtime():
-    train_line = request.args.get('train_line')
-    if not train_line:
-        return jsonify({"error": "TrainLine parameter is required"})
-
-    try:
+# CrowdDensity resource
+class CrowdDensity(Resource):
+    def get(self):
+        train_line = request.args.get('train_line')
+        station = request.args.get('station')
+        time = request.args.get('time')
+        if not all([train_line, station, time]):
+            return jsonify({"error": "TrainLine, Station and Time parameters are required"})
+        fixed_time = time.replace(" ", "+")
+        query_time = datetime.fromisoformat(fixed_time)
         density_data = lta_api.get_platform_crowd_density_realtime(train_line)
-        return jsonify(density_data)
-    except Exception as e:
-        return jsonify({"error": str(e)})
-# for test only
+        for entry in density_data['value']:
+            start_time = datetime.fromisoformat(entry['StartTime'])
+            end_time = datetime.fromisoformat(entry['EndTime'])
+            if entry['Station'] == station and start_time <= query_time <= end_time:
+                return jsonify({"CrowdLevel": entry['CrowdLevel'], "StartTime": entry['StartTime'], "EndTime": entry['EndTime']})
+        return jsonify({"error": "No data found for given station and time."})
 
+# Register the resource with the API
+api.add_resource(CrowdDensity, '/query_crowded_Stations')
 
-@app.route('/get_platform_crowd_density_forecast', methods=['GET'])
-def get_platform_crowd_density_forecast():
-    train_line = request.args.get('train_line')
-    if not train_line:
-        return jsonify({"error": "TrainLine parameter is required"})
+# RoutesPT resource
+class RoutesPT(Resource):
+    def get(self):
+        start = request.args.get('start')
+        end = request.args.get('end')
+        routeType = request.args.get('routeType')
+        date = request.args.get('date')
+        time = request.args.get('time')
+        mode = request.args.get('mode')
+        maxWalkDistance = request.args.get('maxWalkDistance', "1000")
+        numItineraries = request.args.get('numItineraries', "3")
+        access_token = one_map_api.fetch_token()
+        routes = one_map_api.get_routes_pt(
+            access_token, start, end, routeType, date, time, mode, maxWalkDistance, numItineraries
+        )
+        return routes
 
-    try:
-        forecast_data = lta_api.get_platform_crowd_density_forecast(train_line)
-        return jsonify(forecast_data)
-    except Exception as e:
-        return jsonify({"error": str(e)})
+# Register the resource with the API
+api.add_resource(RoutesPT, '/get_routes_pt')
 
+# Concerns resource
+class Concerns(Resource):
+    def get(self):
+        concerns = concern_manager.get_concerns()
+        response = jsonify({"concerns": [concern.__dict__ for concern in concerns]})
+        print(response)
+        return response
 
-'''
-sample input curl "http://localhost:5000/query_crowded_Stations?train_line=EWL&station=EW1&time=2023-10-25T21:16:00%2B08:00"
-where 2023-10-25T21:16:00 is a valid time can be identity by get_platform_crowd_density_realtime function
-'''
+# Register the resource with the API
+api.add_resource(Concerns, '/concerns')
 
+# Subscribe resource
+class Subscribe(Resource):
+    def get(self):
+        print('subscribed')
+        sse = ServerSentEvents()
+        concern_manager.add_subscriber(sse)
+        return sse.response()
 
-@app.route('/query_crowded_Stations', methods=['GET'])
-def get_crowd_density():
-    train_line = request.args.get('train_line')
-    station = request.args.get('station')
-    time = request.args.get('time')
+# Register the resource with the API
+api.add_resource(Subscribe, '/concerns/subscribe')
 
-    # Check if all parameters are provided
-    if not all([train_line, station, time]):
-        return jsonify({"error": "TrainLine, Station and Time parameters are required"})
-    # density_data = lta_api.get_platform_crowd_density_forecast(train_line)
-    density_data = lta_api.get_platform_crowd_density_realtime(train_line)
+# UserInput resource
+class UserInput(Resource):
+    def post(self):
+        try:
+            data = request.get_json()
+            choice = data.get('choice')
+            if choice is not None:
+                concern_manager.create_concern(choice)
+                print(f'Received choice: {choice}')
+                return {'message': 'Choice received and processed successfully'}, 200
+            else:
+                return {'error': 'Invalid data'}, 400
+        except Exception as e:
+            return {'error': 'Error processing the request'}, 500
+# Register the resource with the API
+api.add_resource(UserInput, '/get_user_input')
 
-    # Convert the provided time to a datetime object
-    fixed_time = time.replace(" ", "+")
-    query_time = datetime.fromisoformat(fixed_time)
-
-    # Find the matching entry based on train_line, station and time
-    for entry in density_data['value']:
-        start_time = datetime.fromisoformat(entry['StartTime'])
-        end_time = datetime.fromisoformat(entry['EndTime'])
-
-        # Look for an entry where the query time is within the start and end times
-        if entry['Station'] == station and start_time <= query_time <= end_time:
-            return jsonify({"CrowdLevel": entry['CrowdLevel'], "StartTime": entry['StartTime'], "EndTime": entry['EndTime']})
-
-    # If no matching entry is found
-    return jsonify({"error": "No data found for given station and time."})
-
-# (To be completed) Call methods from the OneMap API
-
-
-@app.route('/get_routes_pt', methods=['GET'])
-def get_routes_pt():
-    # Get parameters from the request
-    start = request.args.get('start')
-    end = request.args.get('end')
-    routeType = request.args.get('routeType')
-    date = request.args.get('date')
-    time = request.args.get('time')
-    mode = request.args.get('mode')
-    maxWalkDistance = request.args.get('maxWalkDistance', "1000")
-    numItineraries = request.args.get('numItineraries', "3")
-
-    # Get the access token from OneMapAPI
-    access_token = one_map_api.fetch_token()
-
-    # Call the get_routes_pt method from OneMapAPI
-    routes = one_map_api.get_routes_pt(
-        access_token, start, end, routeType, date, time, mode, maxWalkDistance, numItineraries
-    )
-
-    return routes
-
-
-@app.route('/concerns', methods=['GET'])
-def get_concerns():
-    concerns = concern_manager.get_concerns()
-    response = jsonify(
-        {"concerns": [concern.__dict__ for concern in concerns]})
-    print(response)
-    return response
-
-
-@app.route('/concerns/subscribe', methods=['GET'])
-def subscribe():
-    print('subscribed')
-    sse = ServerSentEvents()
-    concern_manager.add_subscriber(sse)
-    return sse.response()
-
-# Add other app routes here and call methods from RouteManager and ConcernManager
-
-
-@app.route('/get_user_input', methods=['POST'])
-def get_user_input():
-    try:
-        data = request.get_json()
-        choice = data.get('choice')
-
-        if choice is not None:
-            concern_manager.create_concern(choice)
-            print(f'Received choice: {choice}')
-
-            return jsonify({'message': 'Choice received and processed successfully'}), 200
-        else:
-            return jsonify({'error': 'Invalid data'}), 400
-    except Exception as e:
-        return jsonify({'error': 'Error processing the request'}), 500
-    
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
