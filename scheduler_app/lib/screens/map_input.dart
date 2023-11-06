@@ -29,7 +29,7 @@ class _MapInputPageState extends State<MapInputPage> {
   EventBus get eventBus => GetIt.instance<EventBus>();
   bool addressBarFocused = false;
   bool isWrongInput = false;
-  bool loading = false;
+  bool isLoading = false;
 
   void handleOriginChange(Address newOrigin) {
     Future.microtask(() {
@@ -73,7 +73,7 @@ class _MapInputPageState extends State<MapInputPage> {
     widget.routeManager.routeStream.listen((event) {
       if (mounted) {
         setState(() {
-          loading = false;
+          isLoading = false;
         });
       }
       routeSelectionNotifier.routes = event;
@@ -157,11 +157,11 @@ class _MapInputPageState extends State<MapInputPage> {
                                         origin: value.origin!,
                                         destination: value.destination!));
                                     setState(() {
-                                      loading = true;
+                                      isLoading = true;
                                     });
                                   } else {
                                     setState(() {
-                                      loading = false;
+                                      isLoading = false;
                                       isWrongInput = true;
                                       Future.delayed(const Duration(seconds: 2),
                                           () {
@@ -174,7 +174,8 @@ class _MapInputPageState extends State<MapInputPage> {
                                     });
                                   }
                                 },
-                                loading: loading);
+                                isLoading: isLoading,
+                                isError: isWrongInput);
                           })))
                 ],
               ),

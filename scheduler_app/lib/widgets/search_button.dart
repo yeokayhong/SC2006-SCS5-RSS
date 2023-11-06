@@ -2,9 +2,14 @@ import 'package:flutter/material.dart';
 
 class SearchButtonWidget extends StatelessWidget {
   final Function? onPressed;
-  final bool loading;
+  final bool isLoading;
+  final bool isError;
 
-  const SearchButtonWidget({super.key, this.onPressed, this.loading = false});
+  const SearchButtonWidget(
+      {super.key,
+      this.onPressed,
+      this.isLoading = false,
+      this.isError = false});
 
   @override
   Widget build(BuildContext context) {
@@ -13,6 +18,7 @@ class SearchButtonWidget extends StatelessWidget {
       child: ElevatedButton(
         onPressed: onPressed as void Function()?,
         style: ElevatedButton.styleFrom(
+          backgroundColor: isError ? Colors.red : Colors.blue,
           textStyle: const TextStyle(
             fontSize: 16, // font size
           ),
@@ -22,13 +28,15 @@ class SearchButtonWidget extends StatelessWidget {
             borderRadius: BorderRadius.circular(10), // rounded corners
           ),
         ),
-        child: loading
-            ? const Center(
-                child: SizedBox(
-                    height: 16,
-                    width: 16,
-                    child: CircularProgressIndicator(color: Colors.white)))
-            : const Text('Get Directions'),
+        child: isError
+            ? const Text('Please enter a valid address')
+            : isLoading
+                ? const Center(
+                    child: SizedBox(
+                        height: 16,
+                        width: 16,
+                        child: CircularProgressIndicator(color: Colors.white)))
+                : const Text('Get Directions'),
       ),
     );
   }
