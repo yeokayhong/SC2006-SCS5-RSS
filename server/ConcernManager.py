@@ -43,7 +43,7 @@ class ConcernManager:
         self.update_concerns(concerns)
 
     def monitor_concerns(self):
-        time.sleep(30000)        
+        time.sleep(30000)
         while True:
             match self.mode:
                 case "production":
@@ -52,16 +52,16 @@ class ConcernManager:
                     print("Returning dummy data...")
                     concern_periodic = Concern("TrainDisruption", "NS", [
                         "NS5", "NS6"], datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S"), "concern periodic, Test Due to a signal fault, expect delays of 10 minutes for train services between NS5 and NS6")
-    
+
                     self.update_concerns([concern_periodic])
-                 
+
             time.sleep(self.seconds_between_queries)
-            
-    def create_concern(self,choice):
+
+    def create_concern(self, choice):
         concern1 = Concern("TrainDisruption", "EW", [
-                        "EW1", "EW2"], datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S"), "concern1, Test Due to a signal fault, expect delays of 10 minutes for train services between EW1 and EW2")
+            "EW25", "EW26"], datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S"), "concern1, Test Due to a signal fault, expect delays of 10 minutes for train services between EW1 and EW2")
         concern2 = Concern("TrainDisruption", "EW", [
-            "EW1", "EW2", "EW3"], datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S"), "concern2, Test Due to a signal fault, expect delays of 10 minutes for train services between EW1 and EW3")
+            "EW25", "EW26", "EW27"], datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S"), "concern2, Test Due to a signal fault, expect delays of 10 minutes for train services between EW1 and EW3")
         concern3 = Concern("TrainBreakdown", "DT", [
             "DT1", "DT2", "DT3", "DT4", "DT5", "DT6", "DT7", "DT8", "DT9", "DT10"], datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S"), "concern_delayed, Test Due to a signal fault, expect delays of 30 minutes for train services between DT1 and DT10")
         concern_empty = Concern("", "", [], None, "")
@@ -91,7 +91,7 @@ class ConcernManager:
                         self.concerns.remove(existing_concern)
 
                     matching_concern = next(
-                        (concern for concern in concerns if concern == existing_concern),None)
+                        (concern for concern in concerns if concern == existing_concern), None)
                     if matching_concern != None:
                         if matching_concern.time != existing_concern.time:
                             self.update_subscribers(
@@ -101,7 +101,8 @@ class ConcernManager:
                         concerns.remove(matching_concern)
 
                 for concern in concerns:
-                    self.update_subscribers(event="add", payload=concern.__dict__)
+                    self.update_subscribers(
+                        event="add", payload=concern.__dict__)
                     self.concerns.append(concern)
 
     def update_subscribers(self, *args, **kwargs):

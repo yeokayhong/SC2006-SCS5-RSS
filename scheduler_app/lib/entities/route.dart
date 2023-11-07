@@ -70,7 +70,7 @@ class Route {
     additionalTime = 0;
     for (var concern in concerns) {
       if (concern.getAdditionalTime() != null) {
-        additionalTime += concern.getAdditionalTime()!;
+        additionalTime += concern.getAdditionalTime()! * 60;
       }
     }
     debugPrint("AdditionalTime: $additionalTime Route: $mapIndex");
